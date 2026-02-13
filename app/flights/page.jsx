@@ -7,11 +7,11 @@ import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
-import { useBookingStore } from '@/store';
-import { flights } from '@/data/flights';
+import { useBookingStore, useDataStore } from '@/store';
 
 export default function FlightsPage() {
   const setSelectedFlight = useBookingStore((s) => s.setSelectedFlight);
+  const flights = useDataStore((s) => s.flights);
 
   return (
     <div className="container mx-auto px-4 py-12">

@@ -6,11 +6,11 @@ import { Plane, Clock } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
-import { useBookingStore } from '@/store';
-import { flights } from '@/data/flights';
+import { useBookingStore, useDataStore } from '@/store';
 
 export function FlightDeals() {
   const setSelectedFlight = useBookingStore((s) => s.setSelectedFlight);
+  const flights = useDataStore((s) => s.flights);
 
   return (
     <section className="py-16 md:py-24 bg-muted/30">

@@ -7,9 +7,10 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
-import { packages } from '@/data/packages';
+import { useDataStore } from '@/store';
 
 export default function PackagesPage() {
+  const packages = useDataStore((s) => s.packages);
   return (
     <div className="container mx-auto px-4 py-12">
       <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8">

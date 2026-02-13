@@ -10,13 +10,14 @@ import { ArrowRight } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
-import { packages } from '@/data/packages';
+import { useDataStore } from '@/store';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 export function TrendingPackages() {
   const swiperRef = useRef(null);
+  const packages = useDataStore((s) => s.packages);
 
   return (
     <section className="py-16 md:py-24">

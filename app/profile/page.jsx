@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowLeft, User, Mail, Calendar } from 'lucide-react';
+import { ArrowLeft, User, Mail, Calendar, CalendarCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store';
 
@@ -62,9 +62,14 @@ export default function ProfilePage() {
               </div>
             </div>
           </dl>
-          <div className="mt-8 flex gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/my-bookings">
+              <Button className="rounded-xl gap-2">
+                <CalendarCheck className="h-4 w-4" /> My Bookings
+              </Button>
+            </Link>
             <Link href="/booking-summary">
-              <Button variant="outline" className="rounded-xl">View Bookings</Button>
+              <Button variant="outline" className="rounded-xl">Booking Summary</Button>
             </Link>
           </div>
         </div>

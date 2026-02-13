@@ -7,11 +7,12 @@ import { MapPin, Star, Wifi, Coffee, Waves } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
-import { hotels } from '@/data/hotels';
+import { useDataStore } from '@/store';
 
 const amenityIcons = { Pool: Waves, WiFi: Wifi, Restaurant: Coffee };
 
 export function HotelListings() {
+  const hotels = useDataStore((s) => s.hotels);
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4">

@@ -8,9 +8,10 @@ import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
-import { tours } from '@/data/tours';
+import { useDataStore } from '@/store';
 
 export default function ToursPage() {
+  const tours = useDataStore((s) => s.tours);
   return (
     <div className="container mx-auto px-4 py-12">
       <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8">
