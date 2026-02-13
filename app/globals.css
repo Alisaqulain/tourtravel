@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #E50914;
+    --primary-foreground: #ffffff;
+    --dark: #0B1F3A;
+    --background: #ffffff;
+    --foreground: #0B1F3A;
+    --card: #ffffff;
+    --card-foreground: #0B1F3A;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --border: #e2e8f0;
+    --ring: #E50914;
+  }
+
+  .dark {
+    --background: #0B1F3A;
+    --foreground: #f8fafc;
+    --card: #0f2744;
+    --card-foreground: #f8fafc;
+    --muted: #1e3a5f;
+    --muted-foreground: #94a3b8;
+    --border: #1e3a5f;
+    --ring: #E50914;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(241, 245, 249, 0.3);
+    border-radius: 9999px;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background: rgba(30, 58, 95, 0.3);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(229, 9, 20, 0.4);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(229, 9, 20, 0.6);
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-dark-600;
+  }
+
+  .glass-card {
+    @apply bg-white/80 dark:bg-dark-700/80 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-glass;
+  }
+
+  .animated-gradient-border {
+    position: relative;
+    background: linear-gradient(var(--background), var(--background)) padding-box,
+                linear-gradient(135deg, #E50914, #0B1F3A, #E50914) border-box;
+    border: 2px solid transparent;
+    border-radius: 1rem;
+  }
+
+  .skeleton {
+    @apply animate-pulse bg-muted rounded-lg;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Swiper overrides */
+.swiper-pagination-bullet-active {
+  @apply bg-primary scale-125 !important;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  @apply text-primary after:content-[''] !important;
+}
