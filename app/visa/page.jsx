@@ -2,16 +2,16 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowLeft, FileCheck, Globe } from 'lucide-react';
+import { ArrowLeft, Globe, Eye } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 const visaServices = [
-  { country: 'United States', type: 'Tourist Visa', processing: '15-20 days', desc: 'B1/B2 visa application support and documentation.' },
-  { country: 'United Kingdom', type: 'Standard Visitor', processing: '3 weeks', desc: 'UK visitor visa with full document check.' },
-  { country: 'Schengen (Europe)', type: 'Short Stay', processing: '15 days', desc: 'Cover 26 European countries with one visa.' },
-  { country: 'Australia', type: 'Visitor (600)', processing: '20-25 days', desc: 'Tourist stream visa application.' },
+  { country: 'United States', type: 'Tourist Visa', processing: '15-20 days', desc: 'B1/B2 visa application support and documentation.', slug: 'united-states' },
+  { country: 'United Kingdom', type: 'Standard Visitor', processing: '3 weeks', desc: 'UK visitor visa with full document check.', slug: 'united-kingdom' },
+  { country: 'Schengen (Europe)', type: 'Short Stay', processing: '15 days', desc: 'Cover 26 European countries with one visa.', slug: 'schengen-europe' },
+  { country: 'Australia', type: 'Visitor (600)', processing: '20-25 days', desc: 'Tourist stream visa application.', slug: 'australia' },
 ];
 
 export default function VisaPage() {
@@ -42,7 +42,11 @@ export default function VisaPage() {
                   <p className="text-sm text-primary font-medium">{v.type}</p>
                   <p className="text-muted-foreground text-sm mt-1">{v.desc}</p>
                   <p className="text-xs text-muted-foreground mt-2">Processing: {v.processing}</p>
-                  <Button size="sm" variant="outline" className="mt-4 rounded-xl">Learn More</Button>
+                  <Link href={`/visa/${v.slug}`}>
+                    <Button size="sm" variant="outline" className="mt-4 rounded-xl gap-1">
+                      <Eye className="h-4 w-4" /> View More
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </Card>

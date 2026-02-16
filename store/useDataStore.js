@@ -4,6 +4,9 @@ import { flights as defaultFlights } from '@/data/flights';
 import { hotels as defaultHotels } from '@/data/hotels';
 import { tours as defaultTours } from '@/data/tours';
 import { packages as defaultPackages } from '@/data/packages';
+import { buses as defaultBuses } from '@/data/bus';
+import { cruises as defaultCruises } from '@/data/cruise';
+import { cars as defaultCars } from '@/data/cars';
 
 function nextId(items, prefix) {
   const nums = items.map((i) => parseInt((i.id || '').replace(prefix, ''), 10)).filter(Boolean);
@@ -18,6 +21,9 @@ export const useDataStore = create(
       hotels: defaultHotels,
       tours: defaultTours,
       packages: defaultPackages,
+      buses: defaultBuses,
+      cruises: defaultCruises,
+      cars: defaultCars,
 
       // Flights
       setFlights: (flights) => set({ flights }),
@@ -67,6 +73,42 @@ export const useDataStore = create(
         })),
       deletePackage: (id) => set((s) => ({ packages: s.packages.filter((p) => p.id !== id) })),
 
+      // Buses
+      setBuses: (buses) => set({ buses }),
+      addBus: (bus) =>
+        set((s) => ({
+          buses: [...s.buses, { ...bus, id: bus.id || nextId(s.buses, 'BS') }],
+        })),
+      updateBus: (id, updates) =>
+        set((s) => ({
+          buses: s.buses.map((b) => (b.id === id ? { ...b, ...updates } : b)),
+        })),
+      deleteBus: (id) => set((s) => ({ buses: s.buses.filter((b) => b.id !== id) })),
+
+      // Cruises
+      setCruises: (cruises) => set({ cruises }),
+      addCruise: (cruise) =>
+        set((s) => ({
+          cruises: [...s.cruises, { ...cruise, id: cruise.id || nextId(s.cruises, 'CR') }],
+        })),
+      updateCruise: (id, updates) =>
+        set((s) => ({
+          cruises: s.cruises.map((c) => (c.id === id ? { ...c, ...updates } : c)),
+        })),
+      deleteCruise: (id) => set((s) => ({ cruises: s.cruises.filter((c) => c.id !== id) })),
+
+      // Cars
+      setCars: (cars) => set({ cars }),
+      addCar: (car) =>
+        set((s) => ({
+          cars: [...s.cars, { ...car, id: car.id || nextId(s.cars, 'CAR') }],
+        })),
+      updateCar: (id, updates) =>
+        set((s) => ({
+          cars: s.cars.map((c) => (c.id === id ? { ...c, ...updates } : c)),
+        })),
+      deleteCar: (id) => set((s) => ({ cars: s.cars.filter((c) => c.id !== id) })),
+
       // Reset to defaults
       resetAllData: () =>
         set({
@@ -74,6 +116,9 @@ export const useDataStore = create(
           hotels: defaultHotels,
           tours: defaultTours,
           packages: defaultPackages,
+          buses: defaultBuses,
+          cruises: defaultCruises,
+          cars: defaultCars,
         }),
     }),
     { name: 'trips-data-storage' }

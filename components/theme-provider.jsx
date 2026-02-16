@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { SiteThemeInjector } from '@/components/theme-site-injector';
 
 const ThemeContext = createContext(undefined);
 
@@ -30,6 +31,7 @@ export function ThemeProvider({ children, defaultTheme = 'light', storageKey = '
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+      <SiteThemeInjector />
       {children}
     </ThemeContext.Provider>
   );

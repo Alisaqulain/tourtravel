@@ -9,11 +9,12 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuthStore } from '@/store';
+import { useAuthStore, useUsersStore } from '@/store';
 
 export default function SignupPage() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
+  const addUser = useUsersStore((s) => s.addUser);
   const [loading, setLoading] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -21,6 +22,7 @@ export default function SignupPage() {
   const onSubmit = async (data) => {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 800));
+    addUser({ name: data.name, email: data.email });
     login({ name: data.name, email: data.email });
     setLoading(false);
     router.push('/profile');

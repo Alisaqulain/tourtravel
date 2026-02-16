@@ -13,6 +13,13 @@ export const flights = [
     savePercent: 25,
     stops: 0,
     class: 'Economy',
+    image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800',
+    images: [
+      'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800',
+      'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800',
+      'https://images.unsplash.com/photo-1514214246283-d427a95c5d2f?w=800',
+      'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800',
+    ],
   },
   {
     id: 'FL002',
@@ -28,6 +35,13 @@ export const flights = [
     savePercent: 30,
     stops: 0,
     class: 'Economy',
+    image: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800',
+    images: [
+      'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800',
+      'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800',
+      'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800',
+      'https://images.unsplash.com/photo-1514214246283-d427a95c5d2f?w=800',
+    ],
   },
   {
     id: 'FL003',
@@ -43,6 +57,13 @@ export const flights = [
     savePercent: 20,
     stops: 0,
     class: 'Economy',
+    image: 'https://images.unsplash.com/photo-1514214246283-d427a95c5d2f?w=800',
+    images: [
+      'https://images.unsplash.com/photo-1514214246283-d427a95c5d2f?w=800',
+      'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800',
+      'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800',
+      'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800',
+    ],
   },
   {
     id: 'FL004',
@@ -58,6 +79,13 @@ export const flights = [
     savePercent: 15,
     stops: 0,
     class: 'Economy',
+    image: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800',
+    images: [
+      'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800',
+      'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800',
+      'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800',
+      'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800',
+    ],
   },
   {
     id: 'FL005',
@@ -73,6 +101,13 @@ export const flights = [
     savePercent: 35,
     stops: 0,
     class: 'Economy',
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800',
+    images: [
+      'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800',
+      'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800',
+      'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800',
+      'https://images.unsplash.com/photo-1514214246283-d427a95c5d2f?w=800',
+    ],
   },
   {
     id: 'FL006',
@@ -88,5 +123,12 @@ export const flights = [
     savePercent: 40,
     stops: 0,
     class: 'Economy',
+    image: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800',
+    images: [
+      'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800',
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800',
+      'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800',
+      'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800',
+    ],
   },
 ];

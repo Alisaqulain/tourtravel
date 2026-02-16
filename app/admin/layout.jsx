@@ -13,6 +13,12 @@ import {
   LogOut,
   Menu,
   X,
+  Users,
+  CalendarCheck,
+  Bus,
+  Ship,
+  Car,
+  Palette,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -20,10 +26,13 @@ import { Button } from '@/components/ui/button';
 
 const nav = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/users', label: 'Users', icon: Users },
+  { href: '/admin/bookings', label: 'Bookings', icon: CalendarCheck },
   { href: '/admin/flights', label: 'Flights', icon: Plane },
   { href: '/admin/hotels', label: 'Hotels', icon: Building2 },
   { href: '/admin/tours', label: 'Tours', icon: MapPin },
   { href: '/admin/packages', label: 'Packages', icon: Package },
+  { href: '/admin/theme', label: 'Website Theme', icon: Palette },
 ];
 
 export default function AdminLayout({ children }) {

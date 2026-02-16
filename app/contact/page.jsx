@@ -1,18 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Mail, Phone, MapPin } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { ArrowLeft, Mail, Phone, MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 
+const CONTACT_EMAIL = 'support@tripstotravels.com';
+const CONTACT_PHONE = '+91 1800 123 4567';
+const CONTACT_ADDRESS = 'Trips To Travels, 123 MG Road, Bangalore 560001, India';
+const HOURS = '24/7 (Support & Bookings)';
+
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
-  const { register, handleSubmit } = useForm();
+  const searchParams = useSearchParams();
+  const subjectFromUrl = searchParams.get('subject') || '';
+  const { register, handleSubmit, setValue } = useForm();
+
+  useEffect(() => {
+    if (subjectFromUrl) setValue('subject', subjectFromUrl);
+  }, [subjectFromUrl, setValue]);
 
   const onSubmit = () => setSubmitted(true);
 
@@ -28,7 +39,7 @@ export default function ContactPage() {
         <div className="lg:col-span-2">
           <Card className="p-6 md:p-8">
             {submitted ? (
-              <p className="text-primary font-medium">Thank you! We’ll get back to you soon.</p>
+              <p className="text-primary font-medium">Thank you! We’ll get back to you within 24 hours.</p>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -42,8 +53,12 @@ export default function ContactPage() {
                   </div>
                 </div>
                 <div>
+                  <Label>Phone (optional)</Label>
+                  <Input {...register('phone')} type="tel" className="mt-1 rounded-xl" placeholder="+91 98765 43210" />
+                </div>
+                <div>
                   <Label>Subject</Label>
-                  <Input {...register('subject')} className="mt-1 rounded-xl" placeholder="Booking, support, or feedback" />
+                  <Input {...register('subject')} className="mt-1 rounded-xl" placeholder="Booking, support, Visa, Careers, or feedback" defaultValue={subjectFromUrl} />
                 </div>
                 <div>
                   <Label>Message</Label>
@@ -62,18 +77,22 @@ export default function ContactPage() {
         <div>
           <Card className="p-6 h-full">
             <h3 className="font-semibold mb-4">Get in touch</h3>
-            <ul className="space-y-4 text-muted-foreground">
+            <ul className="space-y-4 text-muted-foreground text-sm">
               <li className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span>support@tripstotravels.com</span>
+                <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary">{CONTACT_EMAIL}</a>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span>+1 (800) 555-0123</span>
+                <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`} className="hover:text-primary">{CONTACT_PHONE}</a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span>123 Travel Street, Suite 100, New York, NY 10001</span>
+                <span>{CONTACT_ADDRESS}</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Clock className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <span>{HOURS}</span>
               </li>
             </ul>
           </Card>

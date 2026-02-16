@@ -5,18 +5,23 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, LogOut, CalendarCheck } from 'lucide-react';
+import { Menu, X, User, LogOut, CalendarCheck, Home, Building2, Plane, MapPin, Bus, Ship, Car, FileCheck, Package, Percent, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store';
 
 const navLinks = [
-  { href: '/flights', label: 'Flights' },
-  { href: '/hotels', label: 'Hotels' },
-  { href: '/tours', label: 'Tours' },
-  { href: '/visa', label: 'Visa' },
-  { href: '/packages', label: 'Packages' },
-  { href: '/offers', label: 'Offers' },
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/hotels', label: 'Hotels', icon: Building2 },
+  { href: '/flights', label: 'Flights', icon: Plane },
+  { href: '/tours', label: 'Tours', icon: MapPin },
+  { href: '/bus', label: 'Bus', icon: Bus },
+  { href: '/cruise', label: 'Cruise', icon: Ship },
+  { href: '/cars', label: 'Premium Cars', icon: Car },
+  { href: '/visa', label: 'Visa', icon: FileCheck },
+  { href: '/packages', label: 'Packages', icon: Package },
+  { href: '/offers', label: 'Offers', icon: Percent },
+  { href: '/contact', label: 'Contact', icon: Phone },
 ];
 
 export function Navbar() {
@@ -31,28 +36,29 @@ export function Navbar() {
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
       className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl"
     >
-      <div className="container mx-auto flex h-28 md:h-32 lg:h-36 xl:h-40 items-center justify-between px-4 md:px-6">
-        <Link href="/" className="flex items-center shrink-0 rounded-xl bg-black px-3 py-2 dark:bg-transparent dark:px-0 dark:py-0">
+      <div className="container mx-auto flex h-24 md:h-20 items-center justify-between gap-2 px-4 md:px-6">
+        <Link href="/" className="flex items-center shrink-0 rounded-lg bg-black px-2 py-1.5 dark:bg-transparent dark:px-0 dark:py-0">
           <Image
             src="/images/logo.png"
-            alt="Trips To Travels - Creating unforgettable memories"
-            width={520}
-            height={136}
-            className="h-20 w-auto sm:h-24 md:h-28 lg:h-32 xl:h-36 object-contain"
+            alt="Trips To Travels"
+            width={320}
+            height={84}
+            className="h-12 w-auto sm:h-14 md:h-16 object-contain"
             priority
           />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center flex-nowrap gap-0.5 shrink min-w-0 overflow-x-auto">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                'px-4 py-2 rounded-xl text-sm font-medium transition-colors hover:bg-muted',
+                'shrink-0 px-2 py-1.5 rounded-md text-xs font-medium transition-colors hover:bg-muted inline-flex items-center gap-1 whitespace-nowrap',
                 pathname === link.href ? 'text-primary bg-primary/10' : 'text-foreground'
               )}
             >
+              {link.icon && <link.icon className="h-3.5 w-3.5 shrink-0" />}
               {link.label}
             </Link>
           ))}
@@ -121,10 +127,11 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    'px-4 py-3 rounded-xl text-sm font-medium transition-colors',
+                    'px-4 py-3 rounded-xl text-sm font-medium transition-colors inline-flex items-center gap-2',
                     pathname === link.href ? 'text-primary bg-primary/10' : 'hover:bg-muted'
                   )}
                 >
+                  {link.icon && <link.icon className="h-4 w-4" />}
                   {link.label}
                 </Link>
               ))}

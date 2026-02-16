@@ -23,7 +23,7 @@ export function TrendingPackages() {
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4">
         <SectionHeader
-          title="Trending Packages"
+          title="Best Packages"
           subtitle="Hand-picked getaways with exclusive deals. Limited time offers."
         />
         <div className="relative">

@@ -23,6 +23,7 @@ const quickLinks = [
 const supportLinks = [
   { label: 'Help Center', href: '/contact' },
   { label: 'Contact Us', href: '/contact' },
+  { label: 'Payment & Refunds', href: '/cancellation' },
   { label: 'Cancellation Policy', href: '/cancellation' },
   { label: 'Safety', href: '/contact?subject=Safety' },
 ];
