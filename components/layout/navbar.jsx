@@ -37,14 +37,14 @@ export function Navbar() {
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
       className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl"
     >
-      <div className="container mx-auto flex h-24 md:h-20 items-center justify-between gap-2 px-4 md:px-6">
-        <Link href="/" className="flex items-center shrink-0 rounded-lg px-2 py-1.5">
+      <div className="container mx-auto flex h-16 md:h-14 items-center justify-between gap-2 px-4 md:px-6 overflow-hidden">
+        <Link href="/" className="flex items-center shrink-0 min-w-0 h-full max-h-full py-2 rounded-lg">
           <Image
             src="/images/Trip%20Logo.png"
             alt="Trip to Travel World"
             width={320}
             height={84}
-            className="h-16 w-auto sm:h-20 md:h-24 object-contain"
+            className="h-full max-h-11 md:max-h-10 w-auto object-contain object-left"
             priority
           />
         </Link>
