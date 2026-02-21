@@ -16,11 +16,16 @@ export async function GET() {
     });
   } catch (e) {
     console.error('Test DB error:', e);
+    const isAuthError = e.name === 'MongoServerError' && (e.code === 8000 || (e.message || '').toLowerCase().includes('auth'));
+    const message = isAuthError
+      ? 'MongoDB authentication failed. Check Atlas: Database Access → correct user & password. If password has special chars (@, #, :, etc.), URL-encode them in MONGODB_URI.'
+      : (e.message || 'Database connection failed');
     return NextResponse.json(
       {
         success: false,
         data: null,
-        message: process.env.NODE_ENV === 'development' ? e.message : 'Database connection failed',
+        message,
+        ...(process.env.NODE_ENV === 'development' && { error: e.message }),
       },
       { status: 503 }
     );

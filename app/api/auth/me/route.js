@@ -11,8 +11,8 @@ export async function GET(request) {
       return NextResponse.json({ success: true, data: { user: null }, user: null });
     }
     await connectDB();
-    const user = await User.findById(decoded.userId).select('name email role');
-    if (!user) return NextResponse.json({ success: true, data: { user: null }, user: null });
+    const user = await User.findById(decoded.userId).select('name email role isBlocked');
+    if (!user || user.isBlocked) return NextResponse.json({ success: true, data: { user: null }, user: null });
     const userPayload = { id: user._id, name: user.name, email: user.email, role: user.role };
     return NextResponse.json({ success: true, data: { user: userPayload }, user: userPayload });
   } catch (e) {

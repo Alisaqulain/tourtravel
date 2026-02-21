@@ -49,8 +49,8 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="inline-block mb-4 rounded-xl p-3">
               <Image
-                src="/images/logo.png"
-                alt="Trips To Travels"
+                src="/images/Trip%20Logo.png"
+                alt="Trip to Travel World"
                 width={440}
                 height={120}
                 className="h-28 md:h-32 w-auto object-contain"

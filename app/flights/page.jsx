@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -12,6 +12,7 @@ import { formatPrice } from '@/lib/utils';
 import { useBookingStore } from '@/store';
 import { FlightFilters } from '@/components/filters/flight-filters';
 import { useTravelList } from '@/hooks/useTravelList';
+import { toast } from '@/lib/toast';
 
 const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800';
 
@@ -59,6 +60,10 @@ export default function FlightsPage() {
   );
 
   const { data: flights, total, page: currentPage, totalPages, loading, error, refetch } = useTravelList('flights', params);
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
 
   const resetFilters = () => {
     setSearch('');
@@ -131,9 +136,8 @@ export default function FlightsPage() {
           </div>
 
           {error && (
-            <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 mb-6 flex items-center justify-between">
-              <p className="text-destructive">{error}</p>
-              <Button variant="outline" size="sm" onClick={refetch}>Retry</Button>
+            <div className="mb-4 flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => { toast.info('Retrying...'); refetch(); }}>Retry</Button>
             </div>
           )}
 

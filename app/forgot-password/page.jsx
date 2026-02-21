@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from '@/lib/toast';
 
 const STEP_EMAIL = 'email';
 const STEP_OTP = 'otp';
@@ -18,7 +19,6 @@ export default function ForgotPasswordPage() {
   const [step, setStep] = useState(STEP_EMAIL);
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [resetSuccess, setResetSuccess] = useState(false);
 
@@ -27,7 +27,6 @@ export default function ForgotPasswordPage() {
 
   const onEmailSubmit = async (data) => {
     setLoading(true);
-    setError('');
     try {
       const res = await fetch('/api/auth/forgot-password', {
         method: 'POST',
@@ -36,14 +35,15 @@ export default function ForgotPasswordPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.message || 'Failed to send OTP');
+        toast.error(json.message || 'Failed to send OTP');
         return;
       }
       setEmail(data.email);
       setStep(STEP_OTP);
       setSuccessMessage(json.message || 'OTP sent to your email.');
+      toast.success('OTP sent to your email.');
     } catch {
-      setError('Something went wrong. Try again.');
+      toast.error('Something went wrong. Try again.');
     } finally {
       setLoading(false);
     }
@@ -52,10 +52,10 @@ export default function ForgotPasswordPage() {
   const onOtpSubmit = async (data) => {
     if (data.newPassword !== data.confirmPassword) {
       otpForm.setError('confirmPassword', { message: 'Passwords do not match' });
+      toast.error('Passwords do not match');
       return;
     }
     setLoading(true);
-    setError('');
     try {
       const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
@@ -68,14 +68,15 @@ export default function ForgotPasswordPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.message || 'Failed to reset password');
+        toast.error(json.message || 'Failed to reset password');
         return;
       }
       setResetSuccess(true);
       setSuccessMessage('Password reset successfully. Redirecting to login...');
+      toast.success('Password reset successfully!');
       setTimeout(() => router.push('/login?reset=success'), 2000);
     } catch {
-      setError('Something went wrong. Try again.');
+      toast.error('Something went wrong. Try again.');
     } finally {
       setLoading(false);
     }
@@ -83,7 +84,6 @@ export default function ForgotPasswordPage() {
 
   const backToEmail = () => {
     setStep(STEP_EMAIL);
-    setError('');
     setSuccessMessage('');
     emailForm.reset();
     otpForm.reset();
@@ -133,7 +133,6 @@ export default function ForgotPasswordPage() {
                     <p className="text-sm text-primary mt-1">{emailForm.formState.errors.email.message}</p>
                   )}
                 </div>
-                {error && <p className="text-sm text-destructive">{error}</p>}
                 <Button type="submit" className="w-full rounded-xl" size="lg" disabled={loading}>
                   {loading ? 'Sending code...' : 'Send reset code'}
                 </Button>
@@ -211,7 +210,6 @@ export default function ForgotPasswordPage() {
                     <p className="text-sm text-primary mt-1">{otpForm.formState.errors.confirmPassword.message}</p>
                   )}
                 </div>
-                {error && <p className="text-sm text-destructive">{error}</p>}
                 <div className="flex gap-3">
                   <Button type="button" variant="outline" className="rounded-xl flex-1" onClick={backToEmail} disabled={loading}>
                     Change email

@@ -34,7 +34,8 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true, maxlength: 120 },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    role: { type: String, enum: ['user', 'admin', 'superadmin'], default: 'user' },
+    isBlocked: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
     resetOtp: { type: String, default: null },
     resetOtpExpires: { type: Date, default: null },
@@ -57,7 +58,9 @@ async function seed() {
     process.exit(1);
   }
   await mongoose.connect(uri);
-  const existing = await User.findOne({ role: 'admin' });
+  const superAdmin = process.env.ADMIN_SUPERADMIN === 'true' || process.env.ADMIN_SUPERADMIN === '1';
+  const role = superAdmin ? 'superadmin' : 'admin';
+  const existing = await User.findOne({ $or: [{ role: 'admin' }, { role: 'superadmin' }] });
   if (existing) {
     console.log('Admin already exists:', existing.email);
     await mongoose.disconnect();
@@ -66,18 +69,18 @@ async function seed() {
   }
   const existingEmail = await User.findOne({ email: adminEmail });
   if (existingEmail) {
-    existingEmail.role = 'admin';
+    existingEmail.role = role;
     await existingEmail.save();
-    console.log('Updated existing user to admin:', adminEmail);
+    console.log('Updated existing user to', role + ':', adminEmail);
   } else {
     await User.create({
       name: adminName,
       email: adminEmail,
       password: adminPassword,
-      role: 'admin',
+      role,
       isVerified: true,
     });
-    console.log('Admin created:', adminEmail);
+    console.log(role.charAt(0).toUpperCase() + role.slice(1) + ' created:', adminEmail);
   }
   await mongoose.disconnect();
   process.exit(0);

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
+import { toast } from '@/lib/toast';
 
 const CONTACT_EMAIL = 'support@tripstotravels.com';
 const CONTACT_PHONE = '+91 1800 123 4567';
@@ -17,7 +18,6 @@ const HOURS = '24/7 (Support & Bookings)';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const subjectFromUrl = searchParams.get('subject') || '';
@@ -28,7 +28,6 @@ export default function ContactPage() {
   }, [subjectFromUrl, setValue]);
 
   const onSubmit = async (data) => {
-    setError('');
     setLoading(true);
     try {
       const res = await fetch('/api/contact', {
@@ -43,12 +42,13 @@ export default function ContactPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.message || 'Failed to send message');
+        toast.error(json.message || 'Failed to send message');
         return;
       }
       setSubmitted(true);
+      toast.success('Message sent! We’ll get back to you within 24 hours.');
     } catch {
-      setError('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -96,7 +96,6 @@ export default function ContactPage() {
                     placeholder="How can we help?"
                   />
                 </div>
-                {error && <p className="text-sm text-destructive">{error}</p>}
                 <Button type="submit" className="rounded-xl" disabled={loading}>{loading ? 'Sending...' : 'Send Message'}</Button>
               </form>
             )}

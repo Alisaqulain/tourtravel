@@ -10,28 +10,25 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuthStore } from '@/store';
+import { toast } from '@/lib/toast';
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const login = useAuthStore((s) => s.login);
   const [loading, setLoading] = useState(false);
-  const [resetSuccess, setResetSuccess] = useState(false);
 
   useEffect(() => {
     if (searchParams.get('reset') === 'success') {
-      setResetSuccess(true);
+      toast.success('Password reset successfully. You can sign in with your new password.');
       router.replace('/login', { scroll: false });
     }
   }, [searchParams, router]);
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const [error, setError] = useState('');
-
   const onSubmit = async (data) => {
     setLoading(true);
-    setError('');
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -41,13 +38,14 @@ export default function LoginPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.error || 'Login failed');
+        toast.error(json.error || 'Login failed');
         return;
       }
       login({ name: json.user.name, email: json.user.email });
+      toast.success('Welcome back!');
       router.push('/profile');
     } catch (e) {
-      setError('Something went wrong. Try again.');
+      toast.error('Something went wrong. Try again.');
     } finally {
       setLoading(false);
     }
@@ -64,11 +62,6 @@ export default function LoginPage() {
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
         <div className="rounded-2xl border border-border bg-card p-8 shadow-premium">
-          {resetSuccess && (
-            <p className="text-sm text-green-600 dark:text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2 mb-4">
-              Password reset successfully. You can sign in with your new password.
-            </p>
-            )}
           <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
           <p className="text-muted-foreground mb-6">Sign in to your Trips To Travels account.</p>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -103,7 +96,6 @@ export default function LoginPage() {
             <p className="text-sm text-muted-foreground">
               <Link href="/forgot-password" className="text-primary font-medium hover:underline">Forgot password?</Link>
             </p>
-            {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full rounded-xl" size="lg" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>

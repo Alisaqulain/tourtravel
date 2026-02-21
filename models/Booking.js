@@ -10,10 +10,12 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
     item: { type: mongoose.Schema.Types.Mixed, required: true },
+    source: { type: String, enum: ['api', 'manual'], default: 'manual' },
     subtotal: { type: Number, required: true },
     tax: { type: Number, default: 0 },
     total: { type: Number, required: true },
     currency: { type: String, default: 'INR' },
+    priceBreakdown: { type: mongoose.Schema.Types.Mixed },
     status: {
       type: String,
       enum: ['pending', 'paid', 'failed', 'cancelled'],

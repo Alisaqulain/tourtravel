@@ -33,6 +33,10 @@ export async function POST(request) {
     return res;
   } catch (e) {
     console.error('Signup error:', e);
-    return error(process.env.NODE_ENV === 'development' ? e.message : 'Registration failed', 500);
+    const isMongoAuth = e.name === 'MongoServerError' && (e.code === 8000 || (e.message || '').includes('auth'));
+    const msg = isMongoAuth
+      ? 'Database connection issue. Please check server configuration.'
+      : (process.env.NODE_ENV === 'development' ? e.message : 'Registration failed');
+    return error(msg, 500);
   }
 }

@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true, maxlength: 120 },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, select: false },
-    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    role: { type: String, enum: ['user', 'admin', 'superadmin'], default: 'user' },
+    isBlocked: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
     resetOtp: { type: String, default: null },
     resetOtpExpires: { type: Date, default: null },
@@ -14,7 +15,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.index({ email: 1 });
+// unique: true on email already creates an index; no need for duplicate schema.index()
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();

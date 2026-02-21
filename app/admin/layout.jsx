@@ -19,6 +19,7 @@ import {
   Ship,
   Car,
   Palette,
+  Settings,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,7 @@ import { Button } from '@/components/ui/button';
 
 const nav = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/settings', label: 'Business Model', icon: Settings },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/bookings', label: 'Bookings', icon: CalendarCheck },
   { href: '/admin/flights', label: 'Flights', icon: Plane },
@@ -67,7 +69,7 @@ export default function AdminLayout({ children }) {
             Admin Panel
           </Link>
         </div>
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1" role="navigation" aria-label="Admin menu">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -76,9 +78,10 @@ export default function AdminLayout({ children }) {
                 'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors',
                 pathname === item.href ? 'bg-primary text-white' : 'hover:bg-muted'
               )}
+              aria-current={pathname === item.href ? 'page' : undefined}
             >
-              <item.icon className="h-5 w-5" />
-              {item.label}
+              <item.icon className="h-5 w-5" aria-hidden />
+              <span>{item.label}</span>
             </Link>
           ))}
         </nav>
@@ -86,7 +89,7 @@ export default function AdminLayout({ children }) {
           <Link href="/" className="block text-sm text-muted-foreground hover:text-foreground mb-2">
             ← Back to site
           </Link>
-          <Button variant="outline" size="sm" className="w-full justify-start gap-2 rounded-xl" onClick={() => { logoutAdmin(); router.replace('/admin/login'); }}>
+          <Button type="button" variant="outline" size="sm" className="w-full justify-start gap-2 rounded-xl" onClick={() => { logoutAdmin(); router.replace('/admin/login'); }}>
             <LogOut className="h-4 w-4" /> Logout
           </Button>
         </div>
@@ -121,7 +124,7 @@ export default function AdminLayout({ children }) {
             <X className="h-5 w-5" />
           </button>
         </div>
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1" role="navigation" aria-label="Admin menu">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -131,9 +134,10 @@ export default function AdminLayout({ children }) {
                 'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium',
                 pathname === item.href ? 'bg-primary text-white' : 'hover:bg-muted'
               )}
+              aria-current={pathname === item.href ? 'page' : undefined}
             >
-              <item.icon className="h-5 w-5" />
-              {item.label}
+              <item.icon className="h-5 w-5" aria-hidden />
+              <span>{item.label}</span>
             </Link>
           ))}
         </nav>
@@ -141,7 +145,7 @@ export default function AdminLayout({ children }) {
           <Link href="/" className="block text-sm text-muted-foreground hover:text-foreground mb-2">
             ← Back to site
           </Link>
-          <Button variant="outline" size="sm" className="w-full justify-start gap-2 rounded-xl" onClick={() => { logoutAdmin(); router.replace('/admin/login'); setSidebarOpen(false); }}>
+          <Button type="button" variant="outline" size="sm" className="w-full justify-start gap-2 rounded-xl" onClick={() => { logoutAdmin(); router.replace('/admin/login'); setSidebarOpen(false); }}>
             <LogOut className="h-4 w-4" /> Logout
           </Button>
         </div>

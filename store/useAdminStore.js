@@ -15,7 +15,8 @@ export const useAdminStore = create(
           credentials: 'include',
         });
         const data = await res.json();
-        if (!data.success || data.user?.role !== 'admin') return false;
+        const role = data.user?.role;
+        if (!data.success || (role !== 'admin' && role !== 'superadmin')) return false;
         set({ isAdmin: true, adminEmail: data.user.email });
         return true;
       },

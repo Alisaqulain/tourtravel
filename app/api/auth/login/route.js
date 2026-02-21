@@ -19,6 +19,9 @@ export async function POST(request) {
     if (!user || !(await user.comparePassword(password))) {
       return error('Invalid email or password', 401);
     }
+    if (user.isBlocked) {
+      return error('Account is blocked. Contact support.', 403);
+    }
     const token = signToken({ userId: user._id.toString(), email: user.email, role: user.role });
     const userPayload = { id: user._id, name: user.name, email: user.email, role: user.role };
     const res = NextResponse.json({

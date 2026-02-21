@@ -10,24 +10,27 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAdminStore } from '@/store';
+import { toast } from '@/lib/toast';
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const loginAdmin = useAdminStore((s) => s.loginAdmin);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
-    setError('');
     setLoading(true);
     try {
       const ok = await loginAdmin(data.email, data.password);
-      if (ok) router.replace('/admin');
-      else setError('Invalid email or password, or not an admin account.');
+      if (ok) {
+        toast.success('Welcome to admin panel.');
+        router.replace('/admin');
+      } else {
+        toast.error('Invalid email or password, or not an admin account.');
+      }
     } catch {
-      setError('Login failed. Please try again.');
+      toast.error('Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -78,7 +81,6 @@ export default function AdminLoginPage() {
                 />
               </div>
             </div>
-            {error && <p className="text-sm text-primary">{error}</p>}
             <Button type="submit" className="w-full rounded-xl" size="lg" disabled={loading}>
               {loading ? 'Signing in…' : 'Sign In'}
             </Button>
