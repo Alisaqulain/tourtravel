@@ -5,10 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, LogOut, CalendarCheck, Home, Building2, Plane, MapPin, Bus, Ship, Car, FileCheck, Package, Percent, Phone } from 'lucide-react';
+import { Menu, X, User, LogOut, CalendarCheck, Home, Building2, Plane, MapPin, Bus, Ship, Car, FileCheck, Package, Percent, Phone, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store';
+import { NotificationBell } from '@/components/layout/notification-bell';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
@@ -37,11 +38,12 @@ export function Navbar() {
       className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl"
     >
       <div className="container mx-auto flex h-24 md:h-20 items-center justify-between gap-2 px-4 md:px-6">
-        <Link href="/" className="flex items-center shrink-0 rounded-lg bg-black px-2 py-1.5 dark:bg-transparent dark:px-0 dark:py-0">
+        <Link href="/" className="flex items-center shrink-0 rounded-lg px-2 py-1.5">
           <Image
             src="/images/logo.png"
             alt="Trips To Travels"
             width={320}
+            
             height={84}
             className="h-12 w-auto sm:h-14 md:h-16 object-contain"
             priority
@@ -65,6 +67,14 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <NotificationBell />
+          {isLoggedIn && (
+            <Link href="/wishlist" className="hidden sm:block">
+              <Button variant="ghost" size="icon" className="rounded-xl relative">
+                <Heart className="h-5 w-5" />
+              </Button>
+            </Link>
+          )}
           {isLoggedIn ? (
             <>
               <Link href="/my-bookings">

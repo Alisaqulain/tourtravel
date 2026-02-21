@@ -1,23 +1,28 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Dummy admin credentials (shown on /admin/login for demo)
-export const ADMIN_DEMO_EMAIL = 'admin@trips.com';
-export const ADMIN_DEMO_PASSWORD = 'admin123';
-
+/** Real admin login: calls /api/auth/login and checks role === 'admin'. */
 export const useAdminStore = create(
   persist(
     (set) => ({
       isAdmin: false,
       adminEmail: null,
-      loginAdmin: (email, password) => {
-        if (email === ADMIN_DEMO_EMAIL && password === ADMIN_DEMO_PASSWORD) {
-          set({ isAdmin: true, adminEmail: email });
-          return true;
-        }
-        return false;
+      loginAdmin: async (email, password) => {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!data.success || data.user?.role !== 'admin') return false;
+        set({ isAdmin: true, adminEmail: data.user.email });
+        return true;
       },
-      logoutAdmin: () => set({ isAdmin: false, adminEmail: null }),
+      logoutAdmin: async () => {
+        await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+        set({ isAdmin: false, adminEmail: null });
+      },
     }),
     { name: 'trips-admin-storage' }
   )

@@ -17,6 +17,8 @@ const HOURS = '24/7 (Support & Bookings)';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const subjectFromUrl = searchParams.get('subject') || '';
   const { register, handleSubmit, setValue } = useForm();
@@ -25,7 +27,32 @@ export default function ContactPage() {
     if (subjectFromUrl) setValue('subject', subjectFromUrl);
   }, [subjectFromUrl, setValue]);
 
-  const onSubmit = () => setSubmitted(true);
+  const onSubmit = async (data) => {
+    setError('');
+    setLoading(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          subject: data.subject || '',
+          message: data.message,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.message || 'Failed to send message');
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -69,7 +96,8 @@ export default function ContactPage() {
                     placeholder="How can we help?"
                   />
                 </div>
-                <Button type="submit" className="rounded-xl">Send Message</Button>
+                {error && <p className="text-sm text-destructive">{error}</p>}
+                <Button type="submit" className="rounded-xl" disabled={loading}>{loading ? 'Sending...' : 'Send Message'}</Button>
               </form>
             )}
           </Card>

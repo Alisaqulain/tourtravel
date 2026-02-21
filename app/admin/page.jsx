@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Plane, Building2, MapPin, Package, ArrowRight, Users, CalendarCheck, Bus, Ship, Car, Palette } from 'lucide-react';
+import { Plane, Building2, MapPin, Package, ArrowRight, Users, CalendarCheck, Bus, Ship, Car, Palette, BarChart3 } from 'lucide-react';
 import { useDataStore, useUsersStore, useBookingStore } from '@/store';
 import { Card } from '@/components/ui/card';
 
@@ -143,6 +143,11 @@ export default function AdminDashboardPage() {
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-4">Quick actions</h2>
         <div className="flex flex-wrap gap-3">
+          <Link href="/admin/analytics">
+            <span className="inline-flex items-center gap-2 rounded-xl bg-muted text-foreground px-4 py-2 text-sm font-medium hover:bg-muted/80">
+              <BarChart3 className="h-4 w-4" /> Analytics
+            </span>
+          </Link>
           <Link href="/admin/theme">
             <span className="inline-flex items-center gap-2 rounded-xl bg-muted text-foreground px-4 py-2 text-sm font-medium hover:bg-muted/80">
               <Palette className="h-4 w-4" /> Change website theme

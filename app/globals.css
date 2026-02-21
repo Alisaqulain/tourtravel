@@ -4,17 +4,17 @@
 
 @layer base {
   :root {
-    --primary: #E50914;
+    --primary: #c41e3a;
     --primary-foreground: #ffffff;
     --dark: #0B1F3A;
-    --background: #ffffff;
-    --foreground: #0B1F3A;
-    --card: #ffffff;
-    --card-foreground: #0B1F3A;
-    --muted: #f1f5f9;
-    --muted-foreground: #64748b;
-    --border: #e2e8f0;
-    --ring: #E50914;
+    --background: #f7f6f4;
+    --foreground: #1c1917;
+    --card: #efede9;
+    --card-foreground: #1c1917;
+    --muted: #e5e3de;
+    --muted-foreground: #57534e;
+    --border: #d4d1ca;
+    --ring: #c41e3a;
   }
 
   .dark {

@@ -17,6 +17,7 @@ const quickLinks = [
   { label: 'Tours', href: '/tours' },
   { label: 'Packages', href: '/packages' },
   { label: 'Offers', href: '/offers' },
+  { label: 'Wishlist', href: '/wishlist' },
   { label: 'My Bookings', href: '/my-bookings' },
 ];
 
@@ -46,7 +47,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
           <div className="lg:col-span-2">
-            <Link href="/" className="inline-block mb-4 rounded-xl bg-black p-3 dark:bg-transparent dark:p-0">
+            <Link href="/" className="inline-block mb-4 rounded-xl p-3">
               <Image
                 src="/images/logo.png"
                 alt="Trips To Travels"

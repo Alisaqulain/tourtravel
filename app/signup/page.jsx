@@ -2,30 +2,47 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Mail, Lock, User } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuthStore, useUsersStore } from '@/store';
+import { useAuthStore } from '@/store';
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const login = useAuthStore((s) => s.login);
-  const addUser = useUsersStore((s) => s.addUser);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    addUser({ name: data.name, email: data.email });
-    login({ name: data.name, email: data.email });
-    setLoading(false);
-    router.push('/profile');
+    setError('');
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: data.name, email: data.email, password: data.password }),
+        credentials: 'include',
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error || 'Registration failed');
+        return;
+      }
+      login({ name: json.user.name, email: json.user.email });
+      const from = searchParams.get('from');
+      router.push(from && from.startsWith('/') && !from.startsWith('//') ? from : '/profile');
+    } catch (e) {
+      setError('Something went wrong. Try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -83,6 +100,7 @@ export default function SignupPage() {
               </div>
               {errors.password && <p className="text-sm text-primary mt-1">{errors.password.message}</p>}
             </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full rounded-xl" size="lg" disabled={loading}>
               {loading ? 'Creating account...' : 'Sign Up'}
             </Button>

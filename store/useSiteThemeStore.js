@@ -2,12 +2,12 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export const THEMES = [
-  { id: 'default', name: 'Default (Red)', primary: '#E50914', background: '#0B1F3A', card: '#0f2744', muted: '#1e3a5f', border: '#1e3a5f' },
-  { id: 'ocean', name: 'Ocean Blue', primary: '#0ea5e9', background: '#0c2438', card: '#0f3147', muted: '#1e3d52', border: '#1e3d52' },
-  { id: 'forest', name: 'Forest Green', primary: '#22c55e', background: '#0d2818', card: '#0f3520', muted: '#1e4a2e', border: '#1e4a2e' },
-  { id: 'sunset', name: 'Sunset Orange', primary: '#f97316', background: '#2d1f0c', card: '#3d2a0f', muted: '#5f421e', border: '#5f421e' },
-  { id: 'violet', name: 'Violet', primary: '#8b5cf6', background: '#1e1a2e', card: '#2a2440', muted: '#3d3555', border: '#3d3555' },
-  { id: 'rose', name: 'Rose', primary: '#f43f5e', background: '#2e0f18', card: '#3d1520', muted: '#5f1e2e', border: '#5f1e2e' },
+  { id: 'default', name: 'Warm Neutral', primary: '#c41e3a', background: '#f7f6f4', card: '#efede9', muted: '#e5e3de', border: '#d4d1ca' },
+  { id: 'ocean', name: 'Ocean Blue', primary: '#0c7ab1', background: '#f2f5f9', card: '#e6ebf2', muted: '#d1dae8', border: '#a8bdd4' },
+  { id: 'forest', name: 'Forest Green', primary: '#1a8f3a', background: '#f2f5f2', card: '#e6ebe6', muted: '#d1dcd1', border: '#a8bda8' },
+  { id: 'sunset', name: 'Sunset', primary: '#d97706', background: '#f8f5f1', card: '#f0ebe3', muted: '#e5d9cc', border: '#d4c2ab' },
+  { id: 'violet', name: 'Violet', primary: '#6d28d9', background: '#f4f2f9', card: '#ebe7f4', muted: '#ddd4ea', border: '#c4b2d9' },
+  { id: 'rose', name: 'Rose', primary: '#be185d', background: '#f8f4f5', card: '#f0e8eb', muted: '#e5d8dc', border: '#d4b8c0' },
 ];
 
 /** Derive dark background colors from primary hex (for custom themes). */

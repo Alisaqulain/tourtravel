@@ -2,6 +2,7 @@ import { Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
+import { BackToTop } from '@/components/layout/back-to-top';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
@@ -31,12 +32,12 @@ const themeScript = `
     var id = state && state.themeId;
     var customThemes = (state && state.customThemes) || [];
     var builtIn = {
-      default: { primary: '#E50914', background: '#0B1F3A', card: '#0f2744', muted: '#1e3a5f', border: '#1e3a5f' },
-      ocean: { primary: '#0ea5e9', background: '#0c2438', card: '#0f3147', muted: '#1e3d52', border: '#1e3d52' },
-      forest: { primary: '#22c55e', background: '#0d2818', card: '#0f3520', muted: '#1e4a2e', border: '#1e4a2e' },
-      sunset: { primary: '#f97316', background: '#2d1f0c', card: '#3d2a0f', muted: '#5f421e', border: '#5f421e' },
-      violet: { primary: '#8b5cf6', background: '#1e1a2e', card: '#2a2440', muted: '#3d3555', border: '#3d3555' },
-      rose: { primary: '#f43f5e', background: '#2e0f18', card: '#3d1520', muted: '#5f1e2e', border: '#5f1e2e' }
+      default: { primary: '#c41e3a', background: '#f7f6f4', card: '#efede9', muted: '#e5e3de', border: '#d4d1ca' },
+      ocean: { primary: '#0c7ab1', background: '#f2f5f9', card: '#e6ebf2', muted: '#d1dae8', border: '#a8bdd4' },
+      forest: { primary: '#1a8f3a', background: '#f2f5f2', card: '#e6ebe6', muted: '#d1dcd1', border: '#a8bda8' },
+      sunset: { primary: '#d97706', background: '#f8f5f1', card: '#f0ebe3', muted: '#e5d9cc', border: '#d4c2ab' },
+      violet: { primary: '#6d28d9', background: '#f4f2f9', card: '#ebe7f4', muted: '#ddd4ea', border: '#c4b2d9' },
+      rose: { primary: '#be185d', background: '#f8f4f5', card: '#f0e8eb', muted: '#e5d8dc', border: '#d4b8c0' }
     };
     var t = builtIn[id];
     if (!t && id && customThemes.length) {
@@ -58,15 +59,16 @@ const themeScript = `
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className={`${poppins.variable} font-sans`}>
-        <ThemeProvider defaultTheme="dark" storageKey="trips-theme">
+        <ThemeProvider defaultTheme="light" storageKey="trips-theme">
           <Navbar />
           <main className="min-h-screen">{children}</main>
           <Footer />
+          <BackToTop />
           <Toaster />
         </ThemeProvider>
       </body>

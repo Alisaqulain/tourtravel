@@ -1,0 +1,27 @@
+{
+  "common": {
+    "home": "Home",
+    "flights": "Flights",
+    "hotels": "Hotels",
+    "tours": "Tours",
+    "packages": "Packages",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "search": "Search",
+    "book": "Book Now",
+    "price": "Price",
+    "from": "From",
+    "to": "To"
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "empty": "Your wishlist is empty",
+    "saveHint": "Save items by clicking the heart icon."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet",
+    "markAllRead": "Mark all as read"
+  }
+}
