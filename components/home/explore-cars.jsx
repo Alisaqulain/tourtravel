@@ -14,7 +14,7 @@ export function ExploreCars() {
   const featured = cars.slice(0, 3);
 
   return (
-    <section className="py-14 md:py-20">
+    <section className="py-10 md:py-14 bg-card/30 border-y border-border">
       <div className="container mx-auto px-4">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <SectionHeader

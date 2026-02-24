@@ -8,8 +8,8 @@ import { Card } from '@/components/ui/card';
 import { useBookingStore } from '@/store';
 
 export default function BookingConfirmationPage() {
-  const { selectedFlight, selectedHotel, selectedTour, selectedPackage, selectedBus, selectedCruise, selectedCar } = useBookingStore();
-  const hasBooking = selectedFlight || selectedHotel || selectedTour || selectedPackage || selectedBus || selectedCruise || selectedCar;
+  const { selectedFlight, selectedHotel, selectedTour, selectedPackage, selectedBus, selectedTrain, selectedCruise, selectedCar } = useBookingStore();
+  const hasBooking = selectedFlight || selectedHotel || selectedTour || selectedPackage || selectedBus || selectedTrain || selectedCruise || selectedCar;
   const bookingId = 'TT' + Date.now().toString(36).toUpperCase();
 
   if (!hasBooking) {

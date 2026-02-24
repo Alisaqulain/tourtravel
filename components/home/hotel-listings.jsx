@@ -15,7 +15,7 @@ export function HotelListings() {
   const hotels = useDataStore((s) => s.hotels);
   const setSelectedHotel = useBookingStore((s) => s.setSelectedHotel);
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-10 md:py-14 bg-muted/30 border-y border-border">
       <div className="container mx-auto px-4">
         <SectionHeader
           title="Top Hotels"

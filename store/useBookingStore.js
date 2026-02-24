@@ -9,6 +9,7 @@ export const useBookingStore = create(
       selectedTour: null,
       selectedPackage: null,
       selectedBus: null,
+      selectedTrain: null,
       selectedCruise: null,
       selectedCar: null,
       cart: [],
@@ -17,6 +18,7 @@ export const useBookingStore = create(
       setSelectedTour: (tour) => set({ selectedTour: tour }),
       setSelectedPackage: (pkg) => set({ selectedPackage: pkg }),
       setSelectedBus: (bus) => set({ selectedBus: bus }),
+      setSelectedTrain: (train) => set({ selectedTrain: train }),
       setSelectedCruise: (cruise) => set({ selectedCruise: cruise }),
       setSelectedCar: (car) => set({ selectedCar: car }),
       addToCart: (item) =>
@@ -35,6 +37,7 @@ export const useBookingStore = create(
           selectedTour: null,
           selectedPackage: null,
           selectedBus: null,
+          selectedTrain: null,
           selectedCruise: null,
           selectedCar: null,
         }),

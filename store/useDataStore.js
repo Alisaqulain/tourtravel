@@ -5,6 +5,7 @@ import { hotels as defaultHotels } from '@/data/hotels';
 import { tours as defaultTours } from '@/data/tours';
 import { packages as defaultPackages } from '@/data/packages';
 import { buses as defaultBuses } from '@/data/bus';
+import { trains as defaultTrains } from '@/data/trains';
 import { cruises as defaultCruises } from '@/data/cruise';
 import { cars as defaultCars } from '@/data/cars';
 
@@ -22,6 +23,7 @@ export const useDataStore = create(
       tours: defaultTours,
       packages: defaultPackages,
       buses: defaultBuses,
+      trains: defaultTrains,
       cruises: defaultCruises,
       cars: defaultCars,
 
@@ -85,6 +87,18 @@ export const useDataStore = create(
         })),
       deleteBus: (id) => set((s) => ({ buses: s.buses.filter((b) => b.id !== id) })),
 
+      // Trains
+      setTrains: (trains) => set({ trains }),
+      addTrain: (train) =>
+        set((s) => ({
+          trains: [...s.trains, { ...train, id: train.id || nextId(s.trains, 'TN') }],
+        })),
+      updateTrain: (id, updates) =>
+        set((s) => ({
+          trains: s.trains.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+        })),
+      deleteTrain: (id) => set((s) => ({ trains: s.trains.filter((t) => t.id !== id) })),
+
       // Cruises
       setCruises: (cruises) => set({ cruises }),
       addCruise: (cruise) =>
@@ -117,6 +131,7 @@ export const useDataStore = create(
           tours: defaultTours,
           packages: defaultPackages,
           buses: defaultBuses,
+          trains: defaultTrains,
           cruises: defaultCruises,
           cars: defaultCars,
         }),

@@ -1,6 +1,7 @@
 import { Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/layout/navbar';
+import { PromoStrip } from '@/components/home/promo-strip';
 import { Footer } from '@/components/layout/footer';
 import { BackToTop } from '@/components/layout/back-to-top';
 import { Toaster } from '@/components/ui/toaster';
@@ -59,14 +60,15 @@ const themeScript = `
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="light" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`${poppins.variable} font-sans`}>
-        <ThemeProvider defaultTheme="light" storageKey="trips-theme">
+      <body className={`${poppins.variable} font-sans bg-background text-foreground`}>
+        <ThemeProvider defaultTheme="dark" storageKey="trips-theme">
           <Navbar />
-          <main className="min-h-screen">{children}</main>
+          <PromoStrip />
+          <main className="min-h-screen bg-background">{children}</main>
           <Footer />
           <BackToTop />
           <Toaster />

@@ -15,6 +15,8 @@ const quickLinks = [
   { label: 'Flights', href: '/flights' },
   { label: 'Hotels', href: '/hotels' },
   { label: 'Tours', href: '/tours' },
+  { label: 'Bus', href: '/bus' },
+  { label: 'Train', href: '/train' },
   { label: 'Packages', href: '/packages' },
   { label: 'Offers', href: '/offers' },
   { label: 'Wishlist', href: '/wishlist' },

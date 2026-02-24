@@ -3,19 +3,22 @@
 import { motion } from 'framer-motion';
 import { Users, Globe, Award, Shield } from 'lucide-react';
 
-const stats = [
+
+const moreStats = [
   { icon: Users, value: '500K+', label: 'Happy travellers' },
   { icon: Globe, value: '120+', label: 'Countries' },
   { icon: Award, value: '4.9', label: 'Average rating' },
   { icon: Shield, value: '100%', label: 'Secure booking' },
+  { icon: Users, value: '50K+', label: 'Hotels' },
+  { icon: Globe, value: '24/7', label: 'Support' },
 ];
 
 export function StatsStrip() {
   return (
-    <section className="py-8 border-y border-border bg-card/50">
+    <section className="py-6 border-b border-border bg-card/40">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((s, i) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+          {moreStats.map((s, i) => (
             <motion.div
               key={s.label}
               initial={{ opacity: 0, y: 10 }}

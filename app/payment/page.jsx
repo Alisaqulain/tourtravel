@@ -19,6 +19,7 @@ function getTotal(store) {
   if (store.selectedTour) total += store.selectedTour.price;
   if (store.selectedPackage) total += store.selectedPackage.price;
   if (store.selectedBus) total += store.selectedBus.price;
+  if (store.selectedTrain) total += store.selectedTrain.price;
   if (store.selectedCruise) total += store.selectedCruise.price;
   if (store.selectedCar) total += (store.selectedCar.pricePerDay || 0) * (store.selectedCar.days || 1);
   return total || 0;
@@ -27,7 +28,7 @@ function getTotal(store) {
 export default function PaymentPage() {
   const router = useRouter();
   const store = useBookingStore();
-  const hasBooking = store.selectedFlight || store.selectedHotel || store.selectedTour || store.selectedPackage || store.selectedBus || store.selectedCruise || store.selectedCar;
+  const hasBooking = store.selectedFlight || store.selectedHotel || store.selectedTour || store.selectedPackage || store.selectedBus || store.selectedTrain || store.selectedCruise || store.selectedCar;
   const subtotal = getTotal(store);
   const tax = Math.round(subtotal * 0.05);
   const total = subtotal + tax;
@@ -45,10 +46,11 @@ export default function PaymentPage() {
     else if (store.selectedTour) description = `Tour: ${store.selectedTour.title}`;
     else if (store.selectedPackage) description = `Package: ${store.selectedPackage.title}`;
     else if (store.selectedBus) description = `Bus: ${store.selectedBus.from} → ${store.selectedBus.to}`;
+    else if (store.selectedTrain) description = `Train: ${store.selectedTrain.name} ${store.selectedTrain.from} → ${store.selectedTrain.to}`;
     else if (store.selectedCruise) description = `Cruise: ${store.selectedCruise.name}`;
     else if (store.selectedCar) description = `Car: ${store.selectedCar.name}`;
     addCompletedBooking({
-      type: store.selectedFlight ? 'Flight' : store.selectedHotel ? 'Hotel' : store.selectedTour ? 'Tour' : store.selectedPackage ? 'Package' : store.selectedBus ? 'Bus' : store.selectedCruise ? 'Cruise' : 'Car',
+      type: store.selectedFlight ? 'Flight' : store.selectedHotel ? 'Hotel' : store.selectedTour ? 'Tour' : store.selectedPackage ? 'Package' : store.selectedBus ? 'Bus' : store.selectedTrain ? 'Train' : store.selectedCruise ? 'Cruise' : 'Car',
       description,
       amount: total,
       userEmail: user?.email || 'guest',

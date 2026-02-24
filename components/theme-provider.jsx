@@ -14,10 +14,10 @@ export function ThemeProvider({ children, defaultTheme = 'light', storageKey = '
     const stored = localStorage.getItem(storageKey);
     if (stored === 'dark' || stored === 'light') {
       setTheme(stored);
-    } else if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setTheme('dark');
+    } else {
+      setTheme(defaultTheme);
     }
-  }, [storageKey]);
+  }, [storageKey, defaultTheme]);
 
   useEffect(() => {
     if (!mounted) return;

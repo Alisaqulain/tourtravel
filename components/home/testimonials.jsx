@@ -13,7 +13,7 @@ import 'swiper/css/pagination';
 
 export function Testimonials() {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-10 md:py-14 bg-card/30 border-y border-border text-foreground">
       <div className="container mx-auto px-4">
         <SectionHeader
           title="What Travelers Say"

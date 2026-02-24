@@ -20,7 +20,7 @@ export function TrendingPackages() {
   const packages = useDataStore((s) => s.packages);
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-10 md:py-14 bg-muted/40 border-y border-border">
       <div className="container mx-auto px-4">
         <SectionHeader
           title="Best Packages"

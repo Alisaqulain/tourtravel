@@ -2,16 +2,16 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowLeft, CheckCircle, Plane, Building2, Bus, Ship, Car } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Plane, Building2, Bus, Train, Ship, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
 import { useBookingStore } from '@/store';
 
 export default function BookingSummaryPage() {
-  const { selectedFlight, selectedHotel, selectedTour, selectedPackage, selectedBus, selectedCruise, selectedCar } = useBookingStore();
+  const { selectedFlight, selectedHotel, selectedTour, selectedPackage, selectedBus, selectedTrain, selectedCruise, selectedCar } = useBookingStore();
 
-  const hasBooking = selectedFlight || selectedHotel || selectedTour || selectedPackage || selectedBus || selectedCruise || selectedCar;
+  const hasBooking = selectedFlight || selectedHotel || selectedTour || selectedPackage || selectedBus || selectedTrain || selectedCruise || selectedCar;
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -111,6 +111,21 @@ export default function BookingSummaryPage() {
                     <p className="text-muted-foreground">{selectedBus.operator}</p>
                     <p className="text-sm text-muted-foreground mt-1">{selectedBus.from} → {selectedBus.to} · {selectedBus.duration}</p>
                     <p className="text-xl font-bold text-primary mt-2">{formatPrice(selectedBus.price)}</p>
+                  </div>
+                </div>
+              </Card>
+            )}
+            {selectedTrain && (
+              <Card className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center">
+                    <Train className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg">Train</h3>
+                    <p className="text-muted-foreground">{selectedTrain.name}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{selectedTrain.from} → {selectedTrain.to} · {selectedTrain.duration} · {selectedTrain.class}</p>
+                    <p className="text-xl font-bold text-primary mt-2">{formatPrice(selectedTrain.price)}</p>
                   </div>
                 </div>
               </Card>

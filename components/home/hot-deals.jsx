@@ -12,11 +12,11 @@ import { useDataStore } from '@/store';
 export function HotDeals() {
   const flights = useDataStore((s) => s.flights);
   const packages = useDataStore((s) => s.packages);
-  const hotFlights = flights.filter((f) => f.savePercent >= 25).slice(0, 2);
-  const hotPackages = packages.slice(0, 2);
+  const hotFlights = flights.filter((f) => f.savePercent >= 20).slice(0, 4);
+  const hotPackages = packages.slice(0, 4);
 
   return (
-    <section className="py-14 md:py-20 bg-gradient-to-b from-primary/5 to-transparent">
+    <section className="py-10 md:py-14 bg-muted/30 border-y border-border">
       <div className="container mx-auto px-4">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div className="flex items-center gap-2">
@@ -35,7 +35,7 @@ export function HotDeals() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {hotFlights.map((f, i) => (
             <motion.div
               key={f.id}
