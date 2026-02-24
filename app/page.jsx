@@ -1,6 +1,7 @@
 'use client';
 
 import { HeroSection } from '@/components/home/hero-section';
+import { PromoBanner } from '@/components/home/promo-banner';
 import { TrendingSearches } from '@/components/home/trending-searches';
 import { DealsStrip } from '@/components/home/deals-strip';
 import { StatsStrip } from '@/components/home/stats-strip';
@@ -24,6 +25,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <PromoBanner />
       <TrendingSearches />
       <DealsStrip />
       <StatsStrip />

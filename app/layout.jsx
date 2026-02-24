@@ -1,7 +1,6 @@
 import { Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/layout/navbar';
-import { PromoStrip } from '@/components/home/promo-strip';
 import { Footer } from '@/components/layout/footer';
 import { BackToTop } from '@/components/layout/back-to-top';
 import { Toaster } from '@/components/ui/toaster';
@@ -29,7 +28,6 @@ export default function RootLayout({ children }) {
       <body className={`${poppins.variable} font-sans bg-background text-foreground`}>
         <ThemeProvider defaultTheme="dark" storageKey="trips-theme">
           <Navbar />
-          <PromoStrip />
           <main className="min-h-screen bg-background">{children}</main>
           <Footer />
           <BackToTop />

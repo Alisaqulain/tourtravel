@@ -53,16 +53,16 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full border-b transition-colors duration-200',
-        'bg-background/95 backdrop-blur-md border-border/60',
-        'shadow-sm'
+        'sticky top-0 z-50 w-full transition-colors duration-200',
+        'bg-background/98 backdrop-blur-lg',
+        'border-b border-border/50'
       )}
       role="banner"
     >
-      <div className="container mx-auto flex h-14 md:h-16 items-center justify-between gap-4 px-4 md:px-6">
+      <div className="container mx-auto flex h-14 md:h-16 items-center justify-between gap-2 sm:gap-4 px-3 sm:px-4 md:px-6 min-w-0">
         <Link
           href="/"
-          className="flex items-center shrink-0 min-w-0 py-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          className="flex items-center shrink-0 min-w-0 py-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 xl:max-w-[200px]"
           aria-label="Home"
         >
           <Image
@@ -70,13 +70,13 @@ export function Navbar() {
             alt="Trips To Travels"
             width={280}
             height={72}
-            className="h-9 md:h-10 w-auto object-contain object-left"
+            className="h-8 sm:h-9 md:h-10 w-auto max-h-10 object-contain object-left"
             priority
           />
         </Link>
 
         <nav
-          className="hidden md:flex items-center flex-1 justify-center gap-0.5 max-w-4xl mx-auto"
+          className="hidden xl:flex items-center flex-1 justify-center gap-0.5 max-w-4xl mx-auto min-w-0"
           aria-label="Main navigation"
         >
           {navLinks.map((link) => {
@@ -87,12 +87,12 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'shrink-0 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                  'shrink-0 px-2 py-2 rounded-lg text-sm font-medium transition-all duration-200',
                   'inline-flex items-center gap-1.5 whitespace-nowrap',
                   'hover:bg-muted/80 hover:text-foreground',
                   'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                   isActive
-                    ? 'text-primary bg-primary/10 shadow-sm'
+                    ? 'text-primary bg-primary/10'
                     : 'text-foreground'
                 )}
                 aria-current={isActive ? 'page' : undefined}
@@ -104,7 +104,7 @@ export function Navbar() {
           })}
         </nav>
 
-        <div className="flex items-center gap-1 md:gap-2 shrink-0">
+        <div className="flex items-center gap-1 md:gap-2 shrink-0 min-w-0">
          
           <NotificationBell />
           {isLoggedIn && (
@@ -156,7 +156,7 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden rounded-lg h-9 w-9"
+            className="xl:hidden rounded-lg h-9 w-9"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
@@ -173,7 +173,7 @@ export function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden border-t border-border/60 bg-background"
+            className="xl:hidden border-t border-border/60 bg-background"
           >
             <nav
               className="container mx-auto flex flex-col gap-0.5 px-4 py-4 max-h-[70vh] overflow-y-auto text-foreground"

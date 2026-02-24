@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import { Plane, Building2, MapPin, Bus, Train, Ship, Car, Calendar, Users, Search } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
@@ -62,7 +63,7 @@ export function HeroSection() {
   const handleSearchCars = () => router.push('/cars');
 
   return (
-    <section className="relative min-h-[640px] md:min-h-[720px] flex items-center overflow-hidden">
+    <section className="relative min-h-[560px] sm:min-h-[640px] md:min-h-[720px] flex items-center overflow-hidden">
       {HERO_IMAGES.map((src, i) => (
         <div
           key={src}
@@ -76,17 +77,33 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/70" />
       <div className="absolute inset-0 bg-dark/30" />
 
-      <div className="container relative z-10 mx-auto px-4 py-14 md:py-20">
+      {/* Hero slider dots */}
+      <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
+        {HERO_IMAGES.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setBgIndex(i)}
+            className={cn(
+              'h-2 rounded-full transition-all duration-300',
+              i === bgIndex ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/70'
+            )}
+            aria-label={`Slide ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 py-10 sm:py-14 md:py-20 w-full max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-8 md:mb-10"
+          className="w-full text-center mb-6 sm:mb-8 md:mb-10"
         >
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-3 drop-shadow-lg tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-3 drop-shadow-lg tracking-tight mx-auto block w-full">
             Where to next?
           </h1>
-          <p className="text-base md:text-lg text-white/90 max-w-xl mx-auto">
+          <p className="text-sm sm:text-base md:text-lg text-white/90 max-w-xl mx-auto px-1">
             Flights, hotels, tours, bus, train, cruise & premium cars — all in one place. Best price guarantee.
           </p>
         </motion.div>
@@ -95,7 +112,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="max-w-5xl mx-auto"
+          className="max-w-5xl mx-auto w-full"
         >
           <div className="rounded-2xl border border-white/10 bg-background/95 backdrop-blur-xl shadow-2xl p-4 md:p-6 text-foreground">
             <Tabs defaultValue="flights" className="w-full">

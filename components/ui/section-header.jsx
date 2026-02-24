@@ -10,9 +10,9 @@ export function SectionHeader({ title, subtitle, centered = true, className }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5 }}
-      className={cn('mb-12', centered && 'text-center', className)}
+      className={cn('mb-8 sm:mb-12 w-full', centered && 'text-center', className)}
     >
-      <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 w-full">
         {title}
       </h2>
       {subtitle && (

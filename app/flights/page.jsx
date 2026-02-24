@@ -11,6 +11,7 @@ import { Card } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
 import { useBookingStore } from '@/store';
 import { FlightFilters } from '@/components/filters/flight-filters';
+import { PagePromoBanner } from '@/components/layout/page-promo-banner';
 import { useTravelList } from '@/hooks/useTravelList';
 import { toast } from '@/lib/toast';
 
@@ -97,9 +98,10 @@ export default function FlightsPage() {
       transition={{ duration: 0.4 }}
       className="container mx-auto px-4 py-12"
     >
-      <Link href="/" className="inline-flex items-center gap-2 text-foreground/90 hover:text-foreground mb-8 transition-colors">
+      <Link href="/" className="inline-flex items-center gap-2 text-foreground/90 hover:text-foreground mb-6 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to Home
       </Link>
+      <PagePromoBanner message="FLAT 15% OFF on Flights" code="FLY15" href="/flights" />
       <SectionHeader
         title="Flights"
         subtitle="Compare and book flights at the best prices. All major airlines in one place."
