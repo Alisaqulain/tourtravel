@@ -19,12 +19,12 @@
 
   .dark {
     --background: #0B1F3A;
-    --foreground: #f8fafc;
+    --foreground: #f1f5f9;
     --card: #0f2744;
-    --card-foreground: #f8fafc;
+    --card-foreground: #f1f5f9;
     --muted: #1e3a5f;
-    --muted-foreground: #94a3b8;
-    --border: #1e3a5f;
+    --muted-foreground: #cbd5e1;
+    --border: #334155;
     --ring: #E50914;
   }
 
@@ -57,6 +57,15 @@
 
   .dark ::-webkit-scrollbar-track {
     background: rgba(30, 58, 95, 0.3);
+  }
+
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.5s ease-out forwards;
   }
 
   ::-webkit-scrollbar-thumb {

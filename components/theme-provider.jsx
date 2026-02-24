@@ -11,23 +11,17 @@ export function ThemeProvider({ children, defaultTheme = 'light', storageKey = '
 
   useEffect(() => {
     setMounted(true);
-    const stored = localStorage.getItem(storageKey);
-    if (stored === 'dark' || stored === 'light') {
-      setTheme(stored);
-    } else {
-      setTheme(defaultTheme);
-    }
-  }, [storageKey, defaultTheme]);
+    setTheme('dark');
+  }, []);
 
   useEffect(() => {
     if (!mounted) return;
     const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add(theme);
-    localStorage.setItem(storageKey, theme);
-  }, [theme, mounted, storageKey]);
+    root.classList.remove('light');
+    root.classList.add('dark');
+  }, [mounted]);
 
-  const toggleTheme = () => setTheme((t) => (t === 'light' ? 'dark' : 'light'));
+  const toggleTheme = () => {};
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>

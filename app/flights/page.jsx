@@ -91,8 +91,13 @@ export default function FlightsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="container mx-auto px-4 py-12"
+    >
+      <Link href="/" className="inline-flex items-center gap-2 text-foreground/90 hover:text-foreground mb-8 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to Home
       </Link>
       <SectionHeader
@@ -101,7 +106,7 @@ export default function FlightsPage() {
       />
 
       <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="lg:w-64 shrink-0">
+        <aside className="lg:w-80 xl:w-96 shrink-0">
           <FlightFilters
             search={search}
             setSearch={setSearch}
@@ -112,11 +117,11 @@ export default function FlightsPage() {
         </aside>
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-            <p className="text-muted-foreground text-sm">
+            <p className="text-foreground/90 text-sm">
               {loading ? 'Loading...' : `${total} flight(s) found`}
             </p>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Sort:</span>
+              <span className="text-sm text-foreground font-medium">Sort:</span>
               <select
                 value={`${sortBy}-${order}`}
                 onChange={(e) => {
@@ -125,7 +130,7 @@ export default function FlightsPage() {
                   setOrder(o);
                   setPage(1);
                 }}
-                className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm"
+                className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground"
               >
                 <option value="price-asc">Price (Low to High)</option>
                 <option value="price-desc">Price (High to Low)</option>
@@ -151,9 +156,9 @@ export default function FlightsPage() {
 
           {!loading && !error && flights.length === 0 && (
             <div className="text-center py-16 rounded-2xl border border-border bg-card">
-              <Plane className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-              <p className="text-muted-foreground mb-2">No flights match your filters.</p>
-              <p className="text-sm text-muted-foreground mb-4">Try adjusting search, price range or refundable option.</p>
+              <Plane className="h-12 w-12 text-foreground/50 mx-auto mb-4" />
+              <p className="text-foreground mb-2">No flights match your filters.</p>
+              <p className="text-sm text-foreground/80 mb-4">Try adjusting search, price range or refundable option.</p>
               <Button variant="outline" onClick={resetFilters}>Reset filters</Button>
             </div>
           )}
@@ -168,7 +173,7 @@ export default function FlightsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
                   >
-                    <Card className="overflow-hidden p-0 hover:shadow-card-hover transition-all h-full flex flex-col">
+                    <Card className="overflow-hidden p-0 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
                       {(flight.images && flight.images[0]) || PLACEHOLDER_IMAGE ? (
                         <div className="relative h-44 w-full flex-shrink-0">
                           <Image
@@ -204,10 +209,10 @@ export default function FlightsPage() {
                         </div>
                       )}
                       <div className="p-5 flex-1 flex flex-col">
-                        <p className="text-sm text-muted-foreground mb-1">
+                        <p className="text-sm text-foreground/90 mb-1">
                           {flight.departureAirport} → {flight.arrivalAirport}
                         </p>
-                        <p className="text-xs text-muted-foreground mb-4">
+                        <p className="text-xs text-foreground/80 mb-4">
                           {flight.departureTime} - {flight.arrivalTime} · {flight.duration}
                           {flight.stops !== undefined && flight.stops !== null && ` · ${flight.stops} stop(s)`} · {flight.cabinClass}
                         </p>
@@ -241,7 +246,7 @@ export default function FlightsPage() {
                   >
                     Previous
                   </Button>
-                  <span className="flex items-center px-4 text-sm text-muted-foreground">
+                  <span className="flex items-center px-4 text-sm text-foreground/90">
                     Page {currentPage} of {totalPages}
                   </span>
                   <Button
@@ -257,6 +262,6 @@ export default function FlightsPage() {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

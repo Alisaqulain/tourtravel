@@ -48,7 +48,7 @@ export default function CarsPage() {
       />
 
       <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="lg:w-64 shrink-0">
+        <aside className="lg:w-80 xl:w-96 shrink-0">
           <CarFilters
             search={search}
             setSearch={setSearch}

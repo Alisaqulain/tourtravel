@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Tag, X } from 'lucide-react';
 import { useState } from 'react';
 
@@ -20,7 +21,12 @@ export function PromoStrip() {
   const promo = promos[current];
 
   return (
-    <div className="bg-primary text-primary-foreground border-b border-primary/80">
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="bg-primary text-primary-foreground border-b border-primary/80"
+    >
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-between gap-4 min-h-[40px]">
           <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -54,6 +60,6 @@ export function PromoStrip() {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

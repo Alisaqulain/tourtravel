@@ -24,13 +24,10 @@ import {
   Percent,
   Phone,
   Heart,
-  Sun,
-  Moon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store';
-import { useTheme } from '@/components/theme-provider';
 import { NotificationBell } from '@/components/layout/notification-bell';
 
 const navLinks = [
@@ -51,7 +48,6 @@ const navLinks = [
 export function Navbar() {
   const pathname = usePathname();
   const { isLoggedIn, logout } = useAuthStore();
-  const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -204,14 +200,6 @@ export function Navbar() {
                 );
               })}
               <div className="mt-4 pt-4 border-t border-border flex flex-col gap-2">
-                <button
-                  type="button"
-                  onClick={toggleTheme}
-                  className="px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-3 hover:bg-muted/80"
-                >
-                  {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                  {theme === 'dark' ? 'Light mode' : 'Dark mode'}
-                </button>
                 {isLoggedIn ? (
                   <>
                     <Link href="/my-bookings" onClick={() => setMobileOpen(false)}>

@@ -16,7 +16,7 @@ export function SectionHeader({ title, subtitle, centered = true, className }) {
         {title}
       </h2>
       {subtitle && (
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">{subtitle}</p>
+        <p className="text-foreground/90 text-lg max-w-2xl mx-auto">{subtitle}</p>
       )}
     </motion.div>
   );

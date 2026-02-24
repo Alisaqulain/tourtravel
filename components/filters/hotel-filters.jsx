@@ -4,40 +4,46 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Search } from 'lucide-react';
+import { Search, SlidersHorizontal } from 'lucide-react';
 
 export function HotelFilters({ search, setSearch, maxPrice, setMaxPrice, minRating, setMinRating, onReset }) {
   return (
-    <Card className="p-4">
-      <div className="space-y-4">
+    <Card className="p-6 md:p-8 rounded-2xl border-2 border-border/80 shadow-lg">
+      <div className="space-y-6">
+        <div className="flex items-center gap-3 pb-2 border-b border-border">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15">
+            <SlidersHorizontal className="h-5 w-5 text-primary" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground">Filters</h3>
+        </div>
         <div>
-          <Label className="text-sm">Search hotel or location</Label>
-          <div className="relative mt-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Label className="text-base font-medium text-foreground">Search hotel or location</Label>
+          <div className="relative mt-2">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               placeholder="e.g. Maldives, Marina"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 rounded-xl"
+              className="pl-12 h-12 rounded-xl text-base"
             />
           </div>
         </div>
         <div>
-          <Label className="text-sm">Max price per night (USD)</Label>
+          <Label className="text-base font-medium text-foreground">Max price per night (USD)</Label>
           <Input
             type="number"
             placeholder="Any"
             value={maxPrice || ''}
             onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : '')}
-            className="mt-1 rounded-xl"
+            className="mt-2 h-12 rounded-xl text-base"
           />
         </div>
         <div>
-          <Label className="text-sm">Min rating (1-5)</Label>
+          <Label className="text-base font-medium text-foreground">Min rating (1-5)</Label>
           <select
             value={minRating || ''}
             onChange={(e) => setMinRating(e.target.value ? Number(e.target.value) : '')}
-            className="mt-1 flex h-11 w-full rounded-xl border border-border bg-background px-4 py-2 text-sm"
+            className="mt-2 flex h-12 w-full rounded-xl border border-border bg-background px-4 py-2 text-base text-foreground"
           >
             <option value="">Any</option>
             <option value="3">3+</option>
@@ -45,7 +51,7 @@ export function HotelFilters({ search, setSearch, maxPrice, setMaxPrice, minRati
             <option value="5">5 only</option>
           </select>
         </div>
-        <Button variant="outline" size="sm" className="w-full rounded-xl" onClick={onReset}>
+        <Button variant="outline" size="lg" className="w-full rounded-xl h-12 text-base font-medium" onClick={onReset}>
           Reset filters
         </Button>
       </div>
