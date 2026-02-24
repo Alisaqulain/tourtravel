@@ -4,7 +4,7 @@ import { User } from '@/models/User';
 import { signToken, setAuthCookie } from '@/lib/auth';
 import { error } from '@/lib/apiResponse';
 import { signupSchema } from '@/lib/validations/auth';
-import { sendWelcomeEmail } from '@/lib/email';
+import { sendWelcomeEmail, getEmailBaseUrl } from '@/lib/email';
 
 export async function POST(request) {
   try {
@@ -19,8 +19,9 @@ export async function POST(request) {
     const existing = await User.findOne({ email });
     if (existing) return error('Email already registered', 400);
     const user = await User.create({ name, email, password });
-    // Send welcome email (non-blocking; signup succeeds either way)
-    sendWelcomeEmail(user.email, user.name).catch((err) => console.error('Welcome email error:', err));
+    // Send welcome email (non-blocking; links use same domain as request – .com or .in)
+    const baseUrl = getEmailBaseUrl(request);
+    sendWelcomeEmail(user.email, user.name, baseUrl).catch((err) => console.error('Welcome email error:', err));
     const userPayload = { id: user._id, name: user.name, email: user.email, role: user.role };
     const token = signToken({ userId: user._id.toString(), email: user.email, role: user.role });
     const res = NextResponse.json({

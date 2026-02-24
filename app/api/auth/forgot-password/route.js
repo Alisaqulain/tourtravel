@@ -3,7 +3,7 @@ import { connectDB } from '@/lib/db';
 import { User } from '@/models/User';
 import { error, success } from '@/lib/apiResponse';
 import { forgotPasswordSchema } from '@/lib/validations/auth';
-import { sendForgotPasswordOtpEmail } from '@/lib/email';
+import { sendForgotPasswordOtpEmail, getEmailBaseUrl } from '@/lib/email';
 
 const OTP_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
 
@@ -30,7 +30,8 @@ export async function POST(request) {
     user.resetOtp = otp;
     user.resetOtpExpires = new Date(Date.now() + OTP_EXPIRY_MS);
     await user.save({ validateBeforeSave: false });
-    const { sent, error: mailErr } = await sendForgotPasswordOtpEmail(email, otp);
+    const baseUrl = getEmailBaseUrl(request);
+    const { sent, error: mailErr } = await sendForgotPasswordOtpEmail(email, otp, baseUrl);
     if (!sent) {
       console.error('Forgot password email failed:', mailErr);
       return error('Failed to send OTP. Please try again.', 500);
