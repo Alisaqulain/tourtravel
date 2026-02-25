@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { Facebook, Twitter, Instagram, Linkedin, Smartphone } from 'lucide-react';
 
 const companyLinks = [
-  { label: 'About Us', href: '/about' },
-  { label: 'Contact Us', href: '/contact' },
+  { label: 'About Us', href: '/about-us' },
+  { label: 'Contact Us', href: '/contact-us' },
   { label: 'Careers', href: '/contact?subject=Careers' },
   { label: 'Press', href: '/contact?subject=Press' },
 ];
@@ -24,16 +24,17 @@ const quickLinks = [
 ];
 
 const supportLinks = [
-  { label: 'Help Center', href: '/contact' },
-  { label: 'Contact Us', href: '/contact' },
-  { label: 'Payment & Refunds', href: '/cancellation' },
-  { label: 'Cancellation Policy', href: '/cancellation' },
+  { label: 'Help Center', href: '/contact-us' },
+  { label: 'Contact Us', href: '/contact-us' },
+  { label: 'Refund Policy', href: '/refund-policy' },
+  { label: 'Cancellation', href: '/refund-policy' },
   { label: 'Safety', href: '/contact?subject=Safety' },
 ];
 
 const legalLinks = [
-  { label: 'Privacy Policy', href: '/privacy' },
-  { label: 'Terms of Service', href: '/terms' },
+  { label: 'Privacy Policy', href: '/privacy-policy' },
+  { label: 'Terms & Conditions', href: '/terms-and-conditions' },
+  { label: 'Refund Policy', href: '/refund-policy' },
 ];
 
 const socials = [

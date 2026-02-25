@@ -1,14 +1,32 @@
-/** @type {import('next').MetadataRoute.Sitemap} */
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://triptotravels.com';
+
 export default function sitemap() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://tripstotravels.com';
-  const staticRoutes = [
-    '', '/about', '/contact', '/flights', '/hotels', '/tours', '/bus', '/cruise', '/cars', '/visa', '/packages', '/offers',
-    '/login', '/signup', '/terms', '/privacy', '/cancellation',
+  const staticPages = [
+    '',
+    '/flights',
+    '/hotels',
+    '/tours',
+    '/packages',
+    '/bus',
+    '/train',
+    '/cruise',
+    '/cars',
+    '/offers',
+    '/contact',
+    '/contact-us',
+    '/about-us',
+    '/privacy-policy',
+    '/refund-policy',
+    '/terms-and-conditions',
+    '/login',
+    '/signup',
+    '/booking-summary',
   ].map((path) => ({
-    url: `${base}${path}`,
+    url: `${BASE}${path}`,
     lastModified: new Date(),
-    changeFrequency: path === '' ? 'daily' : 'weekly',
-    priority: path === '' ? 1 : 0.8,
+    changeFrequency: path === '' ? 'daily' : path.startsWith('/api') ? 'weekly' : 'weekly',
+    priority: path === '' ? 1 : path === '/flights' || path === '/hotels' ? 0.9 : 0.8,
   }));
-  return staticRoutes;
+
+  return staticPages;
 }

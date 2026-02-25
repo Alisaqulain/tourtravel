@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import { Booking } from '@/models/Booking';
+import { Payment } from '@/models/Payment';
 import { getRazorpayInstance } from '@/lib/razorpay';
 import { getAuthUser } from '@/lib/authGuard';
 import { success, error } from '@/lib/apiResponse';
 
 /**
- * Create Razorpay order for an existing booking. Amount is recalculated from DB (never trust frontend).
- * Flow: 1) POST /api/bookings creates pending booking. 2) POST here with bookingId. 3) Frontend pays. 4) POST /api/payment/verify.
+ * Create Razorpay order for an existing booking. Amount from DB only. Stores payment record with status 'created'.
+ * Flow: 1) POST /api/bookings. 2) POST here with bookingId. 3) Frontend opens Razorpay. 4) POST /api/payment/verify.
  */
 export async function POST(request) {
   const user = await getAuthUser(request);
@@ -26,7 +26,6 @@ export async function POST(request) {
     if (!booking) return error('Booking not found', 404);
     if (booking.status !== 'pending') return error('Booking is not pending payment', 400);
 
-    // Recalculate amount on server – never use frontend amount for creation
     const subtotal = Number(booking.subtotal) || 0;
     const tax = Number(booking.tax) || 0;
     const total = Math.max(0, subtotal + tax);
@@ -39,10 +38,16 @@ export async function POST(request) {
       receipt: bookingId,
     });
 
-    await Booking.updateOne(
-      { bookingId },
-      { $set: { paymentOrderId: order.id } }
-    );
+    await Booking.updateOne({ bookingId }, { $set: { paymentOrderId: order.id } });
+
+    await Payment.create({
+      userId: user._id,
+      bookingId,
+      amount: total,
+      currency: booking.currency || 'INR',
+      razorpay_order_id: order.id,
+      payment_status: 'created',
+    });
 
     return success({
       orderId: order.id,
