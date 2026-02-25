@@ -7,7 +7,7 @@ const SUPPORT_EMAIL = 'support@tripstotravels.com';
 const SUPPORT_PHONE = '+91 1800 123 4567';
 const ADDRESS = 'Trips To Travels, 123 MG Road, Bangalore 560001, India';
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'About Us',
   description: `Learn about ${COMPANY_NAME} - your trusted travel partner for flights, hotels, tours, and packages. Best prices, 24/7 support.`,
   openGraph: {
