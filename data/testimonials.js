@@ -5,7 +5,7 @@ export const testimonials = [
     role: 'Frequent Traveler',
     image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
     rating: 5,
-    text: 'Trips To Travels made our honeymoon to Maldives absolutely seamless. The villa was stunning and every detail was taken care of. Will definitely book again!',
+    text: 'Triptotravels made our honeymoon to Maldives absolutely seamless. The villa was stunning and every detail was taken care of. Will definitely book again!',
   },
   {
     id: 2,
@@ -13,7 +13,7 @@ export const testimonials = [
     role: 'Business Traveler',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
     rating: 5,
-    text: 'Best price guarantee is real—I compared multiple sites and Trips To Travels had the lowest fare. Plus the 24/7 support gave me peace of mind.',
+    text: 'Best price guarantee is real—I compared multiple sites and Triptotravels had the lowest fare. Plus the 24/7 support gave me peace of mind.',
   },
   {
     id: 3,

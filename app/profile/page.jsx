@@ -18,6 +18,9 @@ import {
   Users,
   ChevronRight,
   MessageSquare,
+  Settings,
+  Phone,
+  KeyRound,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +30,7 @@ import { cn } from '@/lib/utils';
 
 const SECTIONS = [
   { id: 'overview', label: 'Overview', icon: User },
+  { id: 'settings', label: 'Account Settings', icon: Settings },
   { id: 'bookings', label: 'My Bookings', icon: CalendarCheck },
   { id: 'payments', label: 'Payment History', icon: CreditCard },
   { id: 'reviews', label: 'Reviews', icon: Star },
@@ -44,10 +48,21 @@ export default function ProfilePage() {
   const [newType, setNewType] = useState('Hotel');
   const [payments, setPayments] = useState([]);
   const [paymentsLoading, setPaymentsLoading] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [settingsSaving, setSettingsSaving] = useState(false);
+  const [settingsSaved, setSettingsSaved] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) router.replace('/login');
   }, [isLoggedIn, router]);
+
+  useEffect(() => {
+    if (user) {
+      setEditName(user.name || '');
+      setEditPhone(user.phone || '');
+    }
+  }, [user?.name, user?.phone]);
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -68,6 +83,31 @@ export default function ProfilePage() {
         (r.type || '').toLowerCase().includes(q)
     );
   }, [reviews, searchReview]);
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    if (settingsSaving) return;
+    setSettingsSaving(true);
+    setSettingsSaved(false);
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name: editName.trim(), phone: editPhone.trim() || null }),
+      });
+      const data = await res.json();
+      if (data?.success && data?.data?.user) {
+        useAuthStore.getState().login(data.data.user);
+        setSettingsSaved(true);
+        setTimeout(() => setSettingsSaved(false), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSettingsSaving(false);
+    }
+  };
 
   const handleAddReview = (e) => {
     e.preventDefault();
@@ -175,6 +215,15 @@ export default function ProfilePage() {
                         <p className="font-medium text-foreground">{user?.email || '—'}</p>
                       </div>
                     </div>
+                    {user?.phone != null && user.phone !== '' && (
+                      <div className="flex items-center gap-4 py-4 px-4 rounded-xl bg-muted/50">
+                        <Phone className="h-5 w-5 text-foreground/50 shrink-0" />
+                        <div>
+                          <p className="text-xs font-medium text-foreground/60 uppercase tracking-wider">Phone</p>
+                          <p className="font-medium text-foreground">{user.phone}</p>
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center gap-4 py-4 px-4 rounded-xl bg-muted/50">
                       <Calendar className="h-5 w-5 text-foreground/50 shrink-0" />
                       <div>
@@ -191,6 +240,55 @@ export default function ProfilePage() {
                     </Link>
                     <Link href="/booking-summary">
                       <Button variant="outline" className="rounded-xl">Booking Summary</Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Account Settings */}
+              {section === 'settings' && (
+                <div className="p-6 md:p-8">
+                  <h3 className="text-xl font-semibold text-foreground mb-2">Account settings</h3>
+                  <p className="text-foreground/60 text-sm mb-6">Update your name and phone. Email cannot be changed.</p>
+                  <form onSubmit={handleSaveProfile} className="space-y-5 max-w-md">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Full name</label>
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                        placeholder="Your name"
+                        maxLength={120}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Phone</label>
+                      <input
+                        type="tel"
+                        value={editPhone}
+                        onChange={(e) => setEditPhone(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                        placeholder="+91 98765 43210"
+                        maxLength={20}
+                      />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Button type="submit" disabled={settingsSaving} className="rounded-xl gap-2">
+                        {settingsSaving ? 'Saving…' : 'Save changes'}
+                      </Button>
+                      {settingsSaved && (
+                        <span className="text-sm text-green-600 dark:text-green-400">Saved.</span>
+                      )}
+                    </div>
+                  </form>
+                  <div className="mt-8 pt-6 border-t border-border">
+                    <h4 className="font-medium text-foreground mb-2">Change password</h4>
+                    <p className="text-sm text-foreground/60 mb-3">Use the forgot-password flow to set a new password. We will send a link to your email.</p>
+                    <Link href="/forgot-password">
+                      <Button variant="outline" className="rounded-xl gap-2">
+                        <KeyRound className="h-4 w-4" /> Change password
+                      </Button>
                     </Link>
                   </div>
                 </div>

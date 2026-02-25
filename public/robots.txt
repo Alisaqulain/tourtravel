@@ -1,0 +1,11 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://triptotravels.com/sitemap.xml
+Sitemap: https://triptotravels.in/sitemap.xml
+
+# Disallow admin and API from indexing (optional)
+Disallow: /api/
+Disallow: /admin/

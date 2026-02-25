@@ -2,13 +2,13 @@ import Link from 'next/link';
 import { ArrowLeft, Mail, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const COMPANY_NAME = 'Trips To Travels';
+const COMPANY_NAME = 'Triptotravels';
 const SUPPORT_EMAIL = 'support@tripstotravels.com';
 const SUPPORT_PHONE = '+91 1800 123 4567';
 
 export const metadata = {
   title: 'Refund Policy',
-  description: `Refund and cancellation policy of ${COMPANY_NAME}.`,
+  description: `Refund and cancellation policy of ${COMPANY_NAME}. Hotels, flights, trains subject to provider policy.`,
   openGraph: { title: `Refund Policy | ${COMPANY_NAME}` },
 };
 
@@ -29,19 +29,35 @@ export default function RefundPolicyPage() {
           <p>Refunds are processed as per the cancellation policy of the respective service (flight, hotel, tour, train, etc.). Eligibility and amounts depend on the provider and time of cancellation.</p>
         </section>
         <section>
-          <h2 className="text-xl font-semibold text-foreground mb-2">2. Cancellation by You</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-2">2. Hotels</h2>
+          <p>Hotel refunds are subject to the provider (property) policy. Free cancellation and refund rules are displayed at the time of booking. Outside the free cancellation window, partial or no refund may apply as per the property terms.</p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold text-foreground mb-2">3. Flights</h2>
+          <p>Airline cancellation rules apply. Refund eligibility and deductions depend on the fare type and airline policy. Non-refundable fares may not qualify for refund; refundable fares may incur airline cancellation charges.</p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold text-foreground mb-2">4. Trains</h2>
+          <p>Train refunds are as per railway rules (e.g. Indian Railway policy). Refund amount and charges depend on when you cancel relative to departure. Please refer to the applicable railway terms.</p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold text-foreground mb-2">5. Service Fee</h2>
+          <p>Where a service or convenience fee is charged by {COMPANY_NAME}, such fee may be non-refundable once the booking is processed, even if the underlying booking is cancelled and a partial refund is issued by the provider.</p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold text-foreground mb-2">6. Cancellation by You</h2>
           <p>If you cancel a booking, refund eligibility and any deduction (cancellation fees) are as per the terms displayed at the time of booking. Refunds, when applicable, will be credited to the original payment method within 7–14 business days.</p>
         </section>
         <section>
-          <h2 className="text-xl font-semibold text-foreground mb-2">3. Failed or Disputed Payments</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-2">7. Failed or Disputed Payments</h2>
           <p>If a payment fails or is disputed, we will investigate and process a refund if the booking was not fulfilled or as required by law. Chargebacks may be contested with evidence of service delivery.</p>
         </section>
         <section>
-          <h2 className="text-xl font-semibold text-foreground mb-2">4. How to Request a Refund</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-2">8. How to Request a Refund</h2>
           <p>Contact us with your booking ID and reason. We will respond within 2–3 business days and process eligible refunds as per this policy and provider rules.</p>
         </section>
         <section>
-          <h2 className="text-xl font-semibold text-foreground mb-2">5. Contact</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-2">9. Contact</h2>
           <p>For refund requests or queries:</p>
           <ul className="list-none mt-2 space-y-1">
             <li className="flex items-center gap-2">

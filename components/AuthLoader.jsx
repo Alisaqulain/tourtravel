@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store';
@@ -11,7 +11,7 @@ export function AuthLoader() {
     fetch('/api/auth/me', { credentials: 'include' })
       .then((res) => res.json())
       .then((data) => {
-        if (data.user) login({ name: data.user.name, email: data.user.email });
+        if (data.user) login({ ...data.user, name: data.user.name, email: data.user.email, phone: data.user.phone ?? '' });
       })
       .catch(() => {});
   }, [login]);

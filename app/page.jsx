@@ -17,6 +17,7 @@ import { ExploreCruise } from '@/components/home/explore-cruise';
 import { ExploreCars } from '@/components/home/explore-cars';
 import { BestOffers } from '@/components/home/best-offers';
 import { WhyChooseUs } from '@/components/home/why-choose-us';
+import { TrustBadges } from '@/components/home/trust-badges';
 import { Testimonials } from '@/components/home/testimonials';
 import { CtaStrip } from '@/components/home/cta-strip';
 import { Newsletter } from '@/components/home/newsletter';
@@ -41,6 +42,7 @@ export default function HomePage() {
       <ExploreCars />
       <BestOffers />
       <WhyChooseUs />
+      <TrustBadges />
       <Testimonials />
       <CtaStrip />
       <Newsletter />

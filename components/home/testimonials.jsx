@@ -17,7 +17,7 @@ export function Testimonials() {
       <div className="container mx-auto px-4">
         <SectionHeader
           title="What Travelers Say"
-          subtitle="Real stories from real travelers who booked with Trips To Travels."
+          subtitle="Real stories from real travelers who booked with Triptotravels."
         />
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}

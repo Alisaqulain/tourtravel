@@ -11,9 +11,9 @@ export async function GET(request) {
       return NextResponse.json({ success: true, data: { user: null }, user: null });
     }
     await connectDB();
-    const user = await User.findById(decoded.userId).select('name email role isBlocked');
+    const user = await User.findById(decoded.userId).select('name email phone role isBlocked');
     if (!user || user.isBlocked) return NextResponse.json({ success: true, data: { user: null }, user: null });
-    const userPayload = { id: user._id, name: user.name, email: user.email, role: user.role };
+    const userPayload = { id: user._id, name: user.name, email: user.email, phone: user.phone || '', role: user.role };
     return NextResponse.json({ success: true, data: { user: userPayload }, user: userPayload });
   } catch (e) {
     console.error('Auth me error:', e);

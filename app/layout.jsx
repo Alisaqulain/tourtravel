@@ -16,6 +16,7 @@ export const metadata = {
   title: 'Trips To Travels | Flights, Hotels & Tours - Best Price Guarantee',
   description: 'Book flights, hotels, and tours with Trips To Travels. Best prices, 24/7 support, and instant confirmation. Your trusted travel partner.',
   keywords: 'travel, flights, hotels, tours, booking, vacation, trips',
+  icons: { icon: '/images/Trip%20Logo.png' },
   openGraph: {
     title: 'Trips To Travels | Flights, Hotels & Tours',
     description: 'Book flights, hotels, and tours with the best price guarantee.',
