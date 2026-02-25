@@ -34,9 +34,9 @@ export async function POST(request) {
     const { sent, error: mailErr } = await sendForgotPasswordOtpEmail(email, otp, baseUrl);
     if (!sent) {
       console.error('Forgot password email failed:', mailErr);
-      return error('Failed to send OTP. Please try again.', 500);
+      return error('Failed to send OTP. Please check SMTP settings or try again later.', 500);
     }
-    return success({ message: 'OTP sent to your email.' });
+    return success({ message: 'OTP sent to your email. If you don\'t see it, check your spam or junk folder.' });
   } catch (e) {
     console.error('Forgot password error:', e);
     return error(process.env.NODE_ENV === 'development' ? e.message : 'Request failed', 500);

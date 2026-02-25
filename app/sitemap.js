@@ -18,6 +18,8 @@ export default function sitemap() {
     '/privacy-policy',
     '/refund-policy',
     '/terms-and-conditions',
+    '/cancellation-policy',
+    '/disclaimer',
     '/login',
     '/signup',
     '/booking-summary',

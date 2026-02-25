@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
       setEmail(data.email);
       setStep(STEP_OTP);
       setSuccessMessage(json.message || 'OTP sent to your email.');
-      toast.success('OTP sent to your email.');
+      toast.success('OTP sent. Check spam if you don\'t see it.');
     } catch {
       toast.error('Something went wrong. Try again.');
     } finally {
@@ -152,6 +152,9 @@ export default function ForgotPasswordPage() {
                   <p className="text-sm text-green-600 dark:text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2">
                     {successMessage}
                   </p>
+                )}
+                {step === STEP_OTP && (
+                  <p className="text-xs text-muted-foreground -mt-1 mb-2">If you don&apos;t see the email, check your spam or junk folder.</p>
                 )}
                 <div>
                   <Label htmlFor="otp">Verification code (6 digits)</Label>

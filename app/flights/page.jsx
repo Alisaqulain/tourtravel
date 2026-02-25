@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Plane, ArrowLeft, Eye } from 'lucide-react';
+import { Plane, ArrowLeft, Eye, SlidersHorizontal } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -12,6 +12,7 @@ import { formatPrice } from '@/lib/utils';
 import { useBookingStore } from '@/store';
 import { FlightFilters } from '@/components/filters/flight-filters';
 import { PagePromoBanner } from '@/components/layout/page-promo-banner';
+import { FilterDrawer } from '@/components/layout/filter-drawer';
 import { useTravelList } from '@/hooks/useTravelList';
 import { toast } from '@/lib/toast';
 
@@ -40,6 +41,7 @@ export default function FlightsPage() {
   const [sortBy, setSortBy] = useState('price');
   const [order, setOrder] = useState('asc');
   const [page, setPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const limit = 12;
 
   const params = useMemo(
@@ -96,9 +98,9 @@ export default function FlightsPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="container mx-auto px-4 py-12"
+      className="container mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-10 max-w-7xl"
     >
-      <Link href="/" className="inline-flex items-center gap-2 text-foreground/90 hover:text-foreground mb-6 transition-colors">
+      <Link href="/" className="inline-flex items-center gap-2 text-foreground/90 hover:text-foreground mb-4 sm:mb-6 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to Home
       </Link>
       <PagePromoBanner message="FLAT 15% OFF on Flights" code="FLY15" href="/flights" />
@@ -107,8 +109,25 @@ export default function FlightsPage() {
         subtitle="Compare and book flights at the best prices. All major airlines in one place."
       />
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="lg:w-80 xl:w-96 shrink-0">
+      <div className="flex items-center justify-between gap-4 mb-4 lg:hidden">
+        <Button variant="outline" className="rounded-xl gap-2" onClick={() => setFiltersOpen(true)}>
+          <SlidersHorizontal className="h-4 w-4" /> Filters
+        </Button>
+        <span className="text-sm text-muted-foreground">{loading ? 'Loading...' : `${total} flight(s) found`}</span>
+      </div>
+
+      <FilterDrawer open={filtersOpen} onClose={() => setFiltersOpen(false)} title="Filters">
+        <FlightFilters
+          search={search}
+          setSearch={setSearch}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          onReset={() => { resetFilters(); setFiltersOpen(false); }}
+        />
+      </FilterDrawer>
+
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+        <aside className="hidden lg:block lg:w-72 xl:w-80 shrink-0">
           <FlightFilters
             search={search}
             setSearch={setSearch}
@@ -119,7 +138,7 @@ export default function FlightsPage() {
         </aside>
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-            <p className="text-foreground/90 text-sm">
+            <p className="text-foreground/90 text-sm hidden lg:block">
               {loading ? 'Loading...' : `${total} flight(s) found`}
             </p>
             <div className="flex items-center gap-2">

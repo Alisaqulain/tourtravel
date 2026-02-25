@@ -4,13 +4,14 @@ import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Train, ArrowLeft, Eye } from 'lucide-react';
+import { Train, ArrowLeft, Eye, SlidersHorizontal } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
 import { useBookingStore, useDataStore } from '@/store';
 import { TrainFilters } from '@/components/filters/train-filters';
+import { FilterDrawer } from '@/components/layout/filter-drawer';
 
 export default function TrainPage() {
   const setSelectedTrain = useBookingStore((s) => s.setSelectedTrain);
@@ -18,6 +19,7 @@ export default function TrainPage() {
   const [search, setSearch] = useState('');
   const [travelClass, setTravelClass] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
     let list = [...trains];
@@ -43,8 +45,8 @@ export default function TrainPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors">
+    <div className="container mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-10 max-w-7xl">
+      <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 sm:mb-6 transition-colors">
         <ArrowLeft className="h-4 w-4" aria-hidden /> Back to Home
       </Link>
       <SectionHeader
@@ -52,8 +54,27 @@ export default function TrainPage() {
         subtitle="Book IRCTC and other train tickets. Check availability, compare fares, and redirect to official booking."
       />
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="lg:w-80 xl:w-96 shrink-0">
+      <div className="flex items-center justify-between gap-4 mb-4 lg:hidden">
+        <Button variant="outline" className="rounded-xl gap-2" onClick={() => setFiltersOpen(true)}>
+          <SlidersHorizontal className="h-4 w-4" /> Filters
+        </Button>
+        <span className="text-sm text-muted-foreground">{filtered.length} train(s) found</span>
+      </div>
+
+      <FilterDrawer open={filtersOpen} onClose={() => setFiltersOpen(false)} title="Filters">
+        <TrainFilters
+          search={search}
+          setSearch={setSearch}
+          travelClass={travelClass}
+          setTravelClass={setTravelClass}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          onReset={() => { resetFilters(); setFiltersOpen(false); }}
+        />
+      </FilterDrawer>
+
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+        <aside className="hidden lg:block lg:w-72 xl:w-80 shrink-0">
           <TrainFilters
             search={search}
             setSearch={setSearch}
@@ -65,8 +86,8 @@ export default function TrainPage() {
           />
         </aside>
         <div className="flex-1 min-w-0">
-          <p className="text-muted-foreground text-sm mb-4">{filtered.length} train(s) found</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <p className="text-muted-foreground text-sm mb-4 hidden lg:block">{filtered.length} train(s) found</p>
+          <div className="grid grid-cols-1 gap-5 sm:gap-6">
             {filtered.map((train, i) => (
               <motion.div
                 key={train.id}
@@ -121,16 +142,16 @@ export default function TrainPage() {
                       {train.departure} - {train.arrival} · {train.duration} · {train.class}
                     </p>
                     <p className="text-xs text-muted-foreground mb-4">Train no. {train.trainNo} · {train.seatsAvailable} seats left</p>
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
+                    <div className="flex flex-wrap items-center justify-between gap-3 mt-auto pt-4 border-t border-border">
                       <span className="text-xl font-bold text-primary">{formatPrice(train.price)}</span>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         <Link href={`/train/${train.id}`}>
-                          <Button variant="outline" size="sm" className="rounded-xl gap-1">
+                          <Button variant="outline" size="sm" className="rounded-xl gap-1 shrink-0">
                             <Eye className="h-4 w-4" /> View More
                           </Button>
                         </Link>
                         <Link href="/booking-summary" onClick={() => setSelectedTrain(train)}>
-                          <Button size="sm" className="rounded-xl">Book Now</Button>
+                          <Button size="sm" className="rounded-xl shrink-0 whitespace-nowrap">Book Now</Button>
                         </Link>
                       </div>
                     </div>
