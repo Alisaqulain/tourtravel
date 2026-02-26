@@ -49,7 +49,7 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="bg-dark-600 text-white">
+    <footer className="bg-slate-800 dark:bg-dark-600 text-white border-t border-amber-500/20">
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-10">
           <div className="lg:col-span-2">

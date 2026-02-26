@@ -13,7 +13,8 @@ export function SiteThemeInjector() {
     const root = document.documentElement;
     root.style.setProperty('--primary', theme.primary);
     root.style.setProperty('--ring', theme.primary);
-    // Do not set --background, --card, --muted, --border so dark theme from globals.css always applies
+    if (theme.primaryForeground) root.style.setProperty('--primary-foreground', theme.primaryForeground);
+    else root.style.removeProperty('--primary-foreground');
   }, [themeId, customThemes]);
 
   return null;

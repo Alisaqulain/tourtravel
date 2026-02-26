@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -10,6 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { ErrorBoundary } from '@/components/error-boundary';
+
+const HeroThreeBackground = lazy(() =>
+  import('@/components/home/hero-three-background').then((m) => ({ default: m.HeroThreeBackground }))
+);
 
 const HERO_IMAGES = [
   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920',
@@ -22,7 +27,9 @@ const HERO_IMAGES = [
 export function HeroSection() {
   const router = useRouter();
   const [bgIndex, setBgIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => setMounted(true), []);
   useEffect(() => {
     const t = setInterval(() => {
       setBgIndex((i) => (i + 1) % HERO_IMAGES.length);
@@ -76,6 +83,13 @@ export function HeroSection() {
       ))}
       <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/75" />
       <div className="absolute inset-0 bg-dark/20" />
+      {mounted && (
+        <ErrorBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <HeroThreeBackground />
+          </Suspense>
+        </ErrorBoundary>
+      )}
 
       {/* Hero slider dots */}
       <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
@@ -97,21 +111,31 @@ export function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="w-full text-center mb-6 sm:mb-8 md:mb-10"
         >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 drop-shadow-xl tracking-tight mx-auto block w-full">
+          <motion.h1
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 drop-shadow-xl tracking-tight mx-auto block w-full"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
             Where to next?
-          </h1>
-          <p className="text-sm sm:text-base md:text-lg text-white/95 max-w-xl mx-auto px-1 drop-shadow-md">
+          </motion.h1>
+          <motion.p
+            className="text-sm sm:text-base md:text-lg text-white/95 max-w-xl mx-auto px-1 drop-shadow-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+          >
             Flights, hotels, tours, bus, train, cruise & premium cars — one place. Best price guarantee & 24/7 support.
-          </p>
+          </motion.p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-5xl mx-auto w-full"
         >
           <div className="rounded-2xl border border-white/15 bg-background/95 backdrop-blur-xl shadow-2xl p-4 md:p-6 text-foreground ring-1 ring-white/5">

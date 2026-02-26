@@ -2,12 +2,11 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export const THEMES = [
-  { id: 'default', name: 'Goibibo Blue', primary: '#0A66C2', background: '#f7f6f4', card: '#efede9', muted: '#e5e3de', border: '#d4d1ca' },
-  { id: 'ocean', name: 'Ocean Blue', primary: '#0c7ab1', background: '#f2f5f9', card: '#e6ebf2', muted: '#d1dae8', border: '#a8bdd4' },
-  { id: 'forest', name: 'Forest Green', primary: '#1a8f3a', background: '#f2f5f2', card: '#e6ebe6', muted: '#d1dcd1', border: '#a8bda8' },
-  { id: 'sunset', name: 'Sunset', primary: '#d97706', background: '#f8f5f1', card: '#f0ebe3', muted: '#e5d9cc', border: '#d4c2ab' },
-  { id: 'violet', name: 'Violet', primary: '#6d28d9', background: '#f4f2f9', card: '#ebe7f4', muted: '#ddd4ea', border: '#c4b2d9' },
-  { id: 'rose', name: 'Rose', primary: '#be185d', background: '#f8f4f5', card: '#f0e8eb', muted: '#e5d8dc', border: '#d4b8c0' },
+  { id: 'default', name: 'Amber Gold', primary: '#EAB308', primaryForeground: '#1c1917', background: '#FFFBEB', card: '#FEF9C3', muted: '#FEF3C7', border: '#FDE68A' },
+  { id: 'sunset', name: 'Sunset', primary: '#d97706', primaryForeground: '#fff', background: '#f8f5f1', card: '#f0ebe3', muted: '#e5d9cc', border: '#d4c2ab' },
+  { id: 'forest', name: 'Forest Green', primary: '#1a8f3a', primaryForeground: '#fff', background: '#f2f5f2', card: '#e6ebe6', muted: '#d1dcd1', border: '#a8bda8' },
+  { id: 'violet', name: 'Violet', primary: '#6d28d9', primaryForeground: '#fff', background: '#f4f2f9', card: '#ebe7f4', muted: '#ddd4ea', border: '#c4b2d9' },
+  { id: 'rose', name: 'Rose', primary: '#be185d', primaryForeground: '#fff', background: '#f8f4f5', card: '#f0e8eb', muted: '#e5d8dc', border: '#d4b8c0' },
 ];
 
 /** Derive dark background colors from primary hex (for custom themes). */
