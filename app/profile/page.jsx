@@ -21,6 +21,7 @@ import {
   Settings,
   Phone,
   KeyRound,
+  MapPin,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,7 +40,7 @@ const SECTIONS = [
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, isLoggedIn, logout } = useAuthStore();
+  const { user, isLoggedIn, logout, login } = useAuthStore();
   const { reviews, addReview } = useUserReviewsStore();
   const [section, setSection] = useState('overview');
   const [searchReview, setSearchReview] = useState('');
@@ -50,6 +51,9 @@ export default function ProfilePage() {
   const [paymentsLoading, setPaymentsLoading] = useState(false);
   const [editName, setEditName] = useState('');
   const [editPhone, setEditPhone] = useState('');
+  const [editCity, setEditCity] = useState('');
+  const [editState, setEditState] = useState('');
+  const [editCountry, setEditCountry] = useState('');
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [settingsSaved, setSettingsSaved] = useState(false);
 
@@ -57,12 +61,37 @@ export default function ProfilePage() {
     if (!isLoggedIn) router.replace('/login');
   }, [isLoggedIn, router]);
 
+  // Fetch latest user (including city, state, country) when profile page loads so it always shows current data
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then((res) => res.json())
+      .then((data) => {
+        const u = data?.user ?? data?.data?.user;
+        if (u) {
+          login({
+            ...u,
+            name: u.name,
+            email: u.email,
+            phone: u.phone ?? '',
+            city: u.city ?? '',
+            state: u.state ?? '',
+            country: u.country ?? '',
+          });
+        }
+      })
+      .catch(() => {});
+  }, [isLoggedIn, login]);
+
   useEffect(() => {
     if (user) {
       setEditName(user.name || '');
       setEditPhone(user.phone || '');
+      setEditCity(user.city || '');
+      setEditState(user.state || '');
+      setEditCountry(user.country || '');
     }
-  }, [user?.name, user?.phone]);
+  }, [user?.name, user?.phone, user?.city, user?.state, user?.country]);
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -94,7 +123,13 @@ export default function ProfilePage() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ name: editName.trim(), phone: editPhone.trim() || null }),
+        body: JSON.stringify({
+        name: editName.trim(),
+        phone: editPhone.trim() || null,
+        city: editCity.trim() || null,
+        state: editState.trim() || null,
+        country: editCountry.trim() || null,
+      }),
       });
       const data = await res.json();
       if (data?.success && data?.data?.user) {
@@ -225,6 +260,27 @@ export default function ProfilePage() {
                       </div>
                     )}
                     <div className="flex items-center gap-4 py-4 px-4 rounded-xl bg-muted/50">
+                      <MapPin className="h-5 w-5 text-foreground/50 shrink-0" />
+                      <div>
+                        <p className="text-xs font-medium text-foreground/60 uppercase tracking-wider">City</p>
+                        <p className="font-medium text-foreground">{user?.city || '—'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 py-4 px-4 rounded-xl bg-muted/50">
+                      <MapPin className="h-5 w-5 text-foreground/50 shrink-0" />
+                      <div>
+                        <p className="text-xs font-medium text-foreground/60 uppercase tracking-wider">State</p>
+                        <p className="font-medium text-foreground">{user?.state || '—'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 py-4 px-4 rounded-xl bg-muted/50">
+                      <MapPin className="h-5 w-5 text-foreground/50 shrink-0" />
+                      <div>
+                        <p className="text-xs font-medium text-foreground/60 uppercase tracking-wider">Country</p>
+                        <p className="font-medium text-foreground">{user?.country || '—'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 py-4 px-4 rounded-xl bg-muted/50">
                       <Calendar className="h-5 w-5 text-foreground/50 shrink-0" />
                       <div>
                         <p className="text-xs font-medium text-foreground/60 uppercase tracking-wider">Member since</p>
@@ -249,7 +305,7 @@ export default function ProfilePage() {
               {section === 'settings' && (
                 <div className="p-6 md:p-8">
                   <h3 className="text-xl font-semibold text-foreground mb-2">Account settings</h3>
-                  <p className="text-foreground/60 text-sm mb-6">Update your name and phone. Email cannot be changed.</p>
+                  <p className="text-foreground/60 text-sm mb-6">Update your name, phone, and location. Email cannot be changed.</p>
                   <form onSubmit={handleSaveProfile} className="space-y-5 max-w-md">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">Full name</label>
@@ -271,6 +327,41 @@ export default function ProfilePage() {
                         className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
                         placeholder="+91 98765 43210"
                         maxLength={20}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">City</label>
+                        <input
+                          type="text"
+                          value={editCity}
+                          onChange={(e) => setEditCity(e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                          placeholder="e.g. Mumbai"
+                          maxLength={100}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">State</label>
+                        <input
+                          type="text"
+                          value={editState}
+                          onChange={(e) => setEditState(e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                          placeholder="e.g. Maharashtra"
+                          maxLength={100}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Country</label>
+                      <input
+                        type="text"
+                        value={editCountry}
+                        onChange={(e) => setEditCountry(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                        placeholder="e.g. India"
+                        maxLength={100}
                       />
                     </div>
                     <div className="flex items-center gap-3">

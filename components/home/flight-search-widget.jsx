@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, ArrowLeftRight, Search, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -18,6 +18,19 @@ const POPULAR_AIRPORTS = [
   { city: 'Goa', code: 'GOI', name: 'Goa International' },
   { city: 'Kochi', code: 'COK', name: 'Cochin International' },
   { city: 'Ahmedabad', code: 'AMD', name: 'Sardar Vallabhbhai Patel' },
+  { city: 'Jaipur', code: 'JAI', name: 'Jaipur International' },
+  { city: 'Lucknow', code: 'LKO', name: 'Chaudhary Charan Singh' },
+  { city: 'Chandigarh', code: 'IXC', name: 'Chandigarh International' },
+  { city: 'Indore', code: 'IDR', name: 'Devi Ahilya Bai Holkar' },
+  { city: 'Nagpur', code: 'NAG', name: 'Dr. Babasaheb Ambedkar' },
+  { city: 'Dubai', code: 'DXB', name: 'Dubai International' },
+  { city: 'Singapore', code: 'SIN', name: 'Singapore Changi' },
+  { city: 'Bangkok', code: 'BKK', name: 'Suvarnabhumi' },
+  { city: 'London', code: 'LHR', name: 'Heathrow' },
+  { city: 'New York', code: 'JFK', name: 'John F. Kennedy' },
+  { city: 'Maldives', code: 'MLE', name: 'Velana International' },
+  { city: 'Sri Lanka', code: 'CMB', name: 'Bandaranaike Colombo' },
+  { city: 'Kathmandu', code: 'KTM', name: 'Tribhuvan International' },
 ];
 
 const TRIP_TYPES = [
@@ -71,6 +84,32 @@ export function FlightSearchWidget({ onSearch, className, hideHeader }) {
   const [showFromDropdown, setShowFromDropdown] = useState(false);
   const [showToDropdown, setShowToDropdown] = useState(false);
   const [showTravellers, setShowTravellers] = useState(false);
+  const [fromSearch, setFromSearch] = useState('');
+  const [toSearch, setToSearch] = useState('');
+
+  const today = new Date().toISOString().slice(0, 10);
+  const fromFiltered = useMemo(() => {
+    const list = POPULAR_AIRPORTS.filter((a) => a.code !== to.code);
+    if (!fromSearch.trim()) return list;
+    const q = fromSearch.toLowerCase().trim();
+    return list.filter(
+      (a) =>
+        a.city.toLowerCase().includes(q) ||
+        a.code.toLowerCase().includes(q) ||
+        a.name.toLowerCase().includes(q)
+    );
+  }, [to.code, fromSearch]);
+  const toFiltered = useMemo(() => {
+    const list = POPULAR_AIRPORTS.filter((a) => a.code !== from.code);
+    if (!toSearch.trim()) return list;
+    const q = toSearch.toLowerCase().trim();
+    return list.filter(
+      (a) =>
+        a.city.toLowerCase().includes(q) ||
+        a.code.toLowerCase().includes(q) ||
+        a.name.toLowerCase().includes(q)
+    );
+  }, [from.code, toSearch]);
 
   const depDisplay = formatDisplayDate(departureDate);
   const returnDisplay = formatDisplayDate(returnDate);
@@ -142,15 +181,15 @@ export function FlightSearchWidget({ onSearch, className, hideHeader }) {
             </span>
           </div>
 
-          {/* From / To / Departure / Return / Travellers */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-5">
+          {/* From / To / Departure / Return / Travellers - fixed min sizes to prevent overlap */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(5,minmax(140px,1fr))] gap-3 sm:gap-4 mb-5">
             {/* From */}
-            <div className="relative">
+            <div className="relative min-w-0">
               <Label className="text-xs font-medium text-muted-foreground">From</Label>
               <button
                 type="button"
                 onClick={() => { setShowFromDropdown(true); setShowToDropdown(false); setShowTravellers(false); }}
-                className="mt-1 w-full text-left rounded-xl border border-border bg-background px-3 py-2.5 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+                className="mt-1 w-full min-h-[52px] text-left rounded-xl border border-border bg-background px-3 py-2.5 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
               >
                 <p className="font-semibold text-foreground truncate">{from.city}</p>
                 <p className="text-xs text-muted-foreground truncate">{from.code}, {from.name}</p>
@@ -158,45 +197,21 @@ export function FlightSearchWidget({ onSearch, className, hideHeader }) {
               {showFromDropdown && (
                 <>
                   <div className="absolute inset-0 z-10" aria-hidden onClick={() => setShowFromDropdown(false)} />
-                  <ul className="absolute z-20 mt-1 w-full max-h-56 overflow-auto rounded-xl border-2 border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-600 shadow-xl py-1">
-                    {POPULAR_AIRPORTS.filter((a) => a.code !== to.code).map((a) => (
-                      <li key={a.code}>
-                        <button
-                          type="button"
-                          onClick={() => { setFrom(a); setShowFromDropdown(false); }}
-                          className="w-full text-left px-3 py-2 hover:bg-muted"
-                        >
-                          <p className="font-medium text-foreground">{a.city}</p>
-                          <p className="text-xs text-muted-foreground">{a.code}, {a.name}</p>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
-            </div>
-
-            {/* To (with swap) */}
-            <div className="relative flex items-end gap-1">
-              <div className="relative flex-1">
-                <Label className="text-xs font-medium text-muted-foreground">To</Label>
-                <button
-                  type="button"
-                  onClick={() => { setShowToDropdown(true); setShowFromDropdown(false); setShowTravellers(false); }}
-                  className="mt-1 w-full text-left rounded-xl border border-border bg-background px-3 py-2.5 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
-                >
-                  <p className="font-semibold text-foreground truncate">{to.city}</p>
-                  <p className="text-xs text-muted-foreground truncate">{to.code}, {to.name}</p>
-                </button>
-                {showToDropdown && (
-                  <>
-                    <div className="absolute inset-0 z-10" aria-hidden onClick={() => setShowToDropdown(false)} />
-                    <ul className="absolute z-20 mt-1 w-full max-h-56 overflow-auto rounded-xl border-2 border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-600 shadow-xl py-1">
-                      {POPULAR_AIRPORTS.filter((a) => a.code !== from.code).map((a) => (
+                  <div className="absolute z-20 mt-1 w-full rounded-xl border-2 border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-600 shadow-xl overflow-hidden">
+                    <input
+                      type="text"
+                      placeholder="Search city or code..."
+                      value={fromSearch}
+                      onChange={(e) => setFromSearch(e.target.value)}
+                      className="w-full px-3 py-2 border-b border-border text-sm"
+                      autoFocus
+                    />
+                    <ul className="max-h-48 overflow-auto py-1">
+                      {fromFiltered.map((a) => (
                         <li key={a.code}>
                           <button
                             type="button"
-                            onClick={() => { setTo(a); setShowToDropdown(false); }}
+                            onClick={() => { setFrom(a); setShowFromDropdown(false); setFromSearch(''); }}
                             className="w-full text-left px-3 py-2 hover:bg-muted"
                           >
                             <p className="font-medium text-foreground">{a.city}</p>
@@ -205,6 +220,50 @@ export function FlightSearchWidget({ onSearch, className, hideHeader }) {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* To (with swap) */}
+            <div className="relative flex items-end gap-1 min-w-0">
+              <div className="relative flex-1 min-w-0">
+                <Label className="text-xs font-medium text-muted-foreground">To</Label>
+                <button
+                  type="button"
+                  onClick={() => { setShowToDropdown(true); setShowFromDropdown(false); setShowTravellers(false); }}
+                  className="mt-1 w-full min-h-[52px] text-left rounded-xl border border-border bg-background px-3 py-2.5 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+                >
+                  <p className="font-semibold text-foreground truncate">{to.city}</p>
+                  <p className="text-xs text-muted-foreground truncate">{to.code}, {to.name}</p>
+                </button>
+                {showToDropdown && (
+                  <>
+                    <div className="absolute inset-0 z-10" aria-hidden onClick={() => setShowToDropdown(false)} />
+                    <div className="absolute z-20 mt-1 w-full rounded-xl border-2 border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-600 shadow-xl overflow-hidden">
+                      <input
+                        type="text"
+                        placeholder="Search city or code..."
+                        value={toSearch}
+                        onChange={(e) => setToSearch(e.target.value)}
+                        className="w-full px-3 py-2 border-b border-border text-sm"
+                        autoFocus
+                      />
+                      <ul className="max-h-48 overflow-auto py-1">
+                        {toFiltered.map((a) => (
+                          <li key={a.code}>
+                            <button
+                              type="button"
+                              onClick={() => { setTo(a); setShowToDropdown(false); setToSearch(''); }}
+                              className="w-full text-left px-3 py-2 hover:bg-muted"
+                            >
+                              <p className="font-medium text-foreground">{a.city}</p>
+                              <p className="text-xs text-muted-foreground">{a.code}, {a.name}</p>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </>
                 )}
               </div>
@@ -218,66 +277,64 @@ export function FlightSearchWidget({ onSearch, className, hideHeader }) {
               </button>
             </div>
 
-            {/* Departure */}
-            <div>
+            {/* Departure - visible date input so picker opens and date is changeable */}
+            <div className="min-w-0">
               <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                 Departure <ChevronDown className="h-3 w-3 text-primary" />
               </Label>
-              <label className="mt-1 flex flex-col rounded-xl border border-border bg-background px-3 py-2.5 cursor-pointer hover:border-primary/50">
+              <div className="mt-1 relative flex flex-col justify-center rounded-xl border border-border bg-background px-3 py-2 min-h-[52px]">
                 <input
                   type="date"
                   value={departureDate}
+                  min={today}
                   onChange={(e) => setDepartureDate(e.target.value)}
-                  className="absolute opacity-0 w-0 h-0"
+                  className="w-full text-sm font-semibold text-foreground bg-transparent border-0 p-0 focus:outline-none focus:ring-0 [color-scheme:light]"
+                  title="Change departure date"
                 />
                 {depDisplay && (
-                  <>
-                    <span className="font-semibold text-foreground">{depDisplay.main}</span>
-                    <span className="text-xs text-muted-foreground">{depDisplay.sub}</span>
-                  </>
+                  <span className="text-xs text-muted-foreground">{depDisplay.sub}</span>
                 )}
-              </label>
+              </div>
             </div>
 
-            {/* Return */}
-            <div>
+            {/* Return - visible date input when round trip so return date is changeable */}
+            <div className="min-w-0">
               <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                 Return <ChevronDown className="h-3 w-3 text-primary" />
               </Label>
               {tripType === 'roundtrip' ? (
-                <label className="mt-1 flex flex-col rounded-xl border border-border bg-background px-3 py-2.5 cursor-pointer hover:border-primary/50 min-h-[52px]">
+                <div className="mt-1 relative flex flex-col justify-center rounded-xl border border-border bg-background px-3 py-2 min-h-[52px]">
                   <input
                     type="date"
                     value={returnDate}
-                    min={departureDate}
+                    min={departureDate || today}
                     onChange={(e) => setReturnDate(e.target.value)}
-                    className="absolute opacity-0 w-0 h-0"
+                    className="w-full text-sm font-semibold text-foreground bg-transparent border-0 p-0 focus:outline-none focus:ring-0 [color-scheme:light]"
+                    title="Add or change return date"
                   />
-                  {returnDisplay ? (
-                    <>
-                      <span className="font-semibold text-foreground">{returnDisplay.main}</span>
-                      <span className="text-xs text-muted-foreground">{returnDisplay.sub}</span>
-                    </>
-                  ) : (
-                    <span className="text-xs text-muted-foreground">Tap to add a return date for bigger discounts</span>
+                  {returnDisplay && (
+                    <span className="text-xs text-muted-foreground">{returnDisplay.sub}</span>
                   )}
-                </label>
+                  {!returnDate && (
+                    <span className="text-xs text-muted-foreground">Click to add return date</span>
+                  )}
+                </div>
               ) : (
                 <div className="mt-1 rounded-xl border border-border bg-muted/30 px-3 py-2.5 min-h-[52px] flex items-center">
-                  <span className="text-xs text-muted-foreground">Tap to add a return date for bigger discounts</span>
+                  <span className="text-xs text-muted-foreground">Add return date for round trip</span>
                 </div>
               )}
             </div>
 
             {/* Travellers & Class */}
-            <div className="relative">
+            <div className="relative min-w-0">
               <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                 Travellers & Class <ChevronDown className="h-3 w-3 text-primary" />
               </Label>
               <button
                 type="button"
                 onClick={() => { setShowTravellers(true); setShowFromDropdown(false); setShowToDropdown(false); }}
-                className="mt-1 w-full text-left rounded-xl border border-border bg-background px-3 py-2.5 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
+                className="mt-1 w-full min-h-[52px] text-left rounded-xl border border-border bg-background px-3 py-2.5 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors"
               >
                 <p className="font-semibold text-foreground">{travelers} Traveller{travelers > 1 ? 's' : ''}</p>
                 <p className="text-xs text-muted-foreground">{cabinLabel?.sub}</p>

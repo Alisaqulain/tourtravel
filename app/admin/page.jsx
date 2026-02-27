@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Plane, Building2, MapPin, Package, ArrowRight, Users, CalendarCheck, Bus, Ship, Car, Palette, BarChart3 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { AdminLocationMap } from '@/components/admin/location-map';
 import { toast } from '@/lib/toast';
 
 const contentCards = [
@@ -163,6 +164,10 @@ export default function AdminDashboardPage() {
                 <p className="text-xs text-muted-foreground mt-1">External API calls (when implemented)</p>
               </Card>
             </motion.div>
+          </div>
+
+          <div className="mb-8">
+            <AdminLocationMap />
           </div>
 
           {/* Content counts */}

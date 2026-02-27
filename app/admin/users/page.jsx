@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, Calendar, ArrowLeft, Shield, Ban, Trash2, Loader2 } from 'lucide-react';
-import Link from 'next/link';
+import { Ban, Trash2, Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/toast';
@@ -121,12 +120,6 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <Link href="/admin" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 text-sm">
-        <ArrowLeft className="h-4 w-4" /> Dashboard
-      </Link>
-      <h1 className="text-2xl font-bold mb-2">Users</h1>
-      <p className="text-muted-foreground mb-6">Manage roles, block/unblock, view bookings and spend. Total: {users.length}</p>
-
       {loading ? (
         <Card className="p-12 text-center text-muted-foreground">Loading users...</Card>
       ) : (
@@ -138,6 +131,9 @@ export default function AdminUsersPage() {
                   <th className="text-left p-4 font-semibold">Name</th>
                   <th className="text-left p-4 font-semibold">Email</th>
                   <th className="text-left p-4 font-semibold">Role</th>
+                  <th className="text-left p-4 font-semibold">City</th>
+                  <th className="text-left p-4 font-semibold">State</th>
+                  <th className="text-left p-4 font-semibold">Country</th>
                   <th className="text-left p-4 font-semibold">Bookings</th>
                   <th className="text-left p-4 font-semibold">Total Spend</th>
                   <th className="text-left p-4 font-semibold">Status</th>
@@ -157,14 +153,8 @@ export default function AdminUsersPage() {
                       transition={{ delay: i * 0.02 }}
                       className="border-b border-border hover:bg-muted/30"
                     >
-                      <td className="p-4 flex items-center gap-2">
-                        <User className="h-4 w-4 text-primary" />
-                        {u.name || '—'}
-                      </td>
-                      <td className="p-4 flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-muted-foreground" />
-                        {u.email || '—'}
-                      </td>
+                      <td className="p-4">{u.name || '—'}</td>
+                      <td className="p-4">{u.email || '—'}</td>
                       <td className="p-4">
                         <select
                           value={u.role || 'user'}
@@ -176,6 +166,28 @@ export default function AdminUsersPage() {
                           <option value="admin">admin</option>
                           <option value="superadmin">superadmin</option>
                         </select>
+                      </td>
+                      <td className="p-4">{u.city || u.lastLocationCity || '—'}</td>
+                      <td className="p-4">{u.state || '—'}</td>
+                      <td className="p-4">
+                        {u.country || u.lastLocationCountry ? (
+                          <span className="flex items-center gap-1">
+                            <span>{u.country || u.lastLocationCountry}</span>
+                            {u.lastLocationLat != null && u.lastLocationLng != null && (
+                              <a
+                                href={`https://www.openstreetmap.org/?mlat=${u.lastLocationLat}&mlon=${u.lastLocationLng}#map=12/${u.lastLocationLat}/${u.lastLocationLng}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-primary hover:underline"
+                                title="View on map"
+                              >
+                                Map
+                              </a>
+                            )}
+                          </span>
+                        ) : (
+                          '—'
+                        )}
                       </td>
                       <td className="p-4">{u.totalBookings ?? 0}</td>
                       <td className="p-4">₹ {(u.totalSpend ?? 0).toLocaleString('en-IN')}</td>

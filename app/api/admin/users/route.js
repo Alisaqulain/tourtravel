@@ -11,7 +11,7 @@ export async function GET(request) {
   try {
     await connectDB();
     const list = await User.find()
-      .select('name email role isVerified isBlocked createdAt')
+      .select('name email role isVerified isBlocked createdAt city state country lastLocationCity lastLocationCountry lastLocationLat lastLocationLng lastLocationAt')
       .sort({ createdAt: -1 })
       .lean();
 

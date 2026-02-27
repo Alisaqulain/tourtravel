@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAdminStore } from '@/store';
@@ -21,7 +21,6 @@ import {
   Palette,
   Settings,
 } from 'lucide-react';
-import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -40,22 +39,32 @@ const nav = [
 export default function AdminLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAdmin, logoutAdmin } = useAdminStore();
+  const { isAdmin, logoutAdmin, checkAdminSession } = useAdminStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
 
   useEffect(() => {
-    if (pathname === '/admin/login') return;
-    if (!isAdmin) router.replace('/admin/login');
-  }, [isAdmin, pathname, router]);
+    if (pathname === '/admin/login') {
+      setSessionChecked(true);
+      return;
+    }
+    let cancelled = false;
+    checkAdminSession().then((ok) => {
+      if (cancelled) return;
+      setSessionChecked(true);
+      if (!ok) router.replace('/admin/login');
+    });
+    return () => { cancelled = true; };
+  }, [pathname, checkAdminSession, router]);
 
   if (pathname === '/admin/login') {
     return <>{children}</>;
   }
 
-  if (!isAdmin) {
+  if (!sessionChecked || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/30">
-        <p className="text-muted-foreground">Checking access...</p>
+        <p className="text-muted-foreground">{sessionChecked ? 'Redirecting to login…' : 'Checking access…'}</p>
       </div>
     );
   }

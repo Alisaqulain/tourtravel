@@ -15,15 +15,20 @@ import { toast } from '@/lib/toast';
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const login = useAuthStore((s) => s.login);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (isLoggedIn) {
+      router.replace('/profile');
+      return;
+    }
     if (searchParams.get('reset') === 'success') {
       toast.success('Password reset successfully. You can sign in with your new password.');
       router.replace('/login', { scroll: false });
     }
-  }, [searchParams, router]);
+  }, [isLoggedIn, searchParams, router]);
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -50,6 +55,14 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (isLoggedIn) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+        <p className="text-muted-foreground">Redirecting...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">

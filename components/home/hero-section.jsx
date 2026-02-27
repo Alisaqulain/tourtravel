@@ -4,12 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Plane, Building2, Train, Bus, Ship, Car, MapPin, Package, Search } from 'lucide-react';
+import { Plane, Building2, Train, Bus, Ship, Car, MapPin, Package, Search, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FlightSearchWidget } from '@/components/home/flight-search-widget';
 import { HotelSearchWidget } from '@/components/home/hotel-search-widget';
 import { TrainSearchWidget } from '@/components/home/train-search-widget';
 import { BusSearchWidget } from '@/components/home/bus-search-widget';
+import { ReligionTourWidget } from '@/components/home/religion-tour-widget';
 import { Button } from '@/components/ui/button';
 
 const OTA_YELLOW = '#EAB308';
@@ -24,6 +25,7 @@ export function HeroSection() {
     { id: 'hotels', label: 'Hotels', icon: Building2 },
     { id: 'trains', label: 'Trains', icon: Train },
     { id: 'bus', label: 'Bus', icon: Bus },
+    { id: 'religion', label: 'Religion Tour', icon: Landmark },
     { id: 'cabs', label: 'Cabs', icon: Car },
   ];
 
@@ -32,6 +34,7 @@ export function HeroSection() {
     hotels: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1920',
     trains: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1920',
     bus: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1920',
+    religion: 'https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=1920',
     cabs: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920',
   };
 
@@ -153,6 +156,13 @@ export function HeroSection() {
               </div>
             )}
 
+            {activeTab === 'religion' && (
+              <div className="p-6 sm:p-8">
+                <p className="text-muted-foreground text-center mb-6">Char Dham Yatra & pilgrimage tours. Search by destination and date.</p>
+                <ReligionTourWidget />
+              </div>
+            )}
+
             {activeTab === 'cabs' && (
               <div className="p-6 sm:p-8">
                 <p className="text-muted-foreground text-center mb-6">Book premium cabs for outstation & local trips. One-way, round-trip, or hourly.</p>
@@ -182,6 +192,7 @@ export function HeroSection() {
           {[
             { href: '/tours', label: 'Tours', icon: MapPin },
             { href: '/packages', label: 'Packages', icon: Package },
+            { href: '/tours?type=pilgrimage', label: 'Pilgrimage & Religion Tours', icon: Landmark },
             { href: '/cruise', label: 'Cruise', icon: Ship },
             { href: '/offers', label: 'Offers', icon: Search },
           ].map((item) => {

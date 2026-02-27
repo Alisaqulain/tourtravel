@@ -52,20 +52,21 @@ export function LoginPopup() {
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose(false)}>
       <DialogContent
-        className="p-0 gap-0 max-w-2xl overflow-hidden rounded-2xl border-0 shadow-2xl"
+        className="p-0 gap-0 max-w-2xl overflow-hidden rounded-2xl border-0 shadow-2xl relative"
         showClose={false}
       >
+        {/* Single close button: top-right of the whole dialog (not center) */}
+        <button
+          type="button"
+          onClick={() => handleClose(false)}
+          className="absolute right-4 top-4 z-20 rounded-full p-2 bg-black/10 hover:bg-black/20 text-foreground transition-colors"
+          aria-label="Close"
+        >
+          <X className="h-5 w-5" />
+        </button>
         <div className="flex flex-col sm:flex-row min-h-[420px]">
           {/* Left: visual + benefits */}
           <div className="relative w-full sm:w-[42%] min-h-[200px] sm:min-h-0 bg-gradient-to-br from-primary/90 to-amber-600 flex flex-col justify-end p-6 text-primary-foreground">
-            <button
-              type="button"
-              onClick={() => handleClose(false)}
-              className="absolute right-3 top-3 rounded-full p-2 hover:bg-white/20 transition-colors z-10"
-              aria-label="Close"
-            >
-              <X className="h-5 w-5" />
-            </button>
             <div className="relative h-32 sm:h-40 w-full mt-auto">
               <Image
                 src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600"

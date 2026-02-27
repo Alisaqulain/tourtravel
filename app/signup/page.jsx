@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Mail, Lock, User } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, User, MapPin } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,8 +15,13 @@ import { toast } from '@/lib/toast';
 export default function SignupPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const login = useAuthStore((s) => s.login);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isLoggedIn) router.replace('/profile');
+  }, [isLoggedIn, router]);
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -26,7 +31,14 @@ export default function SignupPage() {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: data.name, email: data.email, password: data.password }),
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          city: (data.city || '').trim(),
+          state: (data.state || '').trim(),
+          country: (data.country || '').trim(),
+        }),
         credentials: 'include',
       });
       const json = await res.json();
@@ -44,6 +56,14 @@ export default function SignupPage() {
       setLoading(false);
     }
   };
+
+  if (isLoggedIn) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+        <p className="text-muted-foreground">Redirecting...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
@@ -99,6 +119,41 @@ export default function SignupPage() {
                 />
               </div>
               {errors.password && <p className="text-sm text-primary mt-1">{errors.password.message}</p>}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="city">City</Label>
+                <div className="relative mt-1">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="city"
+                    placeholder="e.g. Mumbai"
+                    className="pl-10"
+                    {...register('city', { required: 'City is required' })}
+                  />
+                </div>
+                {errors.city && <p className="text-sm text-primary mt-1">{errors.city.message}</p>}
+              </div>
+              <div>
+                <Label htmlFor="state">State</Label>
+                <Input
+                  id="state"
+                  placeholder="e.g. Maharashtra"
+                  className="mt-1"
+                  {...register('state', { required: 'State is required' })}
+                />
+                {errors.state && <p className="text-sm text-primary mt-1">{errors.state.message}</p>}
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="country">Country</Label>
+              <Input
+                id="country"
+                placeholder="e.g. India"
+                className="mt-1"
+                {...register('country', { required: 'Country is required' })}
+              />
+              {errors.country && <p className="text-sm text-primary mt-1">{errors.country.message}</p>}
             </div>
             <Button type="submit" className="w-full rounded-xl" size="lg" disabled={loading}>
               {loading ? 'Creating account...' : 'Sign Up'}
