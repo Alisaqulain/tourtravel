@@ -3,9 +3,12 @@
 import Link from 'next/link';
 import { TrendingUp } from 'lucide-react';
 
+const OTA_YELLOW = '#EAB308';
+const OTA_CREAM = '#F5EDE4';
+
 const trending = [
-  { label: 'Delhi → Mumbai', href: '/flights' },
-  { label: 'Mumbai → Goa', href: '/flights' },
+  { label: 'Delhi - Mumbai', href: '/flights' },
+  { label: 'Mumbai - Goa', href: '/flights' },
   { label: 'Bangalore → Delhi', href: '/flights' },
   { label: 'Goa Hotels', href: '/hotels' },
   { label: 'Dubai Packages', href: '/packages' },
@@ -18,25 +21,22 @@ const trending = [
 
 export function TrendingSearches() {
   return (
-    <section className="py-4 border-b border-border bg-card/30">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center gap-3 flex-wrap">
-          <span className="text-sm font-semibold text-muted-foreground flex items-center gap-1.5 shrink-0">
-            <TrendingUp className="h-4 w-4 text-primary" />
-            Trending searches
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {trending.map((t) => (
-              <Link
-                key={t.label}
-                href={t.href}
-                className="px-3 py-1.5 rounded-full text-sm bg-muted/80 hover:bg-muted border border-border hover:border-primary/40 text-foreground transition-colors"
-              >
-                {t.label}
-              </Link>
-            ))}
-          </div>
-        </div>
+    <section className="py-6 border-b border-[#EDE5DC] max-w-6xl mx-auto px-4 sm:px-6">
+      <h3 className="text-base sm:text-lg font-bold mb-4 flex items-center gap-2">
+        <TrendingUp className="h-5 w-5 shrink-0" style={{ color: OTA_YELLOW }} aria-hidden />
+        <span className="text-foreground">Trending searches</span>
+      </h3>
+      <div className="flex flex-wrap gap-2 sm:gap-3">
+        {trending.map((t) => (
+          <Link
+            key={t.label}
+            href={t.href}
+            className="px-4 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-90"
+            style={{ backgroundColor: OTA_CREAM, color: OTA_YELLOW }}
+          >
+            {t.label}
+          </Link>
+        ))}
       </div>
     </section>
   );

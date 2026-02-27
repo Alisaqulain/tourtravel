@@ -1,330 +1,204 @@
 'use client';
 
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { Plane, Building2, Train, Bus, Ship, Car, MapPin, Package, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Plane, Building2, MapPin, Bus, Train, Ship, Car, Calendar, Users, Search } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { FlightSearchWidget } from '@/components/home/flight-search-widget';
+import { HotelSearchWidget } from '@/components/home/hotel-search-widget';
+import { TrainSearchWidget } from '@/components/home/train-search-widget';
+import { BusSearchWidget } from '@/components/home/bus-search-widget';
 import { Button } from '@/components/ui/button';
-import { ErrorBoundary } from '@/components/error-boundary';
 
-const HeroThreeBackground = lazy(() =>
-  import('@/components/home/hero-three-background').then((m) => ({ default: m.HeroThreeBackground }))
-);
-
-const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920',
-  'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920',
-  'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920',
-  'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920',
-  'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920',
-];
+const OTA_YELLOW = '#EAB308';
+const OTA_CREAM = '#F5EDE4';
 
 export function HeroSection() {
   const router = useRouter();
-  const [bgIndex, setBgIndex] = useState(0);
-  const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState('flights');
 
-  useEffect(() => setMounted(true), []);
-  useEffect(() => {
-    const t = setInterval(() => {
-      setBgIndex((i) => (i + 1) % HERO_IMAGES.length);
-    }, 3000);
-    return () => clearInterval(t);
-  }, []);
-  const [flightFrom, setFlightFrom] = useState('');
-  const [flightTo, setFlightTo] = useState('');
-  const [departureDate, setDepartureDate] = useState('');
-  const [returnDate, setReturnDate] = useState('');
-  const [travelers, setTravelers] = useState(1);
-  const [hotelCity, setHotelCity] = useState('');
-  const [checkIn, setCheckIn] = useState('');
-  const [checkOut, setCheckOut] = useState('');
-  const [guests, setGuests] = useState(1);
-  const [tourDestination, setTourDestination] = useState('');
-  const [duration, setDuration] = useState('');
-  const [budget, setBudget] = useState('');
-  const [busFrom, setBusFrom] = useState('');
-  const [busTo, setBusTo] = useState('');
-  const [busDate, setBusDate] = useState('');
-  const [trainFrom, setTrainFrom] = useState('');
-  const [trainTo, setTrainTo] = useState('');
-  const [trainDate, setTrainDate] = useState('');
-  const [trainClass, setTrainClass] = useState('');
-  const [cruiseDestination, setCruiseDestination] = useState('');
-  const [cruiseDate, setCruiseDate] = useState('');
-  const [carLocation, setCarLocation] = useState('');
-  const [carPickup, setCarPickup] = useState('');
-  const [carDropoff, setCarDropoff] = useState('');
+  const tabs = [
+    { id: 'flights', label: 'Flights', icon: Plane },
+    { id: 'hotels', label: 'Hotels', icon: Building2 },
+    { id: 'trains', label: 'Trains', icon: Train },
+    { id: 'bus', label: 'Bus', icon: Bus },
+    { id: 'cabs', label: 'Cabs', icon: Car },
+  ];
 
-  const handleSearchFlights = () => router.push('/flights');
-  const handleSearchHotels = () => router.push('/hotels');
-  const handleSearchTours = () => router.push('/tours');
-  const handleSearchBus = () => router.push('/bus');
-  const handleSearchTrain = () => router.push('/train');
-  const handleSearchCruise = () => router.push('/cruise');
-  const handleSearchCars = () => router.push('/cars');
+  const HERO_IMAGES = {
+    flights: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1920',
+    hotels: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1920',
+    trains: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1920',
+    bus: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1920',
+    cabs: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920',
+  };
+
+  const heroBgImage = HERO_IMAGES[activeTab] || HERO_IMAGES.flights;
 
   return (
-    <section className="relative min-h-[560px] sm:min-h-[640px] md:min-h-[720px] flex items-center overflow-hidden">
-      {HERO_IMAGES.map((src, i) => (
+    <section className="relative w-full overflow-hidden min-h-[640px]">
+      {/* Background image changes with selected tab: flight / hotel / train / bus / cab */}
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="absolute inset-0 z-0 hero-bg-image bg-cover bg-center"
+        style={{ backgroundImage: `url('${heroBgImage}')` }}
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(234,179,8,0.2) 35%, rgba(255,248,240,0.85) 70%, #FFF8F0 100%)',
+        }}
+        aria-hidden
+      />
+      {/* Animated gradient + orbs overlay */}
+      <div className="absolute inset-0 z-0 hero-animated-bg opacity-60" aria-hidden />
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden>
         <div
-          key={src}
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700"
-          style={{
-            backgroundImage: `url('${src}')`,
-            opacity: i === bgIndex ? 1 : 0,
-          }}
+          className="absolute top-[10%] left-[15%] w-64 h-64 rounded-full bg-amber-200/30 blur-3xl"
+          style={{ animation: 'hero-float-orb 15s ease-in-out infinite' }}
         />
-      ))}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/75" />
-      <div className="absolute inset-0 bg-dark/20" />
-      {mounted && (
-        <ErrorBoundary fallback={null}>
-          <Suspense fallback={null}>
-            <HeroThreeBackground />
-          </Suspense>
-        </ErrorBoundary>
-      )}
-
-      {/* Hero slider dots */}
-      <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
-        {HERO_IMAGES.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => setBgIndex(i)}
-            className={cn(
-              'h-2 rounded-full transition-all duration-300',
-              i === bgIndex ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/70'
-            )}
-            aria-label={`Slide ${i + 1}`}
-          />
-        ))}
+        <div
+          className="absolute top-[30%] right-[10%] w-48 h-48 rounded-full bg-yellow-200/25 blur-3xl"
+          style={{ animation: 'hero-float-orb-slow 20s ease-in-out infinite' }}
+        />
+        <div
+          className="absolute bottom-[20%] left-[25%] w-40 h-40 rounded-full bg-amber-100/40 blur-3xl"
+          style={{ animation: 'hero-float-orb 18s ease-in-out infinite', animationDelay: '-5s' }}
+        />
       </div>
 
-      <div className="container relative z-10 mx-auto px-4 sm:px-6 py-10 sm:py-14 md:py-20 w-full max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full text-center mb-6 sm:mb-8 md:mb-10"
-        >
-          <motion.h1
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 drop-shadow-xl tracking-tight mx-auto block w-full"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            Where to next?
-          </motion.h1>
-          <motion.p
-            className="text-sm sm:text-base md:text-lg text-white/95 max-w-xl mx-auto px-1 drop-shadow-md"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.25 }}
-          >
-            Flights, hotels, tours, bus, train, cruise & premium cars — one place. Best price guarantee & 24/7 support.
-          </motion.p>
-        </motion.div>
+      {/* Full-width yellow top bar */}
+      <div
+        className="relative z-10 w-full py-4 sm:py-5 md:py-6"
+        style={{ backgroundColor: OTA_YELLOW }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-foreground text-center tracking-tight">
+            Domestic and International Flights
+          </h1>
+          <p className="text-primary-foreground/85 text-center text-sm sm:text-base mt-1">
+            Book flights, hotels, trains, bus & cab — best prices guaranteed
+          </p>
+        </div>
+      </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-5xl mx-auto w-full"
-        >
-          <div className="rounded-2xl border border-white/15 bg-background/95 backdrop-blur-xl shadow-2xl p-4 md:p-6 text-foreground ring-1 ring-white/5">
-            <Tabs defaultValue="flights" className="w-full">
-              <TabsList className="flex flex-wrap h-auto gap-1 p-1 rounded-xl bg-muted/50 w-full justify-start overflow-x-auto text-foreground">
-                <TabsTrigger value="flights" className="gap-1.5 rounded-lg px-3 py-2 text-sm shrink-0 text-foreground data-[state=active]:text-white">
-                  <Plane className="h-4 w-4" /> Flights
-                </TabsTrigger>
-                <TabsTrigger value="hotels" className="gap-1.5 rounded-lg px-3 py-2 text-sm shrink-0 text-foreground data-[state=active]:text-white">
-                  <Building2 className="h-4 w-4" /> Hotels
-                </TabsTrigger>
-                <TabsTrigger value="tours" className="gap-1.5 rounded-lg px-3 py-2 text-sm shrink-0 text-foreground data-[state=active]:text-white">
-                  <MapPin className="h-4 w-4" /> Tours
-                </TabsTrigger>
-                <TabsTrigger value="bus" className="gap-1.5 rounded-lg px-3 py-2 text-sm shrink-0 text-foreground data-[state=active]:text-white">
-                  <Bus className="h-4 w-4" /> Bus
-                </TabsTrigger>
-                <TabsTrigger value="train" className="gap-1.5 rounded-lg px-3 py-2 text-sm shrink-0 text-foreground data-[state=active]:text-white">
-                  <Train className="h-4 w-4" /> Train
-                </TabsTrigger>
-                <TabsTrigger value="cruise" className="gap-1.5 rounded-lg px-3 py-2 text-sm shrink-0 text-foreground data-[state=active]:text-white">
-                  <Ship className="h-4 w-4" /> Cruise
-                </TabsTrigger>
-                <TabsTrigger value="cars" className="gap-1.5 rounded-lg px-3 py-2 text-sm shrink-0 text-foreground data-[state=active]:text-white">
-                  <Car className="h-4 w-4" /> Cars
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="flights" className="mt-5 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">From</Label>
-                    <Input placeholder="City or airport" value={flightFrom} onChange={(e) => setFlightFrom(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">To</Label>
-                    <Input placeholder="City or airport" value={flightTo} onChange={(e) => setFlightTo(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Departure</Label>
-                    <Input type="date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Return</Label>
-                    <Input type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Travelers</Label>
-                    <Input type="number" min={1} value={travelers} onChange={(e) => setTravelers(Number(e.target.value))} className="mt-1 rounded-xl h-11" />
-                  </div>
-                </div>
-                <Button size="lg" className="rounded-xl gap-2 bg-primary hover:bg-primary/90" onClick={handleSearchFlights}>
-                  <Search className="h-5 w-5" /> Search Flights
-                </Button>
-              </TabsContent>
-
-              <TabsContent value="hotels" className="mt-5 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Where</Label>
-                    <Input placeholder="City or destination" value={hotelCity} onChange={(e) => setHotelCity(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Check-in</Label>
-                    <Input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Check-out</Label>
-                    <Input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Guests</Label>
-                    <Input type="number" min={1} value={guests} onChange={(e) => setGuests(Number(e.target.value))} className="mt-1 rounded-xl h-11" />
-                  </div>
-                </div>
-                <Button size="lg" className="rounded-xl gap-2 bg-primary hover:bg-primary/90" onClick={handleSearchHotels}>
-                  <Search className="h-5 w-5" /> Search Hotels
-                </Button>
-              </TabsContent>
-
-              <TabsContent value="tours" className="mt-5 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Destination</Label>
-                    <Input placeholder="Where do you want to go?" value={tourDestination} onChange={(e) => setTourDestination(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Duration</Label>
-                    <Input placeholder="e.g. 7 days" value={duration} onChange={(e) => setDuration(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Budget (USD)</Label>
-                    <Input placeholder="Max budget" value={budget} onChange={(e) => setBudget(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                </div>
-                <Button size="lg" className="rounded-xl gap-2 bg-primary hover:bg-primary/90" onClick={handleSearchTours}>
-                  <Search className="h-5 w-5" /> Search Tours
-                </Button>
-              </TabsContent>
-
-              <TabsContent value="bus" className="mt-5 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">From</Label>
-                    <Input placeholder="City or station" value={busFrom} onChange={(e) => setBusFrom(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">To</Label>
-                    <Input placeholder="City or station" value={busTo} onChange={(e) => setBusTo(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Date</Label>
-                    <Input type="date" value={busDate} onChange={(e) => setBusDate(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                </div>
-                <Button size="lg" className="rounded-xl gap-2 bg-primary hover:bg-primary/90" onClick={handleSearchBus}>
-                  <Search className="h-5 w-5" /> Search Bus
-                </Button>
-              </TabsContent>
-
-              <TabsContent value="train" className="mt-5 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">From</Label>
-                    <Input placeholder="Station or city" value={trainFrom} onChange={(e) => setTrainFrom(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">To</Label>
-                    <Input placeholder="Station or city" value={trainTo} onChange={(e) => setTrainTo(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Date</Label>
-                    <Input type="date" value={trainDate} onChange={(e) => setTrainDate(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Class</Label>
-                    <select value={trainClass} onChange={(e) => setTrainClass(e.target.value)} className="mt-1 w-full rounded-xl border border-input bg-background h-11 px-3 text-sm">
-                      <option value="">Any</option>
-                      <option value="AC 1 Tier">AC 1 Tier</option>
-                      <option value="AC 2 Tier">AC 2 Tier</option>
-                      <option value="AC 3 Tier">AC 3 Tier</option>
-                      <option value="AC Chair Car">AC Chair Car</option>
-                      <option value="Sleeper">Sleeper</option>
-                    </select>
-                  </div>
-                </div>
-                <Button size="lg" className="rounded-xl gap-2 bg-primary hover:bg-primary/90" onClick={handleSearchTrain}>
-                  <Search className="h-5 w-5" /> Search Trains
-                </Button>
-              </TabsContent>
-
-              <TabsContent value="cruise" className="mt-5 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Destination / Route</Label>
-                    <Input placeholder="e.g. Caribbean, Mediterranean" value={cruiseDestination} onChange={(e) => setCruiseDestination(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Departure date</Label>
-                    <Input type="date" value={cruiseDate} onChange={(e) => setCruiseDate(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                </div>
-                <Button size="lg" className="rounded-xl gap-2 bg-primary hover:bg-primary/90" onClick={handleSearchCruise}>
-                  <Search className="h-5 w-5" /> Search Cruises
-                </Button>
-              </TabsContent>
-
-              <TabsContent value="cars" className="mt-5 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Pick-up location</Label>
-                    <Input placeholder="City or airport" value={carLocation} onChange={(e) => setCarLocation(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Pick-up date</Label>
-                    <Input type="date" value={carPickup} onChange={(e) => setCarPickup(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                  <div>
-                    <Label className="text-foreground text-xs font-medium">Drop-off date</Label>
-                    <Input type="date" value={carDropoff} onChange={(e) => setCarDropoff(e.target.value)} className="mt-1 rounded-xl h-11" />
-                  </div>
-                </div>
-                <Button size="lg" className="rounded-xl gap-2 bg-primary hover:bg-primary/90" onClick={handleSearchCars}>
-                  <Search className="h-5 w-5" /> Search Premium Cars
-                </Button>
-              </TabsContent>
-            </Tabs>
+      {/* Main search card - overlaps slightly into yellow */}
+      <div className="relative z-10 -mt-4 sm:-mt-6 md:-mt-8 px-4 sm:px-6">
+        <div className="container mx-auto max-w-6xl">
+          {/* Tab pills: Flights | Hotels | Trains | Bus | Cabs - ref style: inactive = beige + orange text, active = orange + white */}
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-5">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    'flex items-center gap-2 rounded-full px-5 sm:px-6 py-3 text-sm font-semibold transition-all shadow-sm',
+                    isActive ? 'text-white shadow-md' : 'hover:opacity-90'
+                  )}
+                  style={{
+                    backgroundColor: isActive ? OTA_YELLOW : OTA_CREAM,
+                    color: isActive ? '#1c1917' : '#B45309',
+                  }}
+                >
+                  <Icon className="h-4 w-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
-        </motion.div>
+
+          {/* Big white search card */}
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+            className="rounded-2xl border border-gray-200 bg-white shadow-2xl shadow-black/10 overflow-hidden"
+          >
+            {activeTab === 'flights' && (
+              <div className="p-6 sm:p-8">
+                <p className="text-muted-foreground text-center mb-6">Book domestic & international flights at best prices. Compare and save.</p>
+                <FlightSearchWidget hideHeader />
+              </div>
+            )}
+
+            {activeTab === 'hotels' && (
+              <div className="p-6 sm:p-8">
+                <p className="text-muted-foreground text-center mb-6">Find the best hotels and stays. Check-in, check-out, and book in one place.</p>
+                <HotelSearchWidget />
+              </div>
+            )}
+
+            {activeTab === 'trains' && (
+              <div className="p-6 sm:p-8">
+                <p className="text-muted-foreground text-center mb-6">Book train tickets easily. IRCTC and major routes at best fares.</p>
+                <TrainSearchWidget />
+              </div>
+            )}
+
+            {activeTab === 'bus' && (
+              <div className="p-6 sm:p-8">
+                <p className="text-muted-foreground text-center mb-6">Book bus tickets for intercity travel. Safe, comfortable, best prices.</p>
+                <BusSearchWidget />
+              </div>
+            )}
+
+            {activeTab === 'cabs' && (
+              <div className="p-6 sm:p-8">
+                <p className="text-muted-foreground text-center mb-6">Book premium cabs for outstation & local trips. One-way, round-trip, or hourly.</p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                  <div className="flex flex-wrap justify-center gap-3">
+                    <span className="px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">Outstation</span>
+                    <span className="px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">Local</span>
+                    <span className="px-4 py-2 rounded-full bg-primary/10 text-sm font-medium text-muted-foreground">Airport transfer</span>
+                  </div>
+                  <Button
+                    size="lg"
+                    className="rounded-xl font-bold text-base px-8 h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
+                    onClick={() => router.push('/cars')}
+                  >
+                    <Car className="h-5 w-5 mr-2" /> Explore Premium Cars
+                  </Button>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Secondary service nav: Tours | Packages | Cruise | Offers */}
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl mt-8 pb-8">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+          {[
+            { href: '/tours', label: 'Tours', icon: MapPin },
+            { href: '/packages', label: 'Packages', icon: Package },
+            { href: '/cruise', label: 'Cruise', icon: Ship },
+            { href: '/offers', label: 'Offers', icon: Search },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-90 shadow-sm"
+                style={{ backgroundColor: OTA_CREAM, color: '#B45309' }}
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

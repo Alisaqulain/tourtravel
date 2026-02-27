@@ -31,10 +31,10 @@ export function PromoBanner() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="container mx-auto px-4 -mt-2 relative z-10"
+      className="container mx-auto px-4 sm:px-6 pt-6 pb-2 relative z-10 max-w-6xl"
       aria-label="Offers"
     >
-      <div className="rounded-2xl bg-primary text-primary-foreground shadow-lg overflow-hidden border border-primary/20">
+      <div className="rounded-2xl text-primary-foreground shadow-lg overflow-hidden border-0 py-4 px-4 sm:px-6 bg-primary">
         <div className="flex items-center justify-between gap-4 px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className="hidden sm:flex h-10 w-10 rounded-xl bg-white/15 items-center justify-center shrink-0">

@@ -24,28 +24,35 @@ import { Newsletter } from '@/components/home/newsletter';
 
 export default function HomePage() {
   return (
-    <>
+    <main className="min-h-screen" style={{ backgroundColor: '#FFF8F0' }}>
+      {/* Hero: full-width OTA style with big search (Goibibo / MakeMyTrip style) */}
       <HeroSection />
-      <PromoBanner />
-      <TrendingSearches />
-      <DealsStrip />
-      <StatsStrip />
-      <FeaturedCategories />
-      <HotDeals />
-      <PopularDestinations />
-      <TrendingPackages />
-      <FlightDeals />
-      <HotelListings />
-      <ExploreBus />
-      <ExploreTrain />
-      <ExploreCruise />
-      <ExploreCars />
-      <BestOffers />
-      <WhyChooseUs />
-      <TrustBadges />
-      <Testimonials />
-      <CtaStrip />
-      <Newsletter />
-    </>
+
+      {/* Main content: single column */}
+      <div className="w-full">
+        <PromoBanner />
+        <TrendingSearches />
+        <DealsStrip />
+        <StatsStrip />
+        <section className="py-10 md:py-14 lg:py-16 bg-muted/30">
+          <FeaturedCategories />
+        </section>
+        <HotDeals />
+        <PopularDestinations />
+        <TrendingPackages />
+        <FlightDeals />
+        <HotelListings />
+        <ExploreBus />
+        <ExploreTrain />
+        <ExploreCruise />
+        <ExploreCars />
+        <BestOffers />
+        <WhyChooseUs />
+        <TrustBadges />
+        <Testimonials />
+        <CtaStrip />
+        <Newsletter />
+      </div>
+    </main>
   );
 }

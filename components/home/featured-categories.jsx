@@ -16,15 +16,15 @@ const categories = [
 
 export function FeaturedCategories() {
   return (
-    <section className="py-10 md:py-14 bg-muted/40 border-b border-border" aria-labelledby="featured-categories-heading">
-      <div className="container mx-auto px-4">
-        <h2 id="featured-categories-heading" className="text-2xl md:text-3xl font-bold mb-2 text-center">
+    <section className="py-10 md:py-14 border-b border-[#EDE5DC]" style={{ backgroundColor: '#FFF8F0' }} aria-labelledby="featured-categories-heading">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+        <h2 id="featured-categories-heading" className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-center text-foreground">
           Explore by category
         </h2>
-        <p className="text-muted-foreground text-center mb-8 max-w-xl mx-auto">
+        <p className="text-muted-foreground text-center mb-10 max-w-2xl mx-auto text-base">
           Flights, hotels, tours, bus, train, and packages — find everything in one place.
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
           {categories.map((cat, i) => {
             const Icon = cat.icon;
             return (
@@ -36,12 +36,12 @@ export function FeaturedCategories() {
                 transition={{ delay: i * 0.04 }}
               >
                 <Link href={cat.href} className="block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-2xl">
-                  <Card className="p-5 h-full flex flex-col items-center text-center rounded-2xl border border-border shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200 group">
-                    <div className="h-12 w-12 rounded-xl bg-primary/15 flex items-center justify-center mb-3 group-hover:bg-primary/25 transition-colors">
-                      <Icon className="h-6 w-6 text-primary" aria-hidden />
+                  <Card className="p-6 sm:p-8 h-full flex flex-col items-center text-center rounded-2xl border border-border shadow-sm hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 transition-all duration-200 group">
+                    <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl flex items-center justify-center mb-4 transition-colors bg-primary/20">
+                      <Icon className="h-7 w-7 sm:h-8 sm:w-8 text-primary" aria-hidden />
                     </div>
-                    <span className="font-semibold text-sm">{cat.label}</span>
-                    <span className="text-xs text-muted-foreground mt-0.5">{cat.desc}</span>
+                    <span className="font-bold text-base">{cat.label}</span>
+                    <span className="text-sm text-muted-foreground mt-1">{cat.desc}</span>
                   </Card>
                 </Link>
               </motion.div>

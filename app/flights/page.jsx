@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Plane, ArrowLeft, Eye, SlidersHorizontal } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { Button } from '@/components/ui/button';
@@ -33,6 +34,11 @@ function FlightCardSkeleton() {
 
 export default function FlightsPage() {
   const setSelectedFlight = useBookingStore((s) => s.setSelectedFlight);
+  const searchParams = useSearchParams();
+  const urlOrigin = searchParams.get('origin') || '';
+  const urlDestination = searchParams.get('destination') || '';
+  const urlDate = searchParams.get('date') || '';
+  const urlAdults = searchParams.get('adults') ? parseInt(searchParams.get('adults'), 10) : 1;
   const [search, setSearch] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [minPrice, setMinPrice] = useState('');
@@ -46,9 +52,10 @@ export default function FlightsPage() {
 
   const params = useMemo(
     () => ({
-      origin: '',
-      destination: '',
-      adults: 1,
+      origin: urlOrigin,
+      destination: urlDestination,
+      date: urlDate,
+      adults: Math.min(9, Math.max(1, Number.isNaN(urlAdults) ? 1 : urlAdults)),
       page,
       limit,
       sortBy,
@@ -59,7 +66,7 @@ export default function FlightsPage() {
       ...(refundable ? { refundable: 'true' } : {}),
       ...(search ? { airline: search } : {}),
     }),
-    [page, limit, sortBy, order, minPrice, maxPrice, stops, refundable, search]
+    [urlOrigin, urlDestination, urlDate, urlAdults, page, limit, sortBy, order, minPrice, maxPrice, stops, refundable, search]
   );
 
   const { data: flights, total, page: currentPage, totalPages, loading, error, refetch } = useTravelList('flights', params);
