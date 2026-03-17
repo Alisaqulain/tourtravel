@@ -121,27 +121,31 @@ export default function CharDhamPackageDetailPage() {
         modal: {
           ondismiss: async function () {
             try {
+              const tokenToSend = cancelToken || '';
               console.log('[CharDham][PayNow] Razorpay dismissed - restoring seats/cancel booking', {
                 bookingMongoId,
+                hasCancelToken: !!tokenToSend,
               });
-              // Use cancelToken so cancel works on live even when auth cookie isn't sent (401 fix).
-              await fetch(`/api/chardham/bookings/${bookingMongoId}/cancel`, {
+              const cancelRes = await fetch(`/api/chardham/bookings/${bookingMongoId}/cancel`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({ cancelToken: cancelToken || '' }),
+                body: JSON.stringify({ cancelToken: tokenToSend }),
               });
+              if (!cancelRes.ok) {
+                console.warn('[CharDham][PayNow] cancel returned', cancelRes.status);
+              }
             } catch (e) {
-              // Non-blocking: user already cancelled payment.
               console.error('CharDham cancel call failed:', e?.message || e);
             } finally {
               setProcessing(false);
-              toast.error('Payment cancelled');
+              toast.error('Payment cancelled. Refresh the page to see updated seats.');
             }
           },
         },
       };
       console.log('[CharDham][PayNow] creating Razorpay instance...');
+      toast.info('Tip: If the payment box doesn\'t accept input, click inside it first.');
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (resp) {
         console.error('[CharDham][PayNow] payment.failed', resp);

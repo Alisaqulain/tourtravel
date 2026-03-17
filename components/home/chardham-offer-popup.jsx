@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -31,11 +32,14 @@ export function CharDhamOfferPopup() {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); else setOpen(v); }}>
-      <DialogContent className="max-w-md rounded-2xl" showClose={false}>
+      <DialogContent className="max-w-md rounded-2xl" showClose={false} aria-describedby="chardham-offer-desc">
         <DialogHeader className="text-center">
           <DialogTitle className="text-xl">
             ✨ Exclusive Char Dham Yatra Offer ✨
           </DialogTitle>
+          <DialogDescription id="chardham-offer-desc">
+            Limited seats available. Book your pilgrimage with best prices.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2">
           <p className="text-muted-foreground text-sm text-center">

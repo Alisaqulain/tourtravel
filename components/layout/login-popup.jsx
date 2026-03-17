@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store';
@@ -54,7 +55,11 @@ export function LoginPopup() {
       <DialogContent
         className="p-0 gap-0 max-w-2xl overflow-hidden rounded-2xl border-0 shadow-2xl relative"
         showClose={false}
+        aria-describedby="login-popup-desc"
       >
+        <DialogDescription id="login-popup-desc" className="sr-only">
+          Sign in or create an account to get the best prices and manage your bookings.
+        </DialogDescription>
         {/* Single close button: top-right of the whole dialog (not center) */}
         <button
           type="button"

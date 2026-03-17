@@ -10,10 +10,13 @@ export async function POST(request, { params }) {
 
   let body = {};
   try {
-    body = await request.json();
+    const contentType = request.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      body = await request.json();
+    }
   } catch (_) {}
 
-  const cancelToken = (body?.cancelToken || '').trim();
+  const cancelToken = (body?.cancelToken ?? '').trim();
   const user = await getAuthUser(request);
 
   try {
@@ -27,7 +30,7 @@ export async function POST(request, { params }) {
     const ownerValid = user && booking.userId?.toString() === user._id?.toString();
 
     if (!tokenValid && !ownerValid) {
-      return error(tokenValid ? 'Forbidden' : 'Login required or invalid cancel token', tokenValid ? 403 : 401);
+      return error('Login required or invalid cancel token', 401);
     }
 
     if (booking.bookingStatus === 'cancelled') {

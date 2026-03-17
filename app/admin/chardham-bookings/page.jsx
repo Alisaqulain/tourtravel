@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, CalendarDays, Eye, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatPrice } from '@/lib/utils';
 import { toast } from '@/lib/toast';
 
@@ -136,8 +136,11 @@ export default function AdminCharDhamBookingsPage() {
       )}
 
       <Dialog open={!!viewId} onOpenChange={(open) => !open && setViewId(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Booking details</DialogTitle></DialogHeader>
+        <DialogContent className="max-w-md" aria-describedby="chardham-booking-view-desc">
+          <DialogHeader>
+            <DialogTitle>Booking details</DialogTitle>
+            <DialogDescription id="chardham-booking-view-desc">View and manage this Char Dham booking.</DialogDescription>
+          </DialogHeader>
           {viewBooking && (
             <div className="space-y-3 text-sm">
               <p><span className="text-muted-foreground">Name:</span> {viewBooking.fullName}</p>

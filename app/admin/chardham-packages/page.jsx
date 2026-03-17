@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Plus, Pencil, Trash2, ArrowLeft, Mountain, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatPrice } from '@/lib/utils';
 import { toast } from '@/lib/toast';
 
@@ -133,8 +133,11 @@ export default function AdminCharDhamPackagesPage() {
         </Card>
       )}
       <Dialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Delete package?</DialogTitle></DialogHeader>
+        <DialogContent aria-describedby="chardham-delete-pkg-desc">
+          <DialogHeader>
+            <DialogTitle>Delete package?</DialogTitle>
+            <DialogDescription id="chardham-delete-pkg-desc">This cannot be undone.</DialogDescription>
+          </DialogHeader>
           <p className="text-muted-foreground text-sm">This cannot be undone.</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteId(null)}>Cancel</Button>
