@@ -48,6 +48,11 @@ export function ReligionTourWidget() {
   }, [destinationSearch]);
 
   const handleSearch = () => {
+    if (selectedDestination.id === 'chardham') {
+      const q = tourDate ? `?date=${encodeURIComponent(tourDate)}` : '';
+      router.push(`/chardham-yatra${q}`);
+      return;
+    }
     const params = new URLSearchParams();
     params.set('type', 'pilgrimage');
     params.set('destination', selectedDestination.id);

@@ -10,7 +10,6 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const id = body?.id || body?.bookingId;
-    console.log('[CharDham][OrderCreate] request', { id });
     if (!id) return error('Booking id is required', 400);
 
     await connectDB();
@@ -41,7 +40,6 @@ export async function POST(request) {
       key: process.env.RAZORPAY_KEY_ID,
     });
   } catch (e) {
-    console.error('CharDham order create:', e);
     return error(e.message || 'Failed to create order', 500);
   }
 }

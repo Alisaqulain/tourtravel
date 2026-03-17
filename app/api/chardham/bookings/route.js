@@ -18,7 +18,6 @@ export async function POST(request) {
     if (!user) return error('Login required', 401);
     const body = await request.json();
     const { packageId, fullName, email, phone, seats, travelDate, specialRequest } = body || {};
-    console.log('[CharDham][BookingCreate] request', { userId: user._id?.toString(), packageId, seats, travelDate });
     if (!packageId || !fullName?.trim() || !email?.trim() || !phone?.trim() || seats == null || seats < 1 || !travelDate) {
       return error('Full name, email, phone, seats, and travel date are required', 400);
     }
@@ -64,7 +63,6 @@ export async function POST(request) {
     });
 
     await CharDhamPackage.updateOne({ _id: packageId }, { $inc: { seatsAvailable: -numSeats } });
-    console.log('[CharDham][BookingCreate] created', { bookingId, totalAmount, discountPercent, seats: numSeats });
 
     return success({
       booking: {

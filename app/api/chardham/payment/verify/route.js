@@ -28,13 +28,6 @@ export async function POST(request) {
     const booking = await CharDhamBooking.findById(id);
     if (!booking) return error('Booking not found', 404);
 
-    console.log('[CharDham][Verify] incoming', {
-      id,
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-    });
-
     const valid = verifySignature(
       razorpay_order_id,
       razorpay_payment_id,
@@ -44,7 +37,6 @@ export async function POST(request) {
 
     // If signature/payment is invalid, restore seats and mark booking cancelled.
     if (!valid) {
-      console.log('[CharDham][Verify] invalid signature -> cancelling booking + restoring seats', { id });
       const pkgId = booking.packageId?._id || booking.packageId;
       if (pkgId) {
         await import('@/models/CharDhamPackage').then(({ CharDhamPackage }) =>

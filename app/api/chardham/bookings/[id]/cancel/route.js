@@ -60,7 +60,6 @@ export async function POST(request, { params }) {
 
     return success({ cancelled: true });
   } catch (e) {
-    console.error('CharDham cancel error:', e);
     return error('Failed to cancel booking', 500);
   }
 }

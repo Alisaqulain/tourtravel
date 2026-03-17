@@ -65,11 +65,6 @@ export default function CharDhamPackageDetailPage() {
 
   const openRazorpay = useCallback(
     async (orderData, bookingMongoId, cancelToken) => {
-      console.log('[CharDham][PayNow] openRazorpay called', {
-        hasRazorpay: typeof window !== 'undefined' ? !!window.Razorpay : false,
-        orderData,
-        bookingMongoId,
-      });
       if (!orderData.key || !orderData.orderId) {
         toast.error('Payment not configured. Please contact support.');
         setProcessing(false);
@@ -89,7 +84,6 @@ export default function CharDhamPackageDetailPage() {
         order_id: orderData.orderId,
         handler: async function (response) {
           try {
-            console.log('[CharDham][PayNow] Razorpay handler response', response);
             const verifyRes = await fetch('/api/chardham/payment/verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -101,9 +95,7 @@ export default function CharDhamPackageDetailPage() {
                 id: bookingMongoId,
               }),
             });
-            console.log('[CharDham][PayNow] verifyRes status', verifyRes.status);
             const data = await verifyRes.json();
-            console.log('[CharDham][PayNow] verifyRes data', data);
             if (data?.success) {
               setBookingOpen(false);
               toast.success('Booking confirmed!');
@@ -113,7 +105,6 @@ export default function CharDhamPackageDetailPage() {
             }
           } catch (err) {
             toast.error('Verification failed');
-            console.error('[CharDham][PayNow] verification error', err);
           } finally {
             setProcessing(false);
           }
@@ -122,33 +113,23 @@ export default function CharDhamPackageDetailPage() {
           ondismiss: async function () {
             try {
               const tokenToSend = cancelToken || '';
-              console.log('[CharDham][PayNow] Razorpay dismissed - restoring seats/cancel booking', {
-                bookingMongoId,
-                hasCancelToken: !!tokenToSend,
-              });
-              const cancelRes = await fetch(`/api/chardham/bookings/${bookingMongoId}/cancel`, {
+              await fetch(`/api/chardham/bookings/${bookingMongoId}/cancel`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({ cancelToken: tokenToSend }),
               });
-              if (!cancelRes.ok) {
-                console.warn('[CharDham][PayNow] cancel returned', cancelRes.status);
-              }
-            } catch (e) {
-              console.error('CharDham cancel call failed:', e?.message || e);
-            } finally {
+            } catch (_) {}
+            finally {
               setProcessing(false);
               toast.error('Payment cancelled. Refresh the page to see updated seats.');
             }
           },
         },
       };
-      console.log('[CharDham][PayNow] creating Razorpay instance...');
       toast.info('Tip: If the payment box doesn\'t accept input, click inside it first.');
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (resp) {
-        console.error('[CharDham][PayNow] payment.failed', resp);
         const desc =
           resp?.error?.description ||
           resp?.error?.reason ||
@@ -157,6 +138,7 @@ export default function CharDhamPackageDetailPage() {
         toast.error(String(desc));
         setProcessing(false);
       });
+      setBookingOpen(false);
       rzp.open();
     },
     [router]
@@ -172,11 +154,6 @@ export default function CharDhamPackageDetailPage() {
     let createdBookingId = null;
     let createdCancelToken = null;
     try {
-      console.log('[CharDham][PayNow] Creating booking...', {
-        packageId: pkg.id ?? pkg._id,
-        seats: Number(form.seats) || 1,
-        travelDate: form.travelDate,
-      });
       const bookRes = await fetch('/api/chardham/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -192,7 +169,6 @@ export default function CharDhamPackageDetailPage() {
         }),
       });
       const bookData = await bookRes.json();
-      console.log('[CharDham][PayNow] bookingRes', bookRes.status, bookData);
       if (!bookData?.success || !bookData?.data?.booking?.id) {
         toast.error(bookData?.message || 'Failed to create booking');
         setProcessing(false);
@@ -210,7 +186,6 @@ export default function CharDhamPackageDetailPage() {
         body: JSON.stringify({ id: bookingId }),
       });
       const orderData = await orderRes.json();
-      console.log('[CharDham][PayNow] orderRes', orderRes.status, orderData);
       if (!orderData?.success || !orderData?.data?.orderId) {
         toast.error(orderData?.message || 'Failed to create payment order');
         setProcessing(false);
@@ -228,7 +203,6 @@ export default function CharDhamPackageDetailPage() {
         bookData?.data?.booking?.cancelToken || ''
       );
     } catch (err) {
-      console.error(err);
       if (createdBookingId && createdCancelToken) {
         try {
           await fetch(`/api/chardham/bookings/${createdBookingId}/cancel`, {
@@ -411,12 +385,7 @@ export default function CharDhamPackageDetailPage() {
       </main>
 
       <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
-        <DialogContent
-          className="max-w-md"
-          aria-describedby="book-char-dham-desc"
-          onInteractOutside={(e) => { if (processing) e.preventDefault(); }}
-          onPointerDownOutside={(e) => { if (processing) e.preventDefault(); }}
-        >
+        <DialogContent className="max-w-md" aria-describedby="book-char-dham-desc">
           <DialogHeader>
             <DialogTitle>Book {pkg.name}</DialogTitle>
             <DialogDescription id="book-char-dham-desc">
