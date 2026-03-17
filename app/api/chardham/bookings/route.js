@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { connectDB } from '@/lib/db';
 import { CharDhamPackage } from '@/models/CharDhamPackage';
 import { CharDhamBooking } from '@/models/CharDhamBooking';
@@ -6,6 +7,9 @@ import { success, error } from '@/lib/apiResponse';
 
 function generateBookingId() {
   return 'CD' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
+}
+function generateCancelToken() {
+  return crypto.randomBytes(24).toString('hex');
 }
 
 export async function POST(request) {
@@ -39,8 +43,10 @@ export async function POST(request) {
     const discountAmount = Math.round((baseAmount * discountPercent) / 100);
     const totalAmount = Math.max(0, baseAmount - discountAmount);
     const bookingId = generateBookingId();
+    const cancelToken = generateCancelToken();
     const booking = await CharDhamBooking.create({
       bookingId,
+      cancelToken,
       userId: user._id,
       packageId: pkg._id,
       fullName: fullName.trim(),
@@ -64,6 +70,7 @@ export async function POST(request) {
       booking: {
         id: booking._id?.toString(),
         bookingId,
+        cancelToken,
         totalAmount,
         baseAmount,
         discountPercent,

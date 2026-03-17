@@ -15,6 +15,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -63,7 +64,7 @@ export default function CharDhamPackageDetailPage() {
   }, [user]);
 
   const openRazorpay = useCallback(
-    async (orderData, bookingMongoId) => {
+    async (orderData, bookingMongoId, cancelToken) => {
       console.log('[CharDham][PayNow] openRazorpay called', {
         hasRazorpay: typeof window !== 'undefined' ? !!window.Razorpay : false,
         orderData,
@@ -123,10 +124,12 @@ export default function CharDhamPackageDetailPage() {
               console.log('[CharDham][PayNow] Razorpay dismissed - restoring seats/cancel booking', {
                 bookingMongoId,
               });
-              // If user cuts the payment, we must restore seats and cancel the booking.
+              // Use cancelToken so cancel works on live even when auth cookie isn't sent (401 fix).
               await fetch(`/api/chardham/bookings/${bookingMongoId}/cancel`, {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
+                body: JSON.stringify({ cancelToken: cancelToken || '' }),
               });
             } catch (e) {
               // Non-blocking: user already cancelled payment.
@@ -163,6 +166,7 @@ export default function CharDhamPackageDetailPage() {
     }
     setProcessing(true);
     let createdBookingId = null;
+    let createdCancelToken = null;
     try {
       console.log('[CharDham][PayNow] Creating booking...', {
         packageId: pkg.id ?? pkg._id,
@@ -192,6 +196,7 @@ export default function CharDhamPackageDetailPage() {
       }
       const bookingId = bookData.data.booking.id;
       createdBookingId = bookingId;
+      createdCancelToken = bookData.data.booking.cancelToken || null;
 
       console.log('[CharDham][PayNow] Creating payment order...', { bookingId });
       const orderRes = await fetch('/api/chardham/orders', {
@@ -215,18 +220,18 @@ export default function CharDhamPackageDetailPage() {
           currency: orderData.data.currency,
           key: orderData.data.key,
         },
-        bookingId
+        bookingId,
+        bookData?.data?.booking?.cancelToken || ''
       );
     } catch (err) {
       console.error(err);
-      if (createdBookingId) {
+      if (createdBookingId && createdCancelToken) {
         try {
-          console.log('[CharDham][PayNow] handleBookingSubmit catch - cancelling booking', {
-            bookingId: createdBookingId,
-          });
           await fetch(`/api/chardham/bookings/${createdBookingId}/cancel`, {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
+            body: JSON.stringify({ cancelToken: createdCancelToken }),
           });
         } catch (_) {}
       }
@@ -402,9 +407,12 @@ export default function CharDhamPackageDetailPage() {
       </main>
 
       <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md" aria-describedby="book-char-dham-desc">
           <DialogHeader>
             <DialogTitle>Book {pkg.name}</DialogTitle>
+            <DialogDescription id="book-char-dham-desc">
+              Enter your details and pay securely. Seats are reserved after payment.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleBookingSubmit} className="space-y-4">
             <div>

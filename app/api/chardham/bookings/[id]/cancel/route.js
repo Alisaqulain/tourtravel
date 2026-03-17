@@ -5,11 +5,16 @@ import { getAuthUser } from '@/lib/authGuard';
 import { success, error } from '@/lib/apiResponse';
 
 export async function POST(request, { params }) {
-  const user = await getAuthUser(request);
-  if (!user) return error('Login required', 401);
-
   const id = params?.id;
   if (!id) return error('Booking id required', 400);
+
+  let body = {};
+  try {
+    body = await request.json();
+  } catch (_) {}
+
+  const cancelToken = (body?.cancelToken || '').trim();
+  const user = await getAuthUser(request);
 
   try {
     await connectDB();
@@ -17,19 +22,12 @@ export async function POST(request, { params }) {
     const booking = await CharDhamBooking.findById(id).lean();
     if (!booking) return error('Booking not found', 404);
 
-    console.log('[CharDham][Cancel] request', {
-      bookingId: id,
-      userId: user._id?.toString(),
-      bookingUserId: booking.userId?.toString?.() || booking.userId,
-      paymentStatus: booking.paymentStatus,
-      bookingStatus: booking.bookingStatus,
-      seats: booking.seats,
-      packageId: booking.packageId?._id || booking.packageId,
-    });
+    // Allow cancel by token (no auth cookie needed – works on live when cookie isn't sent)
+    const tokenValid = cancelToken && booking.cancelToken && booking.cancelToken === cancelToken;
+    const ownerValid = user && booking.userId?.toString() === user._id?.toString();
 
-    // Only allow owner of booking
-    if (booking.userId?.toString() !== user._id.toString()) {
-      return error('Forbidden', 403);
+    if (!tokenValid && !ownerValid) {
+      return error(tokenValid ? 'Forbidden' : 'Login required or invalid cancel token', tokenValid ? 403 : 401);
     }
 
     if (booking.bookingStatus === 'cancelled') {
