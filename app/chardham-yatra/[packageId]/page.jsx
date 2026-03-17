@@ -411,7 +411,12 @@ export default function CharDhamPackageDetailPage() {
       </main>
 
       <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
-        <DialogContent className="max-w-md" aria-describedby="book-char-dham-desc">
+        <DialogContent
+          className="max-w-md"
+          aria-describedby="book-char-dham-desc"
+          onInteractOutside={(e) => { if (processing) e.preventDefault(); }}
+          onPointerDownOutside={(e) => { if (processing) e.preventDefault(); }}
+        >
           <DialogHeader>
             <DialogTitle>Book {pkg.name}</DialogTitle>
             <DialogDescription id="book-char-dham-desc">
