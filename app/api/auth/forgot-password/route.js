@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import { User } from '@/models/User';
 import { error, success } from '@/lib/apiResponse';
@@ -21,20 +20,26 @@ export async function POST(request) {
     }
     const { email } = parsed.data;
     await connectDB();
-    const user = await User.findOne({ email });
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('_id email').lean();
     if (!user) {
-      // Don't reveal whether email exists
       return success({ message: 'If this email is registered, you will receive an OTP.' });
     }
+
     const otp = generateOtp();
-    user.resetOtp = otp;
-    user.resetOtpExpires = new Date(Date.now() + OTP_EXPIRY_MS);
-    await user.save({ validateBeforeSave: false });
+    const expires = new Date(Date.now() + OTP_EXPIRY_MS);
+    await User.updateOne(
+      { _id: user._id },
+      { $set: { resetOtp: otp, resetOtpExpires: expires } }
+    );
+
     const baseUrl = getEmailBaseUrl(request);
-    const { sent, error: mailErr } = await sendForgotPasswordOtpEmail(email, otp, baseUrl);
+    const result = await sendForgotPasswordOtpEmail(email, otp, baseUrl);
+    const sent = result && result.sent === true;
     if (!sent) {
+      const mailErr = result?.error || 'Email not configured';
       console.error('Forgot password email failed:', mailErr);
-      return error('Failed to send OTP. Please check SMTP settings or try again later.', 500);
+      return error('Could not send OTP. Check SMTP (SMTP_MAIL_FROM, SMTP_APP_PASSWORD) in .env.local and try again.', 500);
     }
     return success({ message: 'OTP sent to your email. If you don\'t see it, check your spam or junk folder.' });
   } catch (e) {

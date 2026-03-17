@@ -204,6 +204,12 @@ export default function AdminBookingsPage() {
                         <Mail className="h-3 w-3" />
                         {b.userEmail || '—'}
                       </div>
+                      {b.userPhone && (
+                        <div className="flex items-center gap-1 text-muted-foreground text-xs mt-0.5">
+                          <span className="font-medium text-foreground/80">Ph:</span>
+                          {b.userPhone}
+                        </div>
+                      )}
                     </td>
                     <td className="p-4 text-sm">
                       <IndianRupee className="h-3 w-3 inline mr-0.5" />

@@ -64,8 +64,13 @@ export default function CharDhamPackageDetailPage() {
 
   const openRazorpay = useCallback(
     async (orderData, bookingMongoId) => {
-      if (!window.Razorpay || !orderData.key || !orderData.orderId) {
-        toast.error('Payment gateway not ready. Please refresh and try again.');
+      if (!orderData.key || !orderData.orderId) {
+        toast.error('Payment not configured. Please contact support.');
+        setProcessing(false);
+        return;
+      }
+      if (typeof window === 'undefined' || !window.Razorpay) {
+        toast.error('Payment gateway still loading. Wait a few seconds and click Pay Now again.');
         setProcessing(false);
         return;
       }
@@ -198,7 +203,18 @@ export default function CharDhamPackageDetailPage() {
     <>
       <Script
         src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="afterInteractive"
         onLoad={() => setRazorpayLoaded(true)}
+        onError={() => {
+          // Fallback: inject script manually (helps when Next Script is blocked on some hosts)
+          if (typeof window !== 'undefined' && !window.Razorpay) {
+            const s = document.createElement('script');
+            s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+            s.async = true;
+            s.onload = () => setRazorpayLoaded(true);
+            document.body.appendChild(s);
+          }
+        }}
       />
       <main className="min-h-screen bg-background pb-16">
         <div className="container mx-auto px-4 py-6">
@@ -408,7 +424,7 @@ export default function CharDhamPackageDetailPage() {
             <p className="text-sm text-muted-foreground">
               Total: {formatPrice((pkg.price || 0) * (Number(form.seats) || 1))}
             </p>
-            <Button type="submit" className="w-full" disabled={processing || !razorpayLoaded}>
+            <Button type="submit" className="w-full" disabled={processing}>
               {processing ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing…</> : 'Pay Now'}
             </Button>
           </form>

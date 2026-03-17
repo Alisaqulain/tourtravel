@@ -89,8 +89,13 @@ export default function PaymentPage() {
 
   const openRazorpayCheckout = useCallback(
     async (orderData) => {
-      if (!window.Razorpay || !orderData.key || !orderData.orderId) {
-        toast.error('Payment gateway not ready. Please refresh and try again.');
+      if (!orderData.key || !orderData.orderId) {
+        toast.error('Payment not configured. Please contact support.');
+        setProcessing(false);
+        return;
+      }
+      if (typeof window === 'undefined' || !window.Razorpay) {
+        toast.error('Payment gateway still loading. Wait a few seconds and try again.');
         setProcessing(false);
         return;
       }
@@ -212,7 +217,17 @@ export default function PaymentPage() {
     <>
       <Script
         src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="afterInteractive"
         onLoad={() => setRazorpayLoaded(true)}
+        onError={() => {
+          if (typeof window !== 'undefined' && !window.Razorpay) {
+            const s = document.createElement('script');
+            s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+            s.async = true;
+            s.onload = () => setRazorpayLoaded(true);
+            document.body.appendChild(s);
+          }
+        }}
       />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Link href="/booking-summary" className="inline-flex items-center gap-2 text-foreground/80 hover:text-foreground mb-6 text-sm">
@@ -241,7 +256,7 @@ export default function PaymentPage() {
                 type="button"
                 className="w-full rounded-xl"
                 size="lg"
-                disabled={processing || !razorpayLoaded}
+                disabled={processing}
                 onClick={handleProceedToPay}
               >
                 {processing ? (

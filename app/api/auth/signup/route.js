@@ -14,13 +14,13 @@ export async function POST(request) {
       const msg = parsed.error.errors?.[0]?.message || 'Invalid input';
       return error(msg, 400);
     }
-    const { name, email, password, city, state, country } = parsed.data;
+    const { name, email, password, phone, city, state, country } = parsed.data;
     const dataToSave = {
+      phone: (phone || '').trim(),
       city: (city || '').trim(),
       state: (state || '').trim(),
       country: (country || '').trim(),
     };
-    console.log('[Signup] Received data:', { name, email, city: dataToSave.city, state: dataToSave.state, country: dataToSave.country });
     await connectDB();
     const existing = await User.findOne({ email });
     if (existing) return error('Email already registered', 400);
@@ -30,11 +30,10 @@ export async function POST(request) {
       password,
       ...dataToSave,
     });
-    console.log('[Signup] User saved to DB:', { id: user._id?.toString(), name: user.name, email: user.email, city: user.city, state: user.state, country: user.country });
     // Send welcome email (non-blocking; links use same domain as request – .com or .in)
     const baseUrl = getEmailBaseUrl(request);
     sendWelcomeEmail(user.email, user.name, baseUrl).catch((err) => console.error('Welcome email error:', err));
-    const userPayload = { id: user._id, name: user.name, email: user.email, role: user.role };
+    const userPayload = { id: user._id, name: user.name, email: user.email, phone: user.phone, role: user.role };
     const token = signToken({ userId: user._id.toString(), email: user.email, role: user.role });
     const res = NextResponse.json({
       success: true,

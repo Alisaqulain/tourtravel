@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Mail, Lock, User, MapPin } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, User, MapPin, Phone } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuthStore } from '@/store';
 import { toast } from '@/lib/toast';
+import { COUNTRY_OPTIONS, STATE_OPTIONS, getCitiesForState } from '@/lib/locationOptions';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -23,11 +24,22 @@ export default function SignupPage() {
     if (isLoggedIn) router.replace('/profile');
   }, [isLoggedIn, router]);
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
+  const selectedState = watch('state');
+
+  // Reset city when state changes so selection stays valid
+  useEffect(() => {
+    setValue('city', '');
+  }, [selectedState, setValue]);
 
   const onSubmit = async (data) => {
     setLoading(true);
     try {
+      const state = data.state === 'Other' ? (data.stateOther || '').trim() || 'Other' : (data.state || '').trim();
+      const country = data.country === 'Other' ? (data.countryOther || '').trim() || 'Other' : (data.country || '').trim();
+      const city = data.state === 'Other'
+        ? (data.cityOther || '').trim() || 'Other'
+        : (data.city === 'Other' ? (data.cityOther || '').trim() || 'Other' : (data.city || '').trim());
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -35,18 +47,19 @@ export default function SignupPage() {
           name: data.name,
           email: data.email,
           password: data.password,
-          city: (data.city || '').trim(),
-          state: (data.state || '').trim(),
-          country: (data.country || '').trim(),
+          phone: (data.phone || '').trim(),
+          city,
+          state,
+          country,
         }),
         credentials: 'include',
       });
       const json = await res.json();
       if (!res.ok) {
-        toast.error(json.error || 'Registration failed');
+        toast.error(json.error || json.message || 'Registration failed');
         return;
       }
-      login({ name: json.user.name, email: json.user.email });
+      login({ name: json.user.name, email: json.user.email, phone: json.user.phone });
       toast.success('Account created successfully!');
       const from = searchParams.get('from');
       router.push(from && from.startsWith('/') && !from.startsWith('//') ? from : '/profile');
@@ -120,40 +133,96 @@ export default function SignupPage() {
               </div>
               {errors.password && <p className="text-sm text-primary mt-1">{errors.password.message}</p>}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="city">City</Label>
-                <div className="relative mt-1">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="city"
-                    placeholder="e.g. Mumbai"
-                    className="pl-10"
-                    {...register('city', { required: 'City is required' })}
-                  />
-                </div>
-                {errors.city && <p className="text-sm text-primary mt-1">{errors.city.message}</p>}
-              </div>
-              <div>
-                <Label htmlFor="state">State</Label>
+            <div>
+              <Label htmlFor="phone">Phone number</Label>
+              <div className="relative mt-1">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="state"
-                  placeholder="e.g. Maharashtra"
-                  className="mt-1"
-                  {...register('state', { required: 'State is required' })}
+                  id="phone"
+                  type="tel"
+                  placeholder="e.g. 9876543210"
+                  className="pl-10"
+                  {...register('phone', { required: 'Phone is required' })}
                 />
-                {errors.state && <p className="text-sm text-primary mt-1">{errors.state.message}</p>}
               </div>
+              {errors.phone && <p className="text-sm text-primary mt-1">{errors.phone.message}</p>}
             </div>
             <div>
               <Label htmlFor="country">Country</Label>
-              <Input
+              <select
                 id="country"
-                placeholder="e.g. India"
-                className="mt-1"
+                className="mt-1 w-full h-10 rounded-lg border border-input bg-background px-3 text-sm"
                 {...register('country', { required: 'Country is required' })}
-              />
+              >
+                <option value="">Select country</option>
+                {COUNTRY_OPTIONS.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              {watch('country') === 'Other' && (
+                <Input
+                  placeholder="Specify country"
+                  className="mt-2"
+                  {...register('countryOther')}
+                />
+              )}
               {errors.country && <p className="text-sm text-primary mt-1">{errors.country.message}</p>}
+            </div>
+            <div>
+              <Label htmlFor="state">State</Label>
+              <select
+                id="state"
+                className="mt-1 w-full h-10 rounded-lg border border-input bg-background px-3 text-sm"
+                {...register('state', { required: 'State is required' })}
+              >
+                <option value="">Select state</option>
+                {STATE_OPTIONS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+              {watch('state') === 'Other' && (
+                <Input
+                  placeholder="Specify state"
+                  className="mt-2"
+                  {...register('stateOther')}
+                />
+              )}
+              {errors.state && <p className="text-sm text-primary mt-1">{errors.state.message}</p>}
+            </div>
+            <div>
+              <Label htmlFor="city">City</Label>
+              {selectedState && selectedState !== 'Other' ? (
+                <>
+                  <select
+                    id="city"
+                    className="mt-1 w-full h-10 rounded-lg border border-input bg-background px-3 text-sm"
+                    {...register('city', { required: 'City is required' })}
+                  >
+                    <option value="">Select city</option>
+                    {getCitiesForState(selectedState).map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                  {watch('city') === 'Other' && (
+                    <Input
+                      placeholder="Specify city"
+                      className="mt-2"
+                      {...register('cityOther')}
+                    />
+                  )}
+                </>
+              ) : selectedState === 'Other' ? (
+                <Input
+                  id="city"
+                  placeholder="Specify city"
+                  className="mt-1"
+                  {...register('cityOther', { required: 'Please specify city' })}
+                />
+              ) : (
+                <p className="text-sm text-muted-foreground mt-1">Select state first</p>
+              )}
+              {errors.city && <p className="text-sm text-primary mt-1">{errors.city.message}</p>}
+              {errors.cityOther && <p className="text-sm text-primary mt-1">{errors.cityOther.message}</p>}
             </div>
             <Button type="submit" className="w-full rounded-xl" size="lg" disabled={loading}>
               {loading ? 'Creating account...' : 'Sign Up'}

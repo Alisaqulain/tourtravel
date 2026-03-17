@@ -29,22 +29,24 @@ export async function GET(request) {
 
     const list = await Booking.find(filter)
       .sort({ createdAt: -1 })
-      .populate('userId', 'name email')
+      .populate('userId', 'name email phone')
       .lean();
     const data = list.map((b) => ({
       ...b,
       userName: b.userId?.name,
       userEmail: b.userId?.email,
+      userPhone: b.userId?.phone,
       userId: undefined,
     }));
 
     if (exportCsv) {
-      const headers = ['Booking ID', 'Type', 'User', 'Email', 'Subtotal', 'Tax', 'Total', 'Currency', 'Status', 'Payment ID', 'Date', 'Source'];
+      const headers = ['Booking ID', 'Type', 'User', 'Email', 'Phone', 'Subtotal', 'Tax', 'Total', 'Currency', 'Status', 'Payment ID', 'Date', 'Source'];
       const rows = data.map((b) => [
         b.bookingId,
         b.type,
         b.userName ?? '',
         b.userEmail ?? '',
+        b.userPhone ?? '',
         b.subtotal,
         b.tax,
         b.total,
