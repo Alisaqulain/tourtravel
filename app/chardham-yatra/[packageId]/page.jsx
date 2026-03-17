@@ -140,6 +140,16 @@ export default function CharDhamPackageDetailPage() {
       };
       console.log('[CharDham][PayNow] creating Razorpay instance...');
       const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (resp) {
+        console.error('[CharDham][PayNow] payment.failed', resp);
+        const desc =
+          resp?.error?.description ||
+          resp?.error?.reason ||
+          resp?.error?.code ||
+          'Payment failed';
+        toast.error(String(desc));
+        setProcessing(false);
+      });
       rzp.open();
     },
     [router]
