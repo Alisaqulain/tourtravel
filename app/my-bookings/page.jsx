@@ -1,24 +1,48 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plane, Building2, MapPin, Package, Calendar } from 'lucide-react';
+import { ArrowLeft, Plane, Building2, MapPin, Package, Calendar, Mountain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { formatPrice } from '@/lib/utils';
 import { useAuthStore, useBookingStore } from '@/store';
+import { toast } from '@/lib/toast';
 
 const mockPastBookings = [
   { id: 'B001', type: 'Flight', from: 'New York', to: 'London', date: '2025-01-15', status: 'Completed', amount: 449 },
   { id: 'B002', type: 'Hotel', name: 'Grand Marina Resort', location: 'Maldives', date: '2025-02-01', nights: 3, status: 'Completed', amount: 960 },
 ];
 
+function formatDate(d) {
+  if (!d) return '—';
+  const date = typeof d === 'string' ? new Date(d) : d;
+  return isNaN(date.getTime()) ? String(d) : date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
 export default function MyBookingsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const { selectedFlight, selectedHotel, selectedTour, selectedPackage } = useBookingStore();
+  const [chardhamBookings, setCharDhamBookings] = useState([]);
+
+  useEffect(() => {
+    if (searchParams.get('chardham') === '1') {
+      toast.success('Char Dham booking confirmed!');
+      window.history.replaceState({}, '', '/my-bookings');
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    fetch('/api/chardham/my-bookings', { credentials: 'include' })
+      .then((r) => r.json())
+      .then((d) => setCharDhamBookings(d?.data?.bookings ?? []))
+      .catch(() => setCharDhamBookings([]));
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!isLoggedIn) router.replace('/login');
@@ -100,6 +124,37 @@ export default function MyBookingsPage() {
                 <Link href="/booking-summary"><Button className="rounded-xl">Complete Booking</Button></Link>
               </Card>
             )}
+          </div>
+        </section>
+      )}
+
+      {chardhamBookings.length > 0 && (
+        <section className="mb-12">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <Mountain className="h-5 w-5" /> Char Dham Yatra Bookings
+          </h2>
+          <div className="space-y-4">
+            {chardhamBookings.map((b) => (
+              <motion.div key={b.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                <Card className="p-6">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <p className="font-semibold">{b.package?.name || 'Char Dham Package'}</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Seats: {b.seats} · Travel: {formatDate(b.travelDate)}
+                      </p>
+                      <p className="text-primary font-bold mt-1">Total Paid: {formatPrice(b.totalAmount)}</p>
+                    </div>
+                    <span className={`rounded-full px-3 py-1 text-sm font-medium ${
+                      b.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
+                      b.bookingStatus === 'cancelled' ? 'bg-muted text-muted-foreground' : 'bg-amber-100 text-amber-800'
+                    }`}>
+                      {b.bookingStatus === 'cancelled' ? 'Cancelled' : b.paymentStatus === 'paid' ? 'Confirmed' : b.paymentStatus}
+                    </span>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </section>
       )}

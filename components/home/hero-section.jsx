@@ -76,23 +76,23 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Full-width yellow top bar */}
+      {/* Full-width yellow top bar - extra bottom padding so subtitle doesn't overlap tab row */}
       <div
-        className="relative z-10 w-full py-4 sm:py-5 md:py-6"
+        className="relative z-10 w-full pt-4 sm:pt-5 md:pt-6 pb-6 sm:pb-8 md:pb-10"
         style={{ backgroundColor: OTA_YELLOW }}
       >
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-foreground text-center tracking-tight">
             Domestic and International Flights
           </h1>
-          <p className="text-primary-foreground/85 text-center text-sm sm:text-base mt-1">
+          <p className="text-primary-foreground/85 text-center text-sm sm:text-base mt-2 mb-0">
             Book flights, hotels, trains, bus & cab — best prices guaranteed
           </p>
         </div>
       </div>
 
-      {/* Main search card - overlaps slightly into yellow */}
-      <div className="relative z-10 -mt-4 sm:-mt-6 md:-mt-8 px-4 sm:px-6">
+      {/* Main search card - slight overlap into yellow, but clear of subtitle */}
+      <div className="relative z-10 -mt-2 sm:-mt-4 md:-mt-5 px-4 sm:px-6">
         <div className="container mx-auto max-w-6xl">
           {/* Tab pills: Flights | Hotels | Trains | Bus | Cabs - ref style: inactive = beige + orange text, active = orange + white */}
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-5">

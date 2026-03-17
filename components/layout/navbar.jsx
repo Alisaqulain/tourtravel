@@ -25,6 +25,7 @@ import {
   Phone,
   Heart,
   ChevronDown,
+  Mountain,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,7 @@ const mainLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/flights', label: 'Flights', icon: Plane },
   { href: '/hotels', label: 'Hotels', icon: Building2 },
+  { href: '/chardham-yatra', label: 'CharDham', badge: 'HOT', icon: Mountain },
 ];
 
 const transportLinks = [
@@ -55,7 +57,7 @@ const moreLinks = [
   { href: '/contact', label: 'Contact', icon: Phone },
 ];
 
-function NavLink({ href, label, icon: Icon, isActive, onClick }) {
+function NavLink({ href, label, badge, icon: Icon, isActive, onClick }) {
   return (
     <Link
       href={href}
@@ -69,7 +71,14 @@ function NavLink({ href, label, icon: Icon, isActive, onClick }) {
       aria-current={isActive ? 'page' : undefined}
     >
       {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden />}
-      <span>{label}</span>
+      <span className="flex items-center gap-2">
+        {label}
+        {badge && (
+          <span className="text-[10px] font-extrabold tracking-wide px-2 py-0.5 rounded-full bg-amber-500 text-white">
+            {badge}
+          </span>
+        )}
+      </span>
     </Link>
   );
 }
@@ -113,7 +122,7 @@ function Dropdown({ id, label, icon: Icon, links, isOpen, onToggle, onClose, onH
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 mt-1 z-50 min-w-[200px] py-1.5 rounded-xl border border-border bg-card/95 backdrop-blur-md shadow-xl"
+              className="absolute top-full left-0 mt-1 z-50 min-w-[220px] py-1.5 rounded-xl border border-border bg-card shadow-xl"
             >
               {links.map((link) => {
                 const LIcon = link.icon;
@@ -125,7 +134,7 @@ function Dropdown({ id, label, icon: Icon, links, isOpen, onToggle, onClose, onH
                     onClick={onClose}
                     className={cn(
                       'flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors duration-150',
-                      'hover:bg-primary/10 hover:text-primary',
+                      'hover:bg-muted hover:text-foreground',
                       active ? 'text-primary bg-primary/10' : 'text-foreground'
                     )}
                   >
@@ -186,11 +195,11 @@ export function Navbar() {
           aria-label="Home"
         >
           <Image
-            src="/images/Trip%20Logo.png"
-            alt="Trips To Travels"
+            src="/images/updatelogo.png"
+            alt="Triptotravels.in"
             width={280}
             height={72}
-            className="h-7 sm:h-8 md:h-9 w-auto max-h-9 object-contain object-left"
+            className="h-10 sm:h-11 md:h-12 w-auto max-h-14 object-contain object-left"
             priority
           />
         </Link>
@@ -204,6 +213,7 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               label={link.label}
+              badge={link.badge}
               icon={link.icon}
               isActive={pathname === link.href}
             />
@@ -364,7 +374,14 @@ export function Navbar() {
                   )}
                 >
                   <link.icon className="h-4 w-4" />
-                  {link.label}
+                  <span className="flex items-center gap-2">
+                    {link.label}
+                    {link.badge && (
+                      <span className="text-[10px] font-extrabold tracking-wide px-2 py-0.5 rounded-full bg-amber-500 text-white">
+                        {link.badge}
+                      </span>
+                    )}
+                  </span>
                 </Link>
               ))}
               <div className="py-2">

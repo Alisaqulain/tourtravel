@@ -20,6 +20,8 @@ import {
   Car,
   Palette,
   Settings,
+  Mountain,
+  CalendarDays,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -33,6 +35,8 @@ const nav = [
   { href: '/admin/hotels', label: 'Hotels', icon: Building2 },
   { href: '/admin/tours', label: 'Tours', icon: MapPin },
   { href: '/admin/packages', label: 'Packages', icon: Package },
+  { href: '/admin/chardham-packages', label: 'CharDham Packages', icon: Mountain },
+  { href: '/admin/chardham-bookings', label: 'CharDham Bookings', icon: CalendarDays },
   { href: '/admin/theme', label: 'Website Theme', icon: Palette },
 ];
 

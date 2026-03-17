@@ -15,6 +15,8 @@ import { ExploreBus } from '@/components/home/explore-bus';
 import { ExploreTrain } from '@/components/home/explore-train';
 import { ExploreCruise } from '@/components/home/explore-cruise';
 import { ExploreCars } from '@/components/home/explore-cars';
+import { CharDhamOfferSection } from '@/components/home/chardham-offer-section';
+import { CharDhamOfferPopup } from '@/components/home/chardham-offer-popup';
 import { BestOffers } from '@/components/home/best-offers';
 import { WhyChooseUs } from '@/components/home/why-choose-us';
 import { TrustBadges } from '@/components/home/trust-badges';
@@ -40,6 +42,7 @@ export default function HomePage() {
         <HotDeals />
         <PopularDestinations />
         <TrendingPackages />
+        <CharDhamOfferSection />
         <FlightDeals />
         <HotelListings />
         <ExploreBus />
@@ -53,6 +56,7 @@ export default function HomePage() {
         <CtaStrip />
         <Newsletter />
       </div>
+      <CharDhamOfferPopup />
     </main>
   );
 }

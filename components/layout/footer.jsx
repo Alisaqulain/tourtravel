@@ -55,11 +55,11 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="inline-block mb-4 rounded-xl p-2" aria-label="Home">
               <Image
-                src="/images/Trip%20Logo.png"
+                src="/images/updatelogo.png"
                 alt={COMPANY_NAME}
                 width={280}
                 height={80}
-                className="h-20 md:h-24 w-auto object-contain"
+                className="h-24 md:h-28 w-auto object-contain"
               />
             </Link>
             <p className="text-white/80 text-sm max-w-sm mb-4">
