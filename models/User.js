@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
     state: { type: String, trim: true, maxlength: 100 },
     country: { type: String, trim: true, maxlength: 100 },
     password: { type: String, required: true, select: false },
-    role: { type: String, enum: ['user', 'admin', 'superadmin'], default: 'user' },
+    role: { type: String, enum: ['user', 'admin', 'superadmin', 'hotel_owner', 'customer'], default: 'user' },
     isBlocked: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
     resetOtp: { type: String, default: null },

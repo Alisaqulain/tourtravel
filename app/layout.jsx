@@ -3,7 +3,6 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { BackToTop } from '@/components/layout/back-to-top';
-import { LoginPopup } from '@/components/layout/login-popup';
 import { UserLocationTracker } from '@/components/layout/user-location-tracker';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
@@ -34,7 +33,6 @@ export default function RootLayout({ children }) {
           <main className="min-h-screen bg-background">{children}</main>
           <Footer />
           <BackToTop />
-          <LoginPopup />
           <UserLocationTracker />
           <Toaster />
         </ThemeProvider>

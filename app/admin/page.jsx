@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Plane, Building2, MapPin, Package, ArrowRight, Users, CalendarCheck, Bus, Ship, Car, Palette, BarChart3 } from 'lucide-react';
+import { Plane, Building2, MapPin, Package, ArrowRight, Users, CalendarCheck, Bus, Ship, Car, Palette, BarChart3, Store, Wallet } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { AdminLocationMap } from '@/components/admin/location-map';
 import { toast } from '@/lib/toast';
@@ -244,6 +244,33 @@ export default function AdminDashboardPage() {
           </div>
         </Card>
       </div>
+
+      <Card className="p-6 mb-8">
+        <h2 className="text-lg font-semibold mb-4">Marketplace (hotel platform)</h2>
+        <p className="text-sm text-muted-foreground mb-4">Verify hotels, manage payouts, commission & bookings.</p>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/admin/marketplace/hotels">
+            <span className="inline-flex items-center gap-2 rounded-xl bg-primary/10 text-primary px-4 py-2 text-sm font-medium hover:bg-primary/20">
+              <Store className="h-4 w-4" /> Marketplace Hotels
+            </span>
+          </Link>
+          <Link href="/admin/marketplace/payouts">
+            <span className="inline-flex items-center gap-2 rounded-xl bg-primary/10 text-primary px-4 py-2 text-sm font-medium hover:bg-primary/20">
+              <Wallet className="h-4 w-4" /> Payouts
+            </span>
+          </Link>
+          <Link href="/admin/marketplace/commission">
+            <span className="inline-flex items-center gap-2 rounded-xl bg-muted text-foreground px-4 py-2 text-sm font-medium hover:bg-muted/80">
+              Commission
+            </span>
+          </Link>
+          <Link href="/admin/marketplace/bookings">
+            <span className="inline-flex items-center gap-2 rounded-xl bg-muted text-foreground px-4 py-2 text-sm font-medium hover:bg-muted/80">
+              Marketplace Bookings
+            </span>
+          </Link>
+        </div>
+      </Card>
 
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-4">Quick actions</h2>

@@ -25,6 +25,7 @@ import {
   Phone,
   Heart,
   ChevronDown,
+  Shield,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -281,6 +282,20 @@ export function Navbar() {
                         transition={{ duration: 0.2 }}
                         className="absolute right-0 top-full mt-1 z-50 min-w-[200px] py-1.5 rounded-xl border border-border bg-card/95 backdrop-blur-md shadow-xl"
                       >
+                        {(user?.role === 'admin' || user?.role === 'superadmin') && (
+                          <Link href="/admin" onClick={closeDropdown}>
+                            <span className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium hover:bg-primary/10 hover:text-primary rounded-lg transition-colors">
+                              <Shield className="h-4 w-4" /> Admin panel
+                            </span>
+                          </Link>
+                        )}
+                        {user?.role === 'hotel_owner' && (
+                          <Link href="/hotel" onClick={closeDropdown}>
+                            <span className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium hover:bg-primary/10 hover:text-primary rounded-lg transition-colors">
+                              <Building2 className="h-4 w-4" /> Hotel dashboard
+                            </span>
+                          </Link>
+                        )}
                         <Link href="/my-bookings" onClick={closeDropdown}>
                           <span className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium hover:bg-primary/10 hover:text-primary rounded-lg transition-colors">
                             <CalendarCheck className="h-4 w-4" /> My Bookings
@@ -421,6 +436,20 @@ export function Navbar() {
               <div className="mt-4 pt-4 border-t border-border flex flex-col gap-2">
                 {isLoggedIn ? (
                   <>
+                    {(user?.role === 'admin' || user?.role === 'superadmin') && (
+                      <Link href="/admin" onClick={() => setMobileOpen(false)}>
+                        <Button variant="ghost" className="w-full justify-start gap-3 rounded-xl">
+                          <Shield className="h-4 w-4" /> Admin panel
+                        </Button>
+                      </Link>
+                    )}
+                    {user?.role === 'hotel_owner' && (
+                      <Link href="/hotel" onClick={() => setMobileOpen(false)}>
+                        <Button variant="ghost" className="w-full justify-start gap-3 rounded-xl">
+                          <Building2 className="h-4 w-4" /> Hotel dashboard
+                        </Button>
+                      </Link>
+                    )}
                     <Link href="/my-bookings" onClick={() => setMobileOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start gap-3 rounded-xl">
                         <CalendarCheck className="h-4 w-4" /> My Bookings
