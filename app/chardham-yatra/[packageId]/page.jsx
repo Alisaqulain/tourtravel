@@ -64,6 +64,11 @@ export default function CharDhamPackageDetailPage() {
 
   const openRazorpay = useCallback(
     async (orderData, bookingMongoId) => {
+      console.log('[CharDham][PayNow] openRazorpay called', {
+        hasRazorpay: typeof window !== 'undefined' ? !!window.Razorpay : false,
+        orderData,
+        bookingMongoId,
+      });
       if (!orderData.key || !orderData.orderId) {
         toast.error('Payment not configured. Please contact support.');
         setProcessing(false);
@@ -83,6 +88,7 @@ export default function CharDhamPackageDetailPage() {
         order_id: orderData.orderId,
         handler: async function (response) {
           try {
+            console.log('[CharDham][PayNow] Razorpay handler response', response);
             const verifyRes = await fetch('/api/chardham/payment/verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -94,7 +100,9 @@ export default function CharDhamPackageDetailPage() {
                 id: bookingMongoId,
               }),
             });
+            console.log('[CharDham][PayNow] verifyRes status', verifyRes.status);
             const data = await verifyRes.json();
+            console.log('[CharDham][PayNow] verifyRes data', data);
             if (data?.success) {
               setBookingOpen(false);
               toast.success('Booking confirmed!');
@@ -104,6 +112,7 @@ export default function CharDhamPackageDetailPage() {
             }
           } catch (err) {
             toast.error('Verification failed');
+            console.error('[CharDham][PayNow] verification error', err);
           } finally {
             setProcessing(false);
           }
@@ -111,6 +120,9 @@ export default function CharDhamPackageDetailPage() {
         modal: {
           ondismiss: async function () {
             try {
+              console.log('[CharDham][PayNow] Razorpay dismissed - restoring seats/cancel booking', {
+                bookingMongoId,
+              });
               // If user cuts the payment, we must restore seats and cancel the booking.
               await fetch(`/api/chardham/bookings/${bookingMongoId}/cancel`, {
                 method: 'POST',
@@ -126,6 +138,7 @@ export default function CharDhamPackageDetailPage() {
           },
         },
       };
+      console.log('[CharDham][PayNow] creating Razorpay instance...');
       const rzp = new window.Razorpay(options);
       rzp.open();
     },
@@ -141,6 +154,11 @@ export default function CharDhamPackageDetailPage() {
     setProcessing(true);
     let createdBookingId = null;
     try {
+      console.log('[CharDham][PayNow] Creating booking...', {
+        packageId: pkg.id ?? pkg._id,
+        seats: Number(form.seats) || 1,
+        travelDate: form.travelDate,
+      });
       const bookRes = await fetch('/api/chardham/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -156,6 +174,7 @@ export default function CharDhamPackageDetailPage() {
         }),
       });
       const bookData = await bookRes.json();
+      console.log('[CharDham][PayNow] bookingRes', bookRes.status, bookData);
       if (!bookData?.success || !bookData?.data?.booking?.id) {
         toast.error(bookData?.message || 'Failed to create booking');
         setProcessing(false);
@@ -164,6 +183,7 @@ export default function CharDhamPackageDetailPage() {
       const bookingId = bookData.data.booking.id;
       createdBookingId = bookingId;
 
+      console.log('[CharDham][PayNow] Creating payment order...', { bookingId });
       const orderRes = await fetch('/api/chardham/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -171,6 +191,7 @@ export default function CharDhamPackageDetailPage() {
         body: JSON.stringify({ id: bookingId }),
       });
       const orderData = await orderRes.json();
+      console.log('[CharDham][PayNow] orderRes', orderRes.status, orderData);
       if (!orderData?.success || !orderData?.data?.orderId) {
         toast.error(orderData?.message || 'Failed to create payment order');
         setProcessing(false);
@@ -190,6 +211,9 @@ export default function CharDhamPackageDetailPage() {
       console.error(err);
       if (createdBookingId) {
         try {
+          console.log('[CharDham][PayNow] handleBookingSubmit catch - cancelling booking', {
+            bookingId: createdBookingId,
+          });
           await fetch(`/api/chardham/bookings/${createdBookingId}/cancel`, {
             method: 'POST',
             credentials: 'include',

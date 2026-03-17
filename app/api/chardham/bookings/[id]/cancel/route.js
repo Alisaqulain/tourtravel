@@ -17,6 +17,16 @@ export async function POST(request, { params }) {
     const booking = await CharDhamBooking.findById(id).lean();
     if (!booking) return error('Booking not found', 404);
 
+    console.log('[CharDham][Cancel] request', {
+      bookingId: id,
+      userId: user._id?.toString(),
+      bookingUserId: booking.userId?.toString?.() || booking.userId,
+      paymentStatus: booking.paymentStatus,
+      bookingStatus: booking.bookingStatus,
+      seats: booking.seats,
+      packageId: booking.packageId?._id || booking.packageId,
+    });
+
     // Only allow owner of booking
     if (booking.userId?.toString() !== user._id.toString()) {
       return error('Forbidden', 403);

@@ -10,6 +10,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const id = body?.id || body?.bookingId;
+    console.log('[CharDham][OrderCreate] request', { id });
     if (!id) return error('Booking id is required', 400);
 
     await connectDB();
@@ -18,6 +19,11 @@ export async function POST(request) {
     if (booking.paymentStatus === 'paid') return error('Already paid', 400);
 
     const amountPaise = Math.round(Number(booking.totalAmount) * 100);
+    console.log('[CharDham][OrderCreate] booking amounts', {
+      totalAmount: booking.totalAmount,
+      amountPaise,
+      bookingId: booking.bookingId,
+    });
     if (amountPaise < 100) return error('Invalid amount', 400);
 
     const order = await razorpay.orders.create({
