@@ -23,16 +23,34 @@ export async function POST(request) {
       return error('Missing payment or booking details', 400);
     }
 
+    await connectDB();
+
+    const booking = await CharDhamBooking.findById(id);
+    if (!booking) return error('Booking not found', 404);
+
     const valid = verifySignature(
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
       keySecret
     );
-    if (!valid) return error('Invalid signature', 400);
 
-    await connectDB();
-    const booking = await CharDhamBooking.findByIdAndUpdate(
+    // If signature/payment is invalid, restore seats and mark booking cancelled.
+    if (!valid) {
+      const pkgId = booking.packageId?._id || booking.packageId;
+      if (pkgId) {
+        await import('@/models/CharDhamPackage').then(({ CharDhamPackage }) =>
+          CharDhamPackage.updateOne({ _id: pkgId }, { $inc: { seatsAvailable: booking.seats } })
+        );
+      }
+      await booking.updateOne({
+        paymentStatus: 'failed',
+        bookingStatus: 'cancelled',
+      });
+      return error('Invalid signature', 400);
+    }
+
+    const updated = await CharDhamBooking.findByIdAndUpdate(
       id,
       {
         paymentStatus: 'paid',
@@ -43,25 +61,25 @@ export async function POST(request) {
       { new: true }
     ).lean();
 
-    if (!booking) return error('Booking not found', 404);
+    if (!updated) return error('Booking not found', 404);
 
     // Send confirmation email (acts as reminder + confirmation)
     try {
-      const pkg = await CharDhamPackage.findById(booking.packageId).lean();
+      const pkg = await CharDhamPackage.findById(updated.packageId).lean();
       const baseUrl = getEmailBaseUrl(request);
-      const travelDate = booking.travelDate ? new Date(booking.travelDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+      const travelDate = updated.travelDate ? new Date(updated.travelDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
       const message = [
         `Your Char Dham booking is confirmed.`,
         pkg?.name ? `Package: ${pkg.name}` : '',
-        `Seats: ${booking.seats}`,
+        `Seats: ${updated.seats}`,
         travelDate ? `Travel date: ${travelDate}` : '',
-        `Total paid: ₹${booking.totalAmount}`,
-        booking.discountPercent ? `Discount applied: ${booking.discountPercent}%` : '',
+        `Total paid: ₹${updated.totalAmount}`,
+        updated.discountPercent ? `Discount applied: ${updated.discountPercent}%` : '',
       ].filter(Boolean).join('\n');
 
       await sendNotificationEmail(
-        booking.email,
-        `Char Dham booking confirmed ${booking.bookingId || ''}`.trim(),
+        updated.email,
+        `Char Dham booking confirmed ${updated.bookingId || ''}`.trim(),
         'Char Dham booking confirmed',
         message,
         `${baseUrl}/my-bookings`,
@@ -72,7 +90,7 @@ export async function POST(request) {
       console.error('CharDham confirmation email error:', e?.message || e);
     }
 
-    return success({ verified: true, bookingId: booking.bookingId });
+    return success({ verified: true, bookingId: updated.bookingId });
   } catch (e) {
     console.error('CharDham verify:', e);
     return error('Verification failed', 500);

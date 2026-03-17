@@ -109,9 +109,20 @@ export default function CharDhamPackageDetailPage() {
           }
         },
         modal: {
-          ondismiss: function () {
-            setProcessing(false);
-            toast.error('Payment cancelled');
+          ondismiss: async function () {
+            try {
+              // If user cuts the payment, we must restore seats and cancel the booking.
+              await fetch(`/api/chardham/bookings/${bookingMongoId}/cancel`, {
+                method: 'POST',
+                credentials: 'include',
+              });
+            } catch (e) {
+              // Non-blocking: user already cancelled payment.
+              console.error('CharDham cancel call failed:', e?.message || e);
+            } finally {
+              setProcessing(false);
+              toast.error('Payment cancelled');
+            }
           },
         },
       };
@@ -128,6 +139,7 @@ export default function CharDhamPackageDetailPage() {
       return;
     }
     setProcessing(true);
+    let createdBookingId = null;
     try {
       const bookRes = await fetch('/api/chardham/bookings', {
         method: 'POST',
@@ -150,6 +162,7 @@ export default function CharDhamPackageDetailPage() {
         return;
       }
       const bookingId = bookData.data.booking.id;
+      createdBookingId = bookingId;
 
       const orderRes = await fetch('/api/chardham/orders', {
         method: 'POST',
@@ -175,6 +188,14 @@ export default function CharDhamPackageDetailPage() {
       );
     } catch (err) {
       console.error(err);
+      if (createdBookingId) {
+        try {
+          await fetch(`/api/chardham/bookings/${createdBookingId}/cancel`, {
+            method: 'POST',
+            credentials: 'include',
+          });
+        } catch (_) {}
+      }
       toast.error('Something went wrong');
       setProcessing(false);
     }
