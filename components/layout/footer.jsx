@@ -41,9 +41,17 @@ const servicesLinks = [
 ];
 
 const socials = [
-  { icon: Facebook, href: '#', label: 'Facebook' },
+  {
+    icon: Facebook,
+    href: 'https://www.facebook.com/share/17A2xow8J5/',
+    label: 'Facebook',
+  },
   { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Instagram, href: '#', label: 'Instagram' },
+  {
+    icon: Instagram,
+    href: 'https://www.instagram.com/triptotravels.in?utm_source=qr&igsh=OTFlbHhzMHE1MXZk',
+    label: 'Instagram',
+  },
   { icon: Linkedin, href: '#', label: 'LinkedIn' },
 ];
 
