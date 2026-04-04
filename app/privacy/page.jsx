@@ -3,6 +3,13 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import {
+  SITE_EMAIL,
+  SITE_MOBILE_DISPLAY,
+  SITE_LANDLINE_DISPLAY,
+  SITE_MOBILE_TEL_HREF,
+  SITE_LANDLINE_TEL_HREF,
+} from '@/lib/siteContact';
 
 export default function PrivacyPage() {
   return (
@@ -36,7 +43,13 @@ export default function PrivacyPage() {
 
         <h2 className="text-xl font-semibold mt-6 mb-2">5. Your Rights</h2>
         <p className="text-muted-foreground">
-          You have the right to access, correct, or delete your personal data. Contact us at info@triptotravels.in for any requests.
+          You have the right to access, correct, or delete your personal data. Contact us at{' '}
+          <a href={`mailto:${SITE_EMAIL}`} className="text-primary hover:underline">{SITE_EMAIL}</a>
+          , mobile{' '}
+          <a href={SITE_MOBILE_TEL_HREF} className="text-primary hover:underline">{SITE_MOBILE_DISPLAY}</a>
+          , or landline{' '}
+          <a href={SITE_LANDLINE_TEL_HREF} className="text-primary hover:underline">{SITE_LANDLINE_DISPLAY}</a>
+          .
         </p>
 
         <h2 className="text-xl font-semibold mt-6 mb-2">6. Contact</h2>

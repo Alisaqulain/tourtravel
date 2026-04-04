@@ -1,10 +1,9 @@
 import Link from 'next/link';
-import { ArrowLeft, Mail, Phone } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SupportContactBlock } from '@/components/support-contact-block';
 
 const COMPANY_NAME = 'Trips To Travels';
-const SUPPORT_EMAIL = 'info@triptotravels.in';
-const SUPPORT_PHONE = '+91 97177 46661';
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -47,16 +46,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground mb-2">6. Contact</h2>
           <p>For privacy-related queries contact us:</p>
-          <ul className="list-none mt-2 space-y-1">
-            <li className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-primary" />
-              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a>
-            </li>
-            <li className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-primary" />
-              <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, '')}`} className="text-primary hover:underline">{SUPPORT_PHONE}</a>
-            </li>
-          </ul>
+          <SupportContactBlock showAddress className="mt-2 text-foreground/90" />
         </section>
       </div>
       <Link href="/" className="inline-block mt-8">

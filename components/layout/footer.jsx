@@ -2,7 +2,15 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import {
+  SITE_EMAIL,
+  SITE_ADDRESS,
+  SITE_MOBILE_DISPLAY,
+  SITE_LANDLINE_DISPLAY,
+  SITE_MOBILE_TEL_HREF,
+  SITE_LANDLINE_TEL_HREF,
+} from '@/lib/siteContact';
 
 const COMPANY_NAME = 'Triptotravels';
 const COPYRIGHT_LINE = 'Triptotravels India Event & Holidays Services';
@@ -86,6 +94,30 @@ export function Footer() {
                   <s.icon className="h-5 w-5" />
                 </a>
               ))}
+            </div>
+            <div className="mt-6 space-y-3 text-sm text-white/80">
+              <h4 className="font-semibold text-white text-base">Reach us</h4>
+              <p className="flex items-start gap-2">
+                <Mail className="h-4 w-4 shrink-0 mt-0.5 text-amber-400" aria-hidden />
+                <a href={`mailto:${SITE_EMAIL}`} className="hover:text-white break-all">
+                  {SITE_EMAIL}
+                </a>
+              </p>
+              <p className="flex items-start gap-2">
+                <Phone className="h-4 w-4 shrink-0 mt-0.5 text-amber-400" aria-hidden />
+                <span className="flex flex-col gap-1.5">
+                  <a href={SITE_MOBILE_TEL_HREF} className="hover:text-white">
+                    {SITE_MOBILE_DISPLAY}
+                  </a>
+                  <a href={SITE_LANDLINE_TEL_HREF} className="hover:text-white">
+                    Landline {SITE_LANDLINE_DISPLAY}
+                  </a>
+                </span>
+              </p>
+              <p className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-amber-400" aria-hidden />
+                <span>{SITE_ADDRESS}</span>
+              </p>
             </div>
           </div>
           <div>

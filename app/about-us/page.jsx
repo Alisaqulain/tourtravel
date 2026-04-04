@@ -1,11 +1,9 @@
 import Link from 'next/link';
-import { ArrowLeft, Mail, Phone, MapPin, Target, Heart, Shield } from 'lucide-react';
+import { ArrowLeft, Target, Heart, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SupportContactBlock } from '@/components/support-contact-block';
 
 const COMPANY_NAME = 'Trips To Travels';
-const SUPPORT_EMAIL = 'info@triptotravels.in';
-const SUPPORT_PHONE = '+91 97177 46661';
-const ADDRESS = 'Triptotravels, Office no - OC 929A, Gaur City Center, Greater Noida West, UP 201318, India';
 
 export const metadata = {
   title: 'About Us',
@@ -55,20 +53,7 @@ export default function AboutUsPage() {
 
       <div className="rounded-xl border border-border bg-card/50 p-6">
         <h3 className="font-semibold mb-4">Contact {COMPANY_NAME}</h3>
-        <ul className="space-y-2 text-sm text-foreground/80">
-          <li className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-primary" />
-            <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a>
-          </li>
-          <li className="flex items-center gap-2">
-            <Phone className="h-4 w-4 text-primary" />
-            <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, '')}`} className="text-primary hover:underline">{SUPPORT_PHONE}</a>
-          </li>
-          <li className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-primary" />
-            {ADDRESS}
-          </li>
-        </ul>
+        <SupportContactBlock showAddress className="text-sm text-foreground/80" />
         <Link href="/contact-us" className="inline-block mt-4">
           <Button variant="outline" className="rounded-xl">Contact Us</Button>
         </Link>

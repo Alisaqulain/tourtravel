@@ -11,10 +11,10 @@ import { ImageSlider } from '@/components/ui/image-slider';
 import { formatPrice } from '@/lib/utils';
 import { useBookingStore } from '@/store';
 import { hotelReviews } from '@/data/reviews';
+import { SITE_MOBILE_DISPLAY, SITE_LANDLINE_DISPLAY } from '@/lib/siteContact';
 
 const amenityIcons = { Pool: Waves, WiFi: Wifi, Restaurant: Coffee, Spa: Waves, Beach: Waves, Gym: Coffee, Bar: Coffee };
 const HOTEL_FALLBACK = 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800';
-const CONTACT_PHONE = '+91 97177 46661';
 
 function mapHotel(h) {
   if (!h) return null;
@@ -130,10 +130,11 @@ export default function HotelDetailPage() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-primary" />
+                <Phone className="h-5 w-5 text-primary shrink-0" />
                 <div>
                   <p className="text-xs text-muted-foreground">Contact</p>
-                  <p className="font-medium">{CONTACT_PHONE}</p>
+                  <p className="font-medium">{SITE_MOBILE_DISPLAY}</p>
+                  <p className="font-medium text-sm text-muted-foreground">Landline: {SITE_LANDLINE_DISPLAY}</p>
                 </div>
               </div>
             </div>

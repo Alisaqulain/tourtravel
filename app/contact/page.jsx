@@ -10,10 +10,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { toast } from '@/lib/toast';
+import {
+  SITE_EMAIL,
+  SITE_ADDRESS,
+  SITE_MOBILE_DISPLAY,
+  SITE_LANDLINE_DISPLAY,
+  SITE_MOBILE_TEL_HREF,
+  SITE_LANDLINE_TEL_HREF,
+} from '@/lib/siteContact';
 
-const CONTACT_EMAIL = 'info@triptotravels.in';
-const CONTACT_PHONE = '+91 97177 46661';
-const CONTACT_ADDRESS = 'Triptotravels, Office no - OC 929A, Gaur City Center, Greater Noida West, UP 201318, India';
 const HOURS = '24/7 (Support & Bookings)';
 
 export default function ContactPage() {
@@ -107,15 +112,24 @@ export default function ContactPage() {
             <ul className="space-y-4 text-muted-foreground text-sm">
               <li className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-primary">{CONTACT_EMAIL}</a>
+                <a href={`mailto:${SITE_EMAIL}`} className="hover:text-primary break-all">{SITE_EMAIL}</a>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`} className="hover:text-primary">{CONTACT_PHONE}</a>
+                <div className="flex flex-col gap-2">
+                  <a href={SITE_MOBILE_TEL_HREF} className="hover:text-primary">
+                    <span className="text-muted-foreground/80 text-xs block">Mobile</span>
+                    {SITE_MOBILE_DISPLAY}
+                  </a>
+                  <a href={SITE_LANDLINE_TEL_HREF} className="hover:text-primary">
+                    <span className="text-muted-foreground/80 text-xs block">Landline</span>
+                    {SITE_LANDLINE_DISPLAY}
+                  </a>
+                </div>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span>{CONTACT_ADDRESS}</span>
+                <span>{SITE_ADDRESS}</span>
               </li>
               <li className="flex items-start gap-3">
                 <Clock className="h-5 w-5 text-primary shrink-0 mt-0.5" />

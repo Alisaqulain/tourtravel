@@ -1,11 +1,9 @@
 import Link from 'next/link';
-import { ArrowLeft, Mail, Phone, MapPin } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SupportContactBlock } from '@/components/support-contact-block';
 
 const COMPANY_NAME = 'Triptotravels';
-const SUPPORT_EMAIL = 'info@triptotravels.in';
-const SUPPORT_PHONE = '+91 97177 46661';
-const ADDRESS = 'Triptotravels, Office no - OC 929A, Gaur City Center, Greater Noida West, UP 201318, India';
 const LAST_UPDATED = '2025-02-01';
 
 export const metadata = {
@@ -65,20 +63,7 @@ export default function CancellationPolicyPage() {
         <section>
           <h2 className="text-xl font-semibold text-foreground mb-2">7. Contact Us</h2>
           <p className="mb-2">For cancellation requests or queries:</p>
-          <ul className="list-none space-y-1 text-foreground/90">
-            <li className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-primary shrink-0" />
-              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a>
-            </li>
-            <li className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-primary shrink-0" />
-              <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, '')}`} className="text-primary hover:underline">{SUPPORT_PHONE}</a>
-            </li>
-            <li className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-primary shrink-0" />
-              {ADDRESS}
-            </li>
-          </ul>
+          <SupportContactBlock showAddress className="text-foreground/90" />
         </section>
       </div>
       <Link href="/" className="inline-block mt-8">
