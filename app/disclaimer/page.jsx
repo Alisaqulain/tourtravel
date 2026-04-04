@@ -3,9 +3,9 @@ import { ArrowLeft, Mail, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const COMPANY_NAME = 'Triptotravels';
-const SUPPORT_EMAIL = 'support@tripstotravels.com';
-const SUPPORT_PHONE = '+91 1800 123 4567';
-const ADDRESS = 'Triptotravels, 123 MG Road, Bangalore 560001, India';
+const SUPPORT_EMAIL = 'info@triptotravels.in';
+const SUPPORT_PHONE = '+91 97177 46661';
+const ADDRESS = 'Triptotravels, Office no - OC 929A, Gaur City Center, Greater Noida West, UP 201318, India';
 const LAST_UPDATED = '2025-02-01';
 
 export const metadata = {

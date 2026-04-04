@@ -36,7 +36,7 @@ export default function PrivacyPage() {
 
         <h2 className="text-xl font-semibold mt-6 mb-2">5. Your Rights</h2>
         <p className="text-muted-foreground">
-          You have the right to access, correct, or delete your personal data. Contact us at privacy@tripstotravels.com for any requests.
+          You have the right to access, correct, or delete your personal data. Contact us at info@triptotravels.in for any requests.
         </p>
 
         <h2 className="text-xl font-semibold mt-6 mb-2">6. Contact</h2>

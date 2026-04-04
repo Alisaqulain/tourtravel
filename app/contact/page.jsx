@@ -12,8 +12,8 @@ import { Card } from '@/components/ui/card';
 import { toast } from '@/lib/toast';
 
 const CONTACT_EMAIL = 'info@triptotravels.in';
-const CONTACT_PHONE = '+91 96545 40259';
-const CONTACT_ADDRESS = 'Trips To Travels, 123 MG Road, Bangalore 560001, India';
+const CONTACT_PHONE = '+91 97177 46661';
+const CONTACT_ADDRESS = 'Triptotravels, Office no - OC 929A, Gaur City Center, Greater Noida West, UP 201318, India';
 const HOURS = '24/7 (Support & Bookings)';
 
 export default function ContactPage() {

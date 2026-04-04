@@ -3,9 +3,9 @@ import { ArrowLeft, Mail, Phone, MapPin, Target, Heart, Shield } from 'lucide-re
 import { Button } from '@/components/ui/button';
 
 const COMPANY_NAME = 'Trips To Travels';
-const SUPPORT_EMAIL = 'support@tripstotravels.com';
-const SUPPORT_PHONE = '+91 1800 123 4567';
-const ADDRESS = 'Trips To Travels, 123 MG Road, Bangalore 560001, India';
+const SUPPORT_EMAIL = 'info@triptotravels.in';
+const SUPPORT_PHONE = '+91 97177 46661';
+const ADDRESS = 'Triptotravels, Office no - OC 929A, Gaur City Center, Greater Noida West, UP 201318, India';
 
 export const metadata = {
   title: 'About Us',

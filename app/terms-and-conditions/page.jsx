@@ -3,8 +3,8 @@ import { ArrowLeft, Mail, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const COMPANY_NAME = 'Trips To Travels';
-const SUPPORT_EMAIL = 'support@tripstotravels.com';
-const SUPPORT_PHONE = '+91 1800 123 4567';
+const SUPPORT_EMAIL = 'info@triptotravels.in';
+const SUPPORT_PHONE = '+91 97177 46661';
 
 export const metadata = {
   title: 'Terms and Conditions',

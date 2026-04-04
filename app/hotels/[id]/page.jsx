@@ -14,7 +14,7 @@ import { hotelReviews } from '@/data/reviews';
 
 const amenityIcons = { Pool: Waves, WiFi: Wifi, Restaurant: Coffee, Spa: Waves, Beach: Waves, Gym: Coffee, Bar: Coffee };
 const HOTEL_FALLBACK = 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800';
-const CONTACT_PHONE = '+91 96545 40259';
+const CONTACT_PHONE = '+91 97177 46661';
 
 function mapHotel(h) {
   if (!h) return null;
