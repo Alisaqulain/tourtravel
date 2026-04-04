@@ -29,7 +29,7 @@ export async function PUT(request, { params }) {
     await connectDB();
     const update = {};
     const allowed = [
-      'name', 'category', 'price', 'duration', 'seatsAvailable',
+      'name', 'category', 'price', 'offerText', 'duration', 'seatsAvailable',
       'shortDescription', 'fullDescription', 'highlights', 'itinerary',
       'included', 'excluded', 'specialFeatures', 'images', 'discountRules', 'isRecommended',
     ];
@@ -41,6 +41,8 @@ export async function PUT(request, { params }) {
           update[key] = Array.isArray(body[key]) ? body[key] : [];
         } else if (key === 'discountRules') {
           update[key] = Array.isArray(body[key]) ? body[key] : [];
+        } else if (key === 'offerText') {
+          update[key] = typeof body[key] === 'string' ? body[key].trim().slice(0, 500) : '';
         } else if (key === 'price' || key === 'seatsAvailable') {
           update[key] = Number(body[key]);
         } else if (key === 'isRecommended') {

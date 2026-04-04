@@ -3,39 +3,86 @@
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { useDataStore } from '@/store';
+import { toast } from '@/lib/toast';
+import { ListingImageField } from '@/components/admin/listing-image-field';
 
 export default function EditTourPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id;
-  const tours = useDataStore((s) => s.tours);
-  const updateTour = useDataStore((s) => s.updateTour);
-  const tour = tours.find((t) => t.id === id);
-  const { register, handleSubmit, reset } = useForm();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const { register, handleSubmit, reset, watch, setValue } = useForm();
 
   useEffect(() => {
-    if (tour) reset(tour);
-  }, [tour, reset]);
+    if (!id) return;
+    fetch(`/api/admin/tours/${id}`, { credentials: 'include' })
+      .then((r) => r.json())
+      .then((json) => {
+        const t = json?.data;
+        if (!t) {
+          toast.error('Tour not found');
+          return;
+        }
+        reset({
+          title: t.title || t.name || '',
+          destination: t.destination || '',
+          image: t.image || t.images?.[0] || '',
+          duration: t.duration || '',
+          price: t.price ?? 0,
+          originalPrice: t.originalPrice ?? t.price ?? 0,
+          rating: t.rating ?? 4.9,
+          reviewCount: t.reviewCount ?? 0,
+        });
+      })
+      .finally(() => setLoading(false));
+  }, [id, reset]);
 
-  if (!tour) return <div><Link href="/admin/tours" className="inline-flex items-center gap-2 text-muted-foreground mb-6">← Back</Link><p>Tour not found.</p></div>;
-
-  const onSubmit = (data) => {
-    updateTour(id, {
-      ...data,
-      price: Number(data.price),
-      originalPrice: Number(data.originalPrice),
-      rating: Number(data.rating),
-      reviewCount: Number(data.reviewCount),
-    });
-    router.push('/admin/tours');
+  const onSubmit = async (data) => {
+    if (!id) return;
+    setSaving(true);
+    try {
+      const payload = {
+        title: data.title.trim(),
+        destination: data.destination.trim(),
+        image: (data.image || '').trim(),
+        duration: data.duration.trim(),
+        price: Number(data.price),
+        originalPrice: Number(data.originalPrice) || Number(data.price),
+        rating: Number(data.rating),
+        reviewCount: Number(data.reviewCount),
+      };
+      const res = await fetch(`/api/admin/tours/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (json?.success) {
+        toast.success('Tour updated');
+        router.push('/admin/tours');
+      } else toast.error(json?.message || 'Update failed');
+    } catch {
+      toast.error('Update failed');
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -45,10 +92,16 @@ export default function EditTourPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div><Label>Title</Label><Input {...register('title', { required: true })} className="mt-1 rounded-xl" /></div>
           <div><Label>Destination</Label><Input {...register('destination', { required: true })} className="mt-1 rounded-xl" /></div>
-          <div><Label>Image URL</Label><Input {...register('image')} className="mt-1 rounded-xl" /></div>
+          <ListingImageField
+            id="tour-image-edit"
+            label="Tour image"
+            value={watch('image') || ''}
+            onChange={(v) => setValue('image', v)}
+            disabled={saving}
+          />
           <div><Label>Duration</Label><Input {...register('duration', { required: true })} className="mt-1 rounded-xl" /></div>
           <div className="grid grid-cols-2 gap-4">
-            <div><Label>Price</Label><Input {...register('price', { required: true, valueAsNumber: true })} type="number" className="mt-1 rounded-xl" /></div>
+            <div><Label>Price (₹)</Label><Input {...register('price', { required: true, valueAsNumber: true })} type="number" className="mt-1 rounded-xl" /></div>
             <div><Label>Original price</Label><Input {...register('originalPrice', { valueAsNumber: true })} type="number" className="mt-1 rounded-xl" /></div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -56,7 +109,7 @@ export default function EditTourPage() {
             <div><Label>Review count</Label><Input {...register('reviewCount', { valueAsNumber: true })} type="number" className="mt-1 rounded-xl" /></div>
           </div>
           <div className="flex gap-3 pt-4">
-            <Button type="submit" className="rounded-xl">Update Tour</Button>
+            <Button type="submit" className="rounded-xl" disabled={saving}>{saving ? 'Saving…' : 'Update Tour'}</Button>
             <Link href="/admin/tours"><Button type="button" variant="outline" className="rounded-xl">Cancel</Button></Link>
           </div>
         </form>

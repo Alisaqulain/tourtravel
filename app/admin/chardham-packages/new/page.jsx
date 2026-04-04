@@ -36,6 +36,7 @@ export default function NewCharDhamPackagePage() {
     name: '',
     category: 'standard',
     price: '',
+    offerText: '',
     duration: '',
     seatsAvailable: '10',
     shortDescription: '',
@@ -95,6 +96,7 @@ export default function NewCharDhamPackagePage() {
         name: form.name.trim(),
         category: form.category,
         price: Number(form.price) || 0,
+        offerText: form.offerText.trim(),
         duration: form.duration.trim(),
         seatsAvailable: Number(form.seatsAvailable) || 0,
         shortDescription: form.shortDescription.trim(),
@@ -159,6 +161,17 @@ export default function NewCharDhamPackagePage() {
               <Label>Duration</Label>
               <Input value={form.duration} onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))} required placeholder="e.g. 10 Days" className="mt-1" />
             </div>
+          </div>
+          <div>
+            <Label>Offer or discount (optional)</Label>
+            <Input
+              value={form.offerText}
+              onChange={(e) => setForm((f) => ({ ...f, offerText: e.target.value }))}
+              placeholder="e.g. 10% off · Early bird ₹2,000 off · Free airport pickup"
+              className="mt-1"
+              maxLength={500}
+            />
+            <p className="text-xs text-muted-foreground mt-1">Shown on listing, package page, and home popup when set.</p>
           </div>
           <div>
             <Label>Seats Available</Label>

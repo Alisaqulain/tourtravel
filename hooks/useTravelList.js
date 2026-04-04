@@ -16,13 +16,18 @@ export function useTravelList(category, params = {}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Serialize so inline `{ limit: 200 }` literals (new object each render) don't change the key
+  const paramsJson = JSON.stringify(params ?? {});
+
   const fetchUrl = useCallback(() => {
+    const parsed = paramsJson ? JSON.parse(paramsJson) : {};
     const search = new URLSearchParams();
-    Object.entries(params).forEach(([k, v]) => {
+    Object.entries(parsed).forEach(([k, v]) => {
       if (v !== undefined && v !== '' && v !== null) search.set(k, String(v));
     });
-    return `/api/travel/${category}?${search.toString()}`;
-  }, [category, params]);
+    const q = search.toString();
+    return q ? `/api/travel/${category}?${q}` : `/api/travel/${category}`;
+  }, [category, paramsJson]);
 
   const refetch = useCallback(async () => {
     setLoading(true);

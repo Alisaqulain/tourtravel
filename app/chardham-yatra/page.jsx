@@ -127,7 +127,10 @@ export default function CharDhamYatraPage() {
                           <Users className="h-4 w-4" /> {pkg.seatsAvailable} seats left
                         </span>
                       </div>
-                      <p className="text-2xl font-bold text-primary mb-4">{formatPrice(pkg.price)}</p>
+                      <p className={`text-2xl font-bold text-primary ${pkg.offerText?.trim() ? 'mb-1' : 'mb-4'}`}>{formatPrice(pkg.price)}</p>
+                      {pkg.offerText?.trim() && (
+                        <p className="text-sm font-medium text-amber-700 dark:text-amber-500 mb-4">{pkg.offerText.trim()}</p>
+                      )}
                       {pkg.highlights?.length > 0 && (
                         <ul className="space-y-1 text-sm text-muted-foreground mb-4 flex-1">
                           {pkg.highlights.slice(0, 3).map((h, j) => (

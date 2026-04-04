@@ -2,23 +2,85 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Star, Wifi, Coffee, Waves, Clock, Phone, Car, Info } from 'lucide-react';
+import { ArrowLeft, MapPin, Star, Wifi, Coffee, Waves, Clock, Phone, Car, Info, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ImageSlider } from '@/components/ui/image-slider';
 import { formatPrice } from '@/lib/utils';
-import { useBookingStore, useDataStore } from '@/store';
+import { useBookingStore } from '@/store';
 import { hotelReviews } from '@/data/reviews';
 
 const amenityIcons = { Pool: Waves, WiFi: Wifi, Restaurant: Coffee, Spa: Waves, Beach: Waves, Gym: Coffee, Bar: Coffee };
+const HOTEL_FALLBACK = 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800';
+const CONTACT_PHONE = '+91 96545 40259';
+
+function mapHotel(h) {
+  if (!h) return null;
+  const imgs = h.images?.length ? h.images : h.image ? [h.image] : [HOTEL_FALLBACK];
+  const rating = Math.min(5, Math.max(1, Math.round(Number(h.starRating ?? h.reviewScore ?? 5))));
+  return {
+    id: h.id,
+    name: h.name,
+    location: h.city || h.location || '',
+    images: imgs,
+    amenities: Array.isArray(h.amenities) ? h.amenities : [],
+    rating,
+    reviewCount: h.reviewCount ?? 0,
+    pricePerNight: h.pricePerNight ?? 0,
+  };
+}
 
 export default function HotelDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const hotels = useDataStore((s) => s.hotels);
+  const id = params?.id;
   const setSelectedHotel = useBookingStore((s) => s.setSelectedHotel);
-  const hotel = hotels.find((h) => h.id === params.id);
+  const [hotel, setHotel] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    fetch(`/api/travel/hotels?id=${encodeURIComponent(id)}`)
+      .then((r) => r.json())
+      .then((json) => {
+        if (cancelled) return;
+        setHotel(mapHotel(json?.data));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [id]);
+
+  const handleBook = () => {
+    if (!hotel) return;
+    setSelectedHotel({
+      id: hotel.id,
+      name: hotel.name,
+      location: hotel.location,
+      image: hotel.images[0],
+      amenities: hotel.amenities,
+      rating: hotel.rating,
+      reviewCount: hotel.reviewCount,
+      pricePerNight: hotel.pricePerNight,
+    });
+    router.push('/booking-summary');
+  };
+
+  const checkIn = '3:00 PM';
+  const checkOut = '11:00 AM';
+  const distanceFromAirport = '12 km';
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-12 flex justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!hotel) {
     return (
@@ -29,16 +91,6 @@ export default function HotelDetailPage() {
     );
   }
 
-  const handleBook = () => {
-    setSelectedHotel(hotel);
-    router.push('/booking-summary');
-  };
-
-  const checkIn = '3:00 PM';
-  const checkOut = '11:00 AM';
-  const distanceFromAirport = '12 km';
-  const contact = '+1 234 567 8900';
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <Link href="/hotels" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 text-sm">
@@ -48,18 +100,18 @@ export default function HotelDetailPage() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="overflow-hidden mb-6">
           <div className="relative w-full min-h-[280px] md:min-h-[360px]">
-            <ImageSlider images={hotel.images || (hotel.image ? [hotel.image] : [])} alt={hotel.name} priority />
+            <ImageSlider images={hotel.images} alt={hotel.name} priority />
           </div>
           <div className="p-6 md:p-8">
             <div className="flex items-center gap-2 mb-2">
               {[...Array(5)].map((_, k) => (
-                <Star key={k} className="h-5 w-5 fill-primary text-primary" />
+                <Star key={k} className={`h-5 w-5 ${k < hotel.rating ? 'fill-primary text-primary' : 'text-muted-foreground/30'}`} />
               ))}
               <span className="text-muted-foreground text-sm">({hotel.reviewCount.toLocaleString()} reviews)</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold mb-2">{hotel.name}</h1>
             <p className="text-muted-foreground flex items-center gap-1 mb-6">
-              <MapPin className="h-5 w-5 shrink-0" /> {hotel.location}
+              <MapPin className="h-5 w-5 shrink-0" /> {hotel.location || '—'}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 p-4 rounded-xl bg-muted/50">
@@ -81,18 +133,21 @@ export default function HotelDetailPage() {
                 <Phone className="h-5 w-5 text-primary" />
                 <div>
                   <p className="text-xs text-muted-foreground">Contact</p>
-                  <p className="font-medium">{contact}</p>
+                  <p className="font-medium">{CONTACT_PHONE}</p>
                 </div>
               </div>
             </div>
 
             <h3 className="font-semibold mb-2 flex items-center gap-2"><Info className="h-4 w-4" /> About</h3>
             <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-              {hotel.name} offers a premium stay in {hotel.location} with top-notch service and facilities. Guests enjoy comfortable rooms, on-site dining, and easy access to local attractions. Ideal for both business and leisure travelers. Free cancellation up to 24 hours before check-in. No prepayment required — pay at the property.
+              {hotel.name} offers a premium stay in {hotel.location || 'this destination'} with top-notch service and facilities. Guests enjoy comfortable rooms, on-site dining, and easy access to local attractions. Ideal for both business and leisure travelers. Free cancellation up to 24 hours before check-in. No prepayment required — pay at the property.
             </p>
 
             <h3 className="font-semibold mb-2">Amenities</h3>
             <div className="flex flex-wrap gap-2 mb-6">
+              {hotel.amenities.length === 0 && (
+                <span className="text-sm text-muted-foreground">No amenities listed.</span>
+              )}
               {hotel.amenities.map((a) => {
                 const Icon = amenityIcons[a] || Coffee;
                 return (

@@ -2,21 +2,80 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Star, Calendar } from 'lucide-react';
+import { ArrowLeft, MapPin, Star, Calendar, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ImageSlider } from '@/components/ui/image-slider';
 import { formatPrice } from '@/lib/utils';
-import { useBookingStore, useDataStore } from '@/store';
+import { useBookingStore } from '@/store';
 import { tourReviews } from '@/data/reviews';
+
+const TOUR_IMG_FALLBACK = 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800';
+
+function mapTour(t) {
+  if (!t) return null;
+  const imgs = t.images?.length ? t.images : t.image ? [t.image] : [TOUR_IMG_FALLBACK];
+  return {
+    id: t.id,
+    title: t.name || t.title || 'Tour',
+    destination: t.destination || '',
+    duration: t.duration || '',
+    images: imgs,
+    price: t.price ?? 0,
+    originalPrice: t.originalPrice ?? t.price ?? 0,
+    rating: t.rating ?? 4.9,
+    reviewCount: t.reviewCount ?? 0,
+  };
+}
 
 export default function TourDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const tours = useDataStore((s) => s.tours);
+  const id = params?.id;
   const setSelectedTour = useBookingStore((s) => s.setSelectedTour);
-  const tour = tours.find((t) => t.id === params.id);
+  const [tour, setTour] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    fetch(`/api/travel/tours?id=${encodeURIComponent(id)}`)
+      .then((r) => r.json())
+      .then((json) => {
+        if (cancelled) return;
+        setTour(mapTour(json?.data));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [id]);
+
+  const handleBook = () => {
+    if (!tour) return;
+    setSelectedTour({
+      id: tour.id,
+      title: tour.title,
+      destination: tour.destination,
+      duration: tour.duration,
+      image: tour.images[0],
+      price: tour.price,
+      originalPrice: tour.originalPrice,
+      rating: tour.rating,
+      reviewCount: tour.reviewCount,
+    });
+    router.push('/booking-summary');
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-12 flex justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!tour) {
     return (
@@ -27,11 +86,6 @@ export default function TourDetailPage() {
     );
   }
 
-  const handleBook = () => {
-    setSelectedTour(tour);
-    router.push('/booking-summary');
-  };
-
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <Link href="/tours" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8">
@@ -41,7 +95,7 @@ export default function TourDetailPage() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="overflow-hidden mb-8">
           <div className="relative w-full min-h-[280px] md:min-h-[360px]">
-            <ImageSlider images={tour.images || (tour.image ? [tour.image] : [])} alt={tour.title} priority />
+            <ImageSlider images={tour.images} alt={tour.title} priority />
           </div>
           <div className="p-6 md:p-8">
             <div className="flex items-center gap-2 mb-2">
@@ -88,7 +142,7 @@ export default function TourDetailPage() {
             <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border">
               <div>
                 <span className="text-2xl font-bold text-primary">{formatPrice(tour.price)}</span>
-                {tour.originalPrice && (
+                {tour.originalPrice > tour.price && (
                   <span className="text-muted-foreground line-through ml-2">{formatPrice(tour.originalPrice)}</span>
                 )}
               </div>

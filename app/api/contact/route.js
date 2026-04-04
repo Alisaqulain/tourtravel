@@ -11,7 +11,7 @@ const nameMax = 120;
 const subjectMax = 200;
 const messageMax = 5000;
 
-const RECIPIENT_EMAIL = process.env.SMTP_MAIL_FROM || 'Triptotravelsofficial@gmail.com';
+const RECIPIENT_EMAIL = process.env.SMTP_MAIL_FROM || 'info@triptotravels.in';
 
 export async function POST(request) {
   try {

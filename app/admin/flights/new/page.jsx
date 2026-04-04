@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -8,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { useDataStore } from '@/store';
+import { toast } from '@/lib/toast';
+import { ListingImageField } from '@/components/admin/listing-image-field';
 
 const defaultValues = {
   airline: '',
@@ -25,19 +27,49 @@ const defaultValues = {
   class: 'Economy',
 };
 
+function buildPayload(data) {
+  const airlineLogo = (data.airlineLogo || '').trim();
+  return {
+    airline: data.airline.trim(),
+    airlineLogo,
+    from: data.from.trim(),
+    to: data.to.trim(),
+    departure: data.departure.trim(),
+    arrival: data.arrival.trim(),
+    duration: data.duration.trim(),
+    date: data.date,
+    price: Number(data.price) || 0,
+    savePercent: Number(data.savePercent) || 0,
+    stops: Number(data.stops) || 0,
+    class: data.class || 'Economy',
+    images: airlineLogo ? [airlineLogo] : [],
+  };
+}
+
 export default function NewFlightPage() {
   const router = useRouter();
-  const addFlight = useDataStore((s) => s.addFlight);
-  const { register, handleSubmit } = useForm({ defaultValues });
+  const [saving, setSaving] = useState(false);
+  const { register, handleSubmit, watch, setValue } = useForm({ defaultValues });
 
-  const onSubmit = (data) => {
-    addFlight({
-      ...data,
-      price: Number(data.price),
-      savePercent: Number(data.savePercent),
-      stops: Number(data.stops),
-    });
-    router.push('/admin/flights');
+  const onSubmit = async (data) => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/admin/flights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(buildPayload(data)),
+      });
+      const json = await res.json();
+      if (json?.success) {
+        toast.success('Flight saved');
+        router.push('/admin/flights');
+      } else toast.error(json?.message || 'Failed to save');
+    } catch {
+      toast.error('Failed to save');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -54,17 +86,22 @@ export default function NewFlightPage() {
               <Label>Airline</Label>
               <Input {...register('airline', { required: true })} className="mt-1 rounded-xl" />
             </div>
-            <div>
-              <Label>Airline Logo URL</Label>
-              <Input {...register('airlineLogo')} className="mt-1 rounded-xl" placeholder="/images/airlines/logo.png" />
+            <div className="md:col-span-2">
+              <ListingImageField
+                id="flight-airline-logo"
+                label="Airline logo (optional)"
+                value={watch('airlineLogo') || ''}
+                onChange={(v) => setValue('airlineLogo', v)}
+                disabled={saving}
+              />
             </div>
             <div>
               <Label>From</Label>
-              <Input {...register('from', { required: true })} className="mt-1 rounded-xl" placeholder="New York (JFK)" />
+              <Input {...register('from', { required: true })} className="mt-1 rounded-xl" placeholder="DEL or New Delhi (DEL)" />
             </div>
             <div>
               <Label>To</Label>
-              <Input {...register('to', { required: true })} className="mt-1 rounded-xl" placeholder="London (LHR)" />
+              <Input {...register('to', { required: true })} className="mt-1 rounded-xl" placeholder="BOM or Mumbai (BOM)" />
             </div>
             <div>
               <Label>Departure time</Label>
@@ -83,7 +120,7 @@ export default function NewFlightPage() {
               <Input {...register('date', { required: true })} type="date" className="mt-1 rounded-xl" />
             </div>
             <div>
-              <Label>Price (USD)</Label>
+              <Label>Price (₹)</Label>
               <Input {...register('price', { required: true, valueAsNumber: true })} type="number" className="mt-1 rounded-xl" />
             </div>
             <div>
@@ -100,7 +137,7 @@ export default function NewFlightPage() {
             </div>
           </div>
           <div className="flex gap-3 pt-4">
-            <Button type="submit" className="rounded-xl">Save Flight</Button>
+            <Button type="submit" className="rounded-xl" disabled={saving}>{saving ? 'Saving…' : 'Save Flight'}</Button>
             <Link href="/admin/flights"><Button type="button" variant="outline" className="rounded-xl">Cancel</Button></Link>
           </div>
         </form>

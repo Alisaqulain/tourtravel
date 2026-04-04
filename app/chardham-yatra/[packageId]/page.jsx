@@ -357,7 +357,10 @@ export default function CharDhamPackageDetailPage() {
             <div>
               <Card className="p-6 sticky top-24">
                 <p className="text-2xl font-bold text-primary mb-2">{formatPrice(pkg.price)}</p>
-                <p className="text-sm text-muted-foreground mb-4">per person</p>
+                <p className={`text-sm text-muted-foreground ${pkg.offerText?.trim() ? 'mb-2' : 'mb-4'}`}>per person</p>
+                {pkg.offerText?.trim() && (
+                  <p className="text-sm font-medium text-amber-700 dark:text-amber-500 mb-4">{pkg.offerText.trim()}</p>
+                )}
                 {pkg.seatsAvailable <= 5 && pkg.seatsAvailable > 0 && (
                   <p className="text-amber-600 text-sm font-medium mb-4">Only {pkg.seatsAvailable} seats left</p>
                 )}

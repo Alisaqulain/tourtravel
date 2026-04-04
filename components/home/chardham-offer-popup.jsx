@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { formatPrice } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -17,6 +18,15 @@ const STORAGE_KEY = 'chardham_offer_popup_seen';
 
 export function CharDhamOfferPopup() {
   const [open, setOpen] = useState(false);
+  const [packages, setPackages] = useState([]);
+  const [pricesLoading, setPricesLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/chardham/packages')
+      .then((r) => r.json())
+      .then((d) => setPackages(d?.data?.packages ?? []))
+      .finally(() => setPricesLoading(false));
+  }, []);
 
   useEffect(() => {
     const seen = typeof window !== 'undefined' && sessionStorage.getItem(STORAGE_KEY);
@@ -29,6 +39,13 @@ export function CharDhamOfferPopup() {
     setOpen(false);
     if (typeof window !== 'undefined') sessionStorage.setItem(STORAGE_KEY, '1');
   };
+
+  const byCategory = (cat) => packages.filter((p) => p.category === cat);
+  const featured = [
+    byCategory('standard')[0],
+    byCategory('premium')[0],
+    byCategory('luxury')[0],
+  ].filter(Boolean);
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); else setOpen(v); }}>
@@ -45,11 +62,27 @@ export function CharDhamOfferPopup() {
           <p className="text-muted-foreground text-sm text-center">
             Limited seats available. Book your pilgrimage with best prices.
           </p>
-          <ul className="space-y-2 text-sm">
-            <li className="flex justify-between"><span>Standard</span><span className="font-semibold">₹35,000</span></li>
-            <li className="flex justify-between"><span>Premium</span><span className="font-semibold">₹65,000</span></li>
-            <li className="flex justify-between"><span>Luxury (Helicopter Ride)</span><span className="font-semibold">₹1,50,000</span></li>
-          </ul>
+          {pricesLoading ? (
+            <p className="text-muted-foreground text-sm text-center">Loading current prices…</p>
+          ) : featured.length > 0 ? (
+            <ul className="space-y-2 text-sm">
+              {featured.map((pkg) => (
+                <li key={pkg.id ?? pkg._id} className="border-b border-border/60 pb-2 last:border-0 last:pb-0">
+                  <div className="flex justify-between gap-2">
+                    <span className="truncate">{pkg.name}</span>
+                    <span className="font-semibold shrink-0">{formatPrice(pkg.price)}</span>
+                  </div>
+                  {pkg.offerText?.trim() && (
+                    <p className="text-xs font-medium text-amber-700 dark:text-amber-500 mt-1 pr-1">{pkg.offerText.trim()}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground text-sm text-center">
+              View Char Dham packages for the latest prices.
+            </p>
+          )}
           <p className="text-center text-amber-600 font-medium text-sm">Limited Seats Available</p>
           <div className="flex flex-col sm:flex-row gap-2 pt-2">
             <Link href="/chardham-yatra" className="flex-1" onClick={handleClose}>

@@ -11,8 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { toast } from '@/lib/toast';
 
-const CONTACT_EMAIL = 'support@tripstotravels.com';
-const CONTACT_PHONE = '+91 1800 123 4567';
+const CONTACT_EMAIL = 'info@triptotravels.in';
+const CONTACT_PHONE = '+91 96545 40259';
 const CONTACT_ADDRESS = 'Trips To Travels, 123 MG Road, Bangalore 560001, India';
 const HOURS = '24/7 (Support & Bookings)';
 

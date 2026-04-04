@@ -1,20 +1,31 @@
 /**
- * GET /api/travel/flights?origin=DEL&destination=BOM&date=2025-03-15&adults=1
- * &minPrice=0&maxPrice=50000&stops=0&airline=IndiGo&refundable=true
- * &sortBy=price&order=asc&page=1&limit=12
+ * GET /api/travel/flights — admin-created flights only (no mock/provider data).
  */
 import { NextResponse } from 'next/server';
-import { searchFlights } from '@/lib/travel';
+import { getAdminFlightsForTravel } from '@/lib/adminListingsTravel';
 import { successPaginated, error } from '@/lib/apiResponse';
 import { paginate, sortList } from '@/lib/travel/utils.js';
+
+function matchesAirport(port, code) {
+  if (!code) return true;
+  const u = code.toUpperCase().slice(0, 3);
+  const p = (port || '').toUpperCase();
+  if (p.includes(u)) return true;
+  const m = /\(([A-Z]{3})\)/.exec(p);
+  return m ? m[1] === u : false;
+}
+
+function filterAdminFlightsByRoute(list, origin, destination) {
+  return list.filter(
+    (f) => matchesAirport(f.departureAirport, origin) && matchesAirport(f.arrivalAirport, destination)
+  );
+}
 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const origin = (searchParams.get('origin') || '').toUpperCase().slice(0, 3) || undefined;
     const destination = (searchParams.get('destination') || '').toUpperCase().slice(0, 3) || undefined;
-    const date = searchParams.get('date') || undefined;
-    const adults = Math.min(9, Math.max(1, parseInt(searchParams.get('adults') || '1', 10) || 1));
     const minPrice = searchParams.get('minPrice') != null ? Number(searchParams.get('minPrice')) : null;
     const maxPrice = searchParams.get('maxPrice') != null ? Number(searchParams.get('maxPrice')) : null;
     const stops = searchParams.get('stops') != null ? parseInt(searchParams.get('stops'), 10) : null;
@@ -26,9 +37,11 @@ export async function GET(request) {
     const limit = searchParams.get('limit') || '12';
     const id = searchParams.get('id') || undefined;
 
-    let data = await searchFlights({ origin, destination, date, adults });
+    const adminFlights = await getAdminFlightsForTravel();
+    let data = filterAdminFlightsByRoute(adminFlights, origin, destination);
+
     if (id) {
-      const one = data.find((f) => f.id === id);
+      const one = data.find((f) => String(f.id) === String(id));
       if (one) return NextResponse.json({ success: true, data: one, total: 1, page: 1, totalPages: 1 });
       return NextResponse.json({ success: true, data: null, total: 0, page: 1, totalPages: 1 });
     }

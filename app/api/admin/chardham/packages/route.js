@@ -22,7 +22,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const {
-      name, category, price, duration, seatsAvailable,
+      name, category, price, offerText, duration, seatsAvailable,
       shortDescription, fullDescription, highlights, itinerary,
       included, excluded, specialFeatures, images, discountRules, isRecommended,
     } = body || {};
@@ -34,6 +34,7 @@ export async function POST(request) {
       name: name.trim(),
       category: ['standard', 'premium', 'luxury'].includes(category) ? category : 'standard',
       price: Number(price) || 0,
+      offerText: typeof offerText === 'string' ? offerText.trim().slice(0, 500) : '',
       duration: duration.trim(),
       seatsAvailable: Math.max(0, Number(seatsAvailable) || 0),
       shortDescription: shortDescription?.trim() || '',

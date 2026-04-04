@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 
 const COMPANY_NAME = 'Triptotravels';
+const COPYRIGHT_LINE = 'Triptotravels India Event & Holidays Services';
 
 const companyLinks = [
   { label: 'About Us', href: '/about-us' },
@@ -139,7 +140,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-white/20 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-white/60 text-sm text-center md:text-left">
-            © {new Date().getFullYear()} {COMPANY_NAME}. All rights reserved.
+            © {new Date().getFullYear()} {COPYRIGHT_LINE}. All rights reserved.
           </p>
           <p className="text-white/50 text-xs">Powered by Affiliate Partners</p>
         </div>

@@ -64,7 +64,10 @@ export function CharDhamOfferSection() {
                 </div>
                 <div className="p-4 flex-1 flex flex-col">
                   <h3 className="font-bold text-foreground mb-1">{pkg.name}</h3>
-                  <p className="text-2xl font-bold text-primary mb-2">{formatPrice(pkg.price)}</p>
+                  <p className={`text-2xl font-bold text-primary ${pkg.offerText?.trim() ? 'mb-1' : 'mb-2'}`}>{formatPrice(pkg.price)}</p>
+                  {pkg.offerText?.trim() && (
+                    <p className="text-xs font-medium text-amber-700 dark:text-amber-500 mb-2 line-clamp-2">{pkg.offerText.trim()}</p>
+                  )}
                   <p className="text-sm text-muted-foreground line-clamp-2 flex-1">
                     {pkg.shortDescription || `${pkg.duration} · Seats available: ${pkg.seatsAvailable}`}
                   </p>

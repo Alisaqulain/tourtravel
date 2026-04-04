@@ -19,6 +19,7 @@ const packageSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     category: { type: String, enum: ['standard', 'premium', 'luxury'], required: true },
     price: { type: Number, required: true, min: 0 },
+    offerText: { type: String, trim: true, default: '', maxlength: 500 },
     duration: { type: String, required: true, trim: true },
     seatsAvailable: { type: Number, required: true, min: 0, default: 0 },
     shortDescription: { type: String, trim: true },
